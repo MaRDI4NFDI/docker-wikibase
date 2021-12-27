@@ -3,8 +3,10 @@ Docker image for backups
 A Docker image that runs backups on a regular basis.
 
 * Creates a "backup" user and group
-* Calls the backup script `mysql_backup.sh` on a regular basis using cron.
-* Puts backups as compressed files on the host.
+* Calls the backup script (./wrapper.sh) on a regular basis (BACKUP_SCHEDULE) using cron
+* Puts backups as compressed files on the host (BACKUP_DIR)
+
+To run a backup manually, do `docker exec -ti name-of-backup-container ./wrapper.sh`
 
 Configuration
 -------------
@@ -28,9 +30,10 @@ Example docker-compose configuration:
       DB_PASS: ${DB_PASS}
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
 ```
-These must be set in .env
 
-BACKUP_DIR: Folder on the host where to put the backups. Folder must exist and ownership will be set to "backup:backup"
+These must be set in .env:
+
+BACKUP_DIR: Folder on the host where to put the backups. Folder ownership will be set to "backup:backup".
 
 DB_NAME: name of the database to backup
 
