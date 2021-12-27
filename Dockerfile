@@ -22,11 +22,11 @@ RUN apk add --update \
 	&& rm -rf /var/cache/apk/*
 
 # Set up non-root user.
-RUN addgroup -g "$DEFAULT_GID" backup \
+RUN addgroup -g "$BACKUP_DEFAULT_GID" backup \
 	&& adduser \
 		-h "/home/backup" \
 		-D `# Don't assign a password` \
-		-u "$DEFAULT_UID" \
+		-u "$BACKUP_DEFAULT_UID" \
 		-s "/bin/bash" \
 		-G "backup" \
 		backup
