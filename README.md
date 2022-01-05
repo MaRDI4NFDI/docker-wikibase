@@ -4,9 +4,16 @@ A Docker image that runs backups on a regular basis.
 
 * Creates a "backup" user and group
 * Calls the backup script (./wrapper.sh) on a regular basis (BACKUP_SCHEDULE) using cron
-* Puts backups as compressed files on the host (BACKUP_DIR)
+* Saves backups of database and pages (in XML format) as compressed files on the host (BACKUP_DIR)
+* Deletes old backups (older than KEEP_DAYS)
 
 To run a backup manually, do `docker exec -ti name-of-backup-container ./wrapper.sh`
+
+Build
+------
+Build on local machine: `docker build -t ghcr.io/mardi4nfdi/docker-backup:main .`
+
+Build on CI: image is built automatically on push to main.
 
 Configuration
 -------------
@@ -15,7 +22,7 @@ Example docker-compose configuration:
 
 ```
   backup:
-    image: ghcr.io/mardi4nfdi/docker-backup:master
+    image: ghcr.io/mardi4nfdi/docker-backup:main
     links:
       - mysql
     depends_on:
@@ -29,6 +36,7 @@ Example docker-compose configuration:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
+      KEEP_DAYS: 100
 ```
 
 These must be set in .env:
@@ -43,9 +51,10 @@ DB_PASS: password of the database user
 
 BACKUP_SCHEDULE: a cron string, e.g. '15 5 * * *' # every day at 05:15
 
+KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
+
 To do
 ------
-* Erase old backups
 * Provide a function to restore backups
 * Email out reports through ssmtp
 

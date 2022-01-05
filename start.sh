@@ -47,4 +47,4 @@ if [ "$RUN_ON_STARTUP" == "yes" ]; then
 fi
 
 echo "Starting cron."
-exec crond -l 8 -f
+exec cron -l 8 -f
