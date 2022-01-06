@@ -53,17 +53,15 @@ BACKUP_SCHEDULE: a cron string, e.g. '15 5 * * *' # every day at 05:15
 
 KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
 
+
+Restoring a backup
+-------------------
+Open a shell to the backup container. In the /app dir, do:
+* `bash ./restore.sh` to restore the database from the latest sql dump 
+* `bash ./restore.sh -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific sql dump. Pass the name of the file, not the full path.
+* `bash ./restore.sh -t sql -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` same as above
+
+
 To do
 ------
 * Email out reports through ssmtp
-
-License
--------
-More or less based upon [AutoMySQLBackup](https://github.com/guillaumeaubert/automysqlbackup-docker) by Gillaume Aubert.
-
-* The original version of AutoMySQLBackup (v3.0_rc6) is under the GPLv2
-license. The modifications to `automysqlbackup` in this repository and
-corresponding Docker image are accordingly released under the GPLv2 license.
-
-* This software is released under the GPLv2 license. See the LICENSE file for
-details.

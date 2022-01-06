@@ -24,16 +24,9 @@ if [ "$(id -u backup)" != "$BACKUP_UID" ]; then
 fi
 echo "Using user ID $(id -u backup)."
 
-# Make sure the files are owned by the user executing automysqlbackup, as we
+# Make sure the files are owned by the user executing backup, as we
 # will need to add/delete files.
 chown -R backup:backup /data
-
-# Fix ssh permissions if .ssh is mounted.
-#if [ -d /home/backup/.ssh ]; then
-#	chown backup:backup -R /home/backup/.ssh
-#	chmod 700 /home/backup/.ssh
-#	chmod 600 /home/backup/.ssh/*
-#fi
 
 # Set up crontab.
 # CRONTAB is set in the Dockerfile
