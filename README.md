@@ -7,8 +7,6 @@ A Docker image that runs backups on a regular basis.
 * Saves backups of database and pages (in XML format) as compressed files on the host (BACKUP_DIR)
 * Deletes old backups (older than KEEP_DAYS)
 
-To run a backup manually, do `docker exec -ti name-of-backup-container ./wrapper.sh`
-
 Build
 ------
 Build on local machine: `docker build -t ghcr.io/mardi4nfdi/docker-backup:main .`
@@ -17,9 +15,7 @@ Build on CI: image is tested and built automatically on push to main.
 
 Configuration
 -------------
-
 Example docker-compose configuration:
-
 ```
   backup:
     image: ghcr.io/mardi4nfdi/docker-backup:main
@@ -53,14 +49,30 @@ BACKUP_SCHEDULE: a cron string, e.g. '15 5 * * *' # every day at 05:15
 
 KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
 
+Creating a backup
+-----------------
+Normally, backups are created by a cronjob. 
+To run a backup manually, do `docker exec -ti name-of-backup-container ./wrapper.sh`
 
 Restoring a backup
 -------------------
 Open a shell to the backup container. In the /app dir, do:
-* `bash ./restore.sh` to restore the database from the latest sql dump 
-* `bash ./restore.sh -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific sql dump. Pass the name of the file, not the full path.
+* `bash ./restore.sh` to restore the database from the latest SQL dump 
+* `bash ./restore.sh -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific SQL dump. Pass the name of the file, not the full path.
 * `bash ./restore.sh -t sql -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` same as above
+* `bash ./restore.sh -t xml` to restore the wiki pages from the latest XML backup 
+* `bash ./restore.sh -t xml -f portal_xml_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific XML backup. Pass the name of the file, not the full path.
 
+**Please note that:** 
+* When restoring the database from a SQL backup, all revisions will be overwritten.
+* When restoring the pages from an XML backup, if a page has a newer revision than the page in the backup, then the newer revision will be kept.
+
+Pages erased since the backup was made will be restored. 
+
+Tests
+------
+This thing only works if there's a wiki to backup, therefore the tests are in the portal-compose repo. 
+Start the portal from docker-compose-dev.yml and call `bash run_tests.sh` to run all tests.
 
 To do
 ------

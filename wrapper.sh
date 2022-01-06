@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Creates a backup of the SQL database and an XML backup of all pages (last version only).
+# Called by the cronjob (or manually, see README)
+
 set -e # do not continue on error
 
 LOG_FILE="/data/backup.log" # internal path to log file

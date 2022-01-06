@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Restores backup, either SQL database dump or XML pages backup.
+# Call this manually, see README
+
 set -e # do not continue on error
 
 LOG_FILE="/data/backup.log" # internal path to log file
@@ -47,9 +51,11 @@ restore_db_backup() {
 
 # Restores a XML backup
 # If no XML file was specified from the command line (-f filename), then the most recent XML backup is restored.
+# https://www.mediawiki.org/wiki/Manual:Importing_XML_dumps
 restore_xml_backup() {
     _det_file
     printf "Attempting to restore XML backup from $BACKUP_FILE\n"
+    cd /var/www/html/ && php maintenance/importDump.php --conf LocalSettings.php $BACKUP_FILE --username-prefix=""
 }
 
 ###########################

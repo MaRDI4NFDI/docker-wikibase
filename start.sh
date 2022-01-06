@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Entrypopint of the Dockerfile.
+# Sets up the crontab to call wrapper.sh on a regular basis
+
 set -e
 
 # Adjust timezone.
@@ -8,7 +11,7 @@ cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 echo ${TIMEZONE} > /etc/timezone
 echo "Date: `date`."
 
-# Set up mysqlbackup group.
+# Set up backup group.
 # BACKUP_GID is set in the Dockerfile
 : ${BACKUP_GID:="$BACKUP_DEFAULT_GID"}
 if [ "$(id -g backup)" != "$BACKUP_GID" ]; then
@@ -16,7 +19,7 @@ if [ "$(id -g backup)" != "$BACKUP_GID" ]; then
 fi
 echo "Using group ID $(id -g backup)."
 
-# Set up mysqlbackup user.
+# Set up backup user.
 # BACKUP_UID is set in the Dockerfile
 : ${BACKUP_UID:="$BACKUP_DEFAULT_UID"}
 if [ "$(id -u backup)" != "$BACKUP_UID" ]; then
