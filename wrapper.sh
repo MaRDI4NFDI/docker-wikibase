@@ -45,7 +45,6 @@ cleanup() {
     printf "\n"
 }
 
-
 # main script
 printf "Backup started ${DATE_STRING}\n" 
 mysql_dump 

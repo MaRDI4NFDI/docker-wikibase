@@ -2,7 +2,7 @@ Docker image for backups
 ========================
 A Docker image that runs backups on a regular basis.
 
-* Creates a "backup" user and group
+* Creates a "backup" user
 * Calls the backup script (./wrapper.sh) on a regular basis (BACKUP_SCHEDULE) using cron
 * Saves backups of database and pages (in XML format) as compressed files on the host (BACKUP_DIR)
 * Deletes old backups (older than KEEP_DAYS)
@@ -13,7 +13,7 @@ Build
 ------
 Build on local machine: `docker build -t ghcr.io/mardi4nfdi/docker-backup:main .`
 
-Build on CI: image is built automatically on push to main.
+Build on CI: image is tested and built automatically on push to main.
 
 Configuration
 -------------
@@ -55,7 +55,6 @@ KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
 
 To do
 ------
-* Provide a function to restore backups
 * Email out reports through ssmtp
 
 License
