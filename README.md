@@ -3,7 +3,7 @@ Docker image for backups
 A Docker image that runs backups on a regular basis.
 
 * Creates a "backup" user
-* Calls the backup script (./wrapper.sh) on a regular basis (BACKUP_SCHEDULE) using cron
+* Calls the backup script (./backup.sh) on a regular basis (BACKUP_SCHEDULE) using cron
 * Saves backups of database and pages (in XML format) as compressed files on the host (BACKUP_DIR)
 * Deletes old backups (older than KEEP_DAYS)
 
@@ -52,7 +52,7 @@ KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
 Creating a backup
 -----------------
 Normally, backups are created by a cronjob. 
-To run a backup manually, do `docker exec -ti name-of-backup-container ./wrapper.sh`
+To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.sh`
 
 Restoring a backup
 -------------------

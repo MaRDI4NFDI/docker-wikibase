@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Entrypopint of the Dockerfile.
-# Sets up the crontab to call wrapper.sh on a regular basis
+# Sets up the crontab to call backup.sh on a regular basis
 
 set -e
 
@@ -35,11 +35,11 @@ chown -R backup:backup /data
 # CRONTAB is set in the Dockerfile
 # CRON_SCHEDULE is set in docker-compose.yml
 echo "" > $CRONTAB
-echo "${BACKUP_SCHEDULE} /app/wrapper.sh" >> $CRONTAB
+echo "${BACKUP_SCHEDULE} /app/backup.sh" >> $CRONTAB
 
 # Start app.
 if [ "$RUN_ON_STARTUP" == "yes" ]; then
-	su-exec backup "/app/wrapper.sh"
+	su-exec backup "/app/backup.sh"
 fi
 
 echo "Starting cron."

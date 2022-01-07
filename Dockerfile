@@ -34,7 +34,7 @@ RUN adduser \
 
 # Copy files.
 RUN mkdir /app
-COPY wrapper.sh /app/
+COPY backup.sh /app/
 COPY restore.sh /app/
 COPY start.sh /app/
 
