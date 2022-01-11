@@ -1,5 +1,6 @@
-FROM alpine:latest
+FROM php:7.4-cli
 
+# some defaults
 ENV BACKUP_DEFAULT_GID="9000" \
 	BACKUP_DEFAULT_UID="9000" \
 	TIMEZONE="CET" \
@@ -8,22 +9,22 @@ ENV BACKUP_DEFAULT_GID="9000" \
 
 VOLUME /data
 
-RUN apk add --update \
+# install php-mysql driver and mysqldump
+RUN docker-php-ext-install mysqli \
+&& apt-get update && apt-get install --yes --no-install-recommends default-mysql-client
+
+# install cron and utilities
+RUN apt-get update && apt-get install --yes --no-install-recommends \
+        cron \
 		bash \
 		gzip \
-		# mailx \
-		mysql-client \
-		# openssh \
-		# shadow \
-		# ssmtp \
-		# su-exec \
 		tzdata \
 		nano \
 	&& rm -rf /var/cache/apk/*
 
 # Set up non-root user.
-RUN addgroup -g "$BACKUP_DEFAULT_GID" backup \
-	&& adduser \
+# RUN addgroup -g "$BACKUP_DEFAULT_GID" backup \BACKUP_DEFAULT_GID
+RUN adduser \
 		-h "/home/backup" \
 		-D `# Don't assign a password` \
 		-u "$BACKUP_DEFAULT_UID" \
@@ -33,9 +34,12 @@ RUN addgroup -g "$BACKUP_DEFAULT_GID" backup \
 
 # Copy files.
 RUN mkdir /app
-COPY mysql_backup.sh /app/
-COPY wrapper.sh /app/
+COPY backup.sh /app/
+COPY restore.sh /app/
 COPY start.sh /app/
+
+# Make sure scripts are executable
+RUN chown backup:backup /app/*.sh && chmod 774 /app/*.sh
 
 # Set up entry point.
 WORKDIR /app

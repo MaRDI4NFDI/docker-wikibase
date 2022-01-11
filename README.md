@@ -2,20 +2,23 @@ Docker image for backups
 ========================
 A Docker image that runs backups on a regular basis.
 
-* Creates a "backup" user and group
-* Calls the backup script (./wrapper.sh) on a regular basis (BACKUP_SCHEDULE) using cron
-* Puts backups as compressed files on the host (BACKUP_DIR)
+* Creates a "backup" user
+* Calls the backup script (./backup.sh) on a regular basis (BACKUP_SCHEDULE) using cron
+* Saves backups of database and pages (in XML format) as compressed files on the host (BACKUP_DIR)
+* Deletes old backups (older than KEEP_DAYS)
 
-To run a backup manually, do `docker exec -ti name-of-backup-container ./wrapper.sh`
+Build
+------
+Build on local machine: `docker build -t ghcr.io/mardi4nfdi/docker-backup:main .`
+
+Build on CI: image is tested and built automatically on push to main.
 
 Configuration
 -------------
-
 Example docker-compose configuration:
-
 ```
   backup:
-    image: ghcr.io/mardi4nfdi/docker-backup:master
+    image: ghcr.io/mardi4nfdi/docker-backup:main
     links:
       - mysql
     depends_on:
@@ -29,6 +32,7 @@ Example docker-compose configuration:
       DB_USER: ${DB_USER}
       DB_PASS: ${DB_PASS}
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
+      KEEP_DAYS: 100
 ```
 
 These must be set in .env:
@@ -43,19 +47,33 @@ DB_PASS: password of the database user
 
 BACKUP_SCHEDULE: a cron string, e.g. '15 5 * * *' # every day at 05:15
 
+KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
+
+Creating a backup
+-----------------
+Normally, backups are created by a cronjob. 
+To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.sh`
+
+Restoring a backup
+-------------------
+Open a shell to the backup container. In the /app dir, do:
+* `bash ./restore.sh` to restore the database from the latest SQL dump 
+* `bash ./restore.sh -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific SQL dump. Pass the name of the file, not the full path.
+* `bash ./restore.sh -t sql -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` same as above
+* `bash ./restore.sh -t xml` to restore the wiki pages from the latest XML backup 
+* `bash ./restore.sh -t xml -f portal_xml_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific XML backup. Pass the name of the file, not the full path.
+
+**Please note that:** 
+* When restoring the database from a SQL backup, all revisions will be overwritten.
+* When restoring the pages from an XML backup, if a page has a newer revision than the page in the backup, then the newer revision will be kept.
+
+Pages erased since the backup was made will be restored. 
+
+Tests
+------
+This thing only works if there's a wiki to backup, therefore the tests are in the portal-compose repo. 
+Start the portal from docker-compose-dev.yml and call `bash run_tests.sh` to run all tests.
+
 To do
 ------
-* Erase old backups
-* Provide a function to restore backups
 * Email out reports through ssmtp
-
-License
--------
-More or less based upon [AutoMySQLBackup](https://github.com/guillaumeaubert/automysqlbackup-docker) by Gillaume Aubert.
-
-* The original version of AutoMySQLBackup (v3.0_rc6) is under the GPLv2
-license. The modifications to `automysqlbackup` in this repository and
-corresponding Docker image are accordingly released under the GPLv2 license.
-
-* This software is released under the GPLv2 license. See the LICENSE file for
-details.
