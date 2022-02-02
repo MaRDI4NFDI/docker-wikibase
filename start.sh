@@ -38,9 +38,9 @@ echo "" > $CRONTAB
 echo "${BACKUP_SCHEDULE} /app/backup.sh" >> $CRONTAB
 
 # Start app.
-if [ "$RUN_ON_STARTUP" == "yes" ]; then
-	su-exec backup "/app/backup.sh"
-fi
+#if [ "$RUN_ON_STARTUP" == "yes" ]; then
+#	su-exec backup "/app/backup.sh"
+#fi
 
 echo "Starting cron."
 exec cron -l 8 -f
