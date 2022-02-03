@@ -36,11 +36,13 @@ chown -R backup:backup /data
 # CRON_SCHEDULE is set in docker-compose.yml
 echo "" > $CRONTAB
 echo "${BACKUP_SCHEDULE} /app/backup.sh" >> $CRONTAB
+crontab -u backup - < /var/spool/cron/crontabs/backup
 
 # Start app.
 #if [ "$RUN_ON_STARTUP" == "yes" ]; then
 #	su-exec backup "/app/backup.sh"
 #fi
 
-echo "Starting cron."
+#echo "Starting cron."
 exec cron -l 8 -f
+#cron -l 8 -f
