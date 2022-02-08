@@ -1,0 +1,11 @@
+
+#Pingback
+${DOLLAR}wgWBRepoSettings['wikibasePingback'] = false;
+
+# load additional setting from LocalSettings.d
+foreach (glob("LocalSettings.d/*.php") as ${DOLLAR}filename)
+{
+    include ${DOLLAR}filename;
+}
+
+
