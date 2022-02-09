@@ -3,7 +3,7 @@
 # Creates a backup of the SQL database and an XML backup of all pages (last version only).
 # Called by the cronjob (or manually, see README)
 
-set -e # do not continue on error
+set +e # continue on error
 
 LOG_FILE="/data/backup.log" # internal path to log file
 BACKUP_DIR="/data" # internal mount path of backup directory on the host
