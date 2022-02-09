@@ -23,7 +23,6 @@ bash download-extension.sh ConfirmEdit;\
 bash download-extension.sh Scribunto;\
 bash download-extension.sh VisualEditor;\
 bash download-extension.sh WikibaseManifest;\
-bash download-extension.sh Wikibase; \
 tar xzf WikibaseImport.tar.gz;\
 tar xzf OAuth.tar.gz;\
 tar xzf Elastica.tar.gz;\
@@ -37,7 +36,6 @@ tar xzf ConfirmEdit.tar.gz;\
 tar xzf Scribunto.tar.gz;\
 tar xzf VisualEditor.tar.gz;\
 tar xzf WikibaseManifest.tar.gz;\
-tar xzf Wikibase.tar.gz;\
 rm ./*.tar.gz
 
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b REL1_35 WikibaseLocalMedia
@@ -64,7 +62,7 @@ RUN rm -rf TwitterWidget/.git
 ################ 
 #  collector   #
 ################ 
-FROM mediawiki:1.35  as collector
+FROM wikibase/wikibase:1.35 as collector
 
 # collect bundle extensions
 COPY --from=fetcher /WikibaseImport-master /var/www/html/extensions/WikibaseImport
@@ -81,7 +79,7 @@ COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
 COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
 COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
-COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
+
 
 # collect MaRDI extensions
 COPY --from=fetcher /Math /var/www/html/extensions/Math
@@ -99,36 +97,20 @@ COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
-COPY composer.local.json /var/www/html/composer.local.json
-RUN rm -f /var/www/html/composer.lock
+RUN rm /var/www/html/composer.lock
 RUN composer install --no-dev
 
 
-#######################################
-#            MaRDI wikibase           #
-# build from official mediawiki image #
-#######################################
-FROM mediawiki:1.35 
+###################### 
+#  MaRDI wikibase    #
+######################
+FROM wikibase/wikibase:1.35
 
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base && \
+    apt-get install --yes --no-install-recommends nano jq=1.* && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN a2enmod rewrite
-RUN install -d /var/log/mediawiki -o www-data
-RUN docker-php-ext-install calendar bz2
-
 COPY --from=composer /var/www/html /var/www/html
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
-COPY entrypoint.sh /entrypoint.sh
-COPY LocalSettings.php.template /LocalSettings.php.template
-COPY htaccess /var/www/html/.htaccess
-RUN ln -s /var/www/html/ /var/www/html/w
-ENV MW_SITE_NAME=wikibase-docker\
-    MW_SITE_LANG=en
-    
 COPY LocalSettings.php.wikibase-bundle.template /LocalSettings.php.wikibase-bundle.template
 COPY LocalSettings.php.mardi.template /LocalSettings.php.mardi.template
 COPY extra-install.sh /
@@ -136,6 +118,3 @@ COPY extra-entrypoint-run-first.sh /
 RUN cat /LocalSettings.php.wikibase-bundle.template >> /LocalSettings.php.template && rm /LocalSettings.php.wikibase-bundle.template
 RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
-
-ENTRYPOINT ["/bin/bash"]
-CMD ["/entrypoint.sh"]
