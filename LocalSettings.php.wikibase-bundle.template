@@ -7,7 +7,8 @@ ${DOLLAR}wgGroupPermissions['sysop']['mwoauthviewprivate'] = true;
 ${DOLLAR}wgGroupPermissions['sysop']['mwoauthupdateownconsumer'] = true;
 
 # WikibaseImport
-require_once "${DOLLAR}IP/extensions/WikibaseImport/WikibaseImport.php";
+#require_once "${DOLLAR}IP/extensions/WikibaseImport/WikibaseImport.php";
+wfLoadExtension( 'WikibaseImport' );
 
 # CirrusSearch
 wfLoadExtension( 'Elastica' );

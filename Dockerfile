@@ -10,7 +10,6 @@ RUN apt-get update && \
 
 # download extensions as in bundle
 COPY download-extension.sh .
-ADD https://github.com/wikidata/WikibaseImport/archive/master.tar.gz /WikibaseImport.tar.gz
 RUN bash download-extension.sh OAuth;\
 bash download-extension.sh Elastica;\
 bash download-extension.sh CirrusSearch;\
@@ -24,7 +23,6 @@ bash download-extension.sh Scribunto;\
 bash download-extension.sh VisualEditor;\
 bash download-extension.sh WikibaseManifest;\
 bash download-extension.sh Wikibase; \
-tar xzf WikibaseImport.tar.gz;\
 tar xzf OAuth.tar.gz;\
 tar xzf Elastica.tar.gz;\
 tar xzf CirrusSearch.tar.gz;\
@@ -42,6 +40,11 @@ rm ./*.tar.gz
 
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b REL1_35 WikibaseLocalMedia
 RUN rm -rf WikibaseLocalMedia/.git
+
+# c1233da is the last revision that works with the docker bundle based on mediawiki 1.35
+RUN git clone https://github.com/Wikidata/WikibaseImport.git WikibaseImport && \
+cd WikibaseImport && git checkout c1233da6b7122c55c95d9d925b8f4162de8807e7 && \
+rm -rf WikibaseImport/.git
 
 # clone MaRDI extensions
 RUN git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/Math -b REL1_35 Math
@@ -67,7 +70,7 @@ RUN rm -rf TwitterWidget/.git
 FROM mediawiki:1.35  as collector
 
 # collect bundle extensions
-COPY --from=fetcher /WikibaseImport-master /var/www/html/extensions/WikibaseImport
+COPY --from=fetcher /WikibaseImport /var/www/html/extensions/WikibaseImport
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
@@ -96,7 +99,8 @@ COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 ################ 
 #  composer    #
 ################ 
-FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
+#FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
+FROM composer:1 as composer
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
