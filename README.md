@@ -17,8 +17,8 @@ and the final image that will be tagged as "https://github.com/MaRDI4NFDI/docker
 * In "collector", 
 > copy the extension source code to "/var/www/html/extensions/XXX". 
 > Note that the name of the extension is required in the destination (the XXX part) as Docker COPY behaves differently than the cp command.
-* "composer" will run "compposer install" in "/var/www/html/" so no changes required
-* To enable the extension, activate it in one of the Localsettings template files. 
+* "composer" will run "composer install" in "/var/www/html/" so no changes required
+* To enable the extension, activate it in one of the LocalSettings template files. 
 > Note that "$" should be replaced by "${DOLLAR}" for some [exotic reason](https://phabricator.wikimedia.org/T264007).
 
 To add a "custom" extension, you can always mount it in the docker-compose file of the portal.
