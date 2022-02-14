@@ -29,7 +29,7 @@ echo "Using user ID $(id -u backup)."
 
 # Make sure the files are owned by the user executing backup, as we
 # will need to add/delete files.
-chown backup:backup backup.sh
+chown backup:backup /app/backup.sh
 chown -R backup:backup /data
 
 # Set up crontab.
