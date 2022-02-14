@@ -3,7 +3,7 @@
 # Entrypopint of the Dockerfile.
 # Sets up the crontab to call backup.sh on a regular basis
 
-set -e
+set +e
 
 # Adjust timezone.
 # TIMEZONE is set in the Dockerfile
@@ -29,6 +29,7 @@ echo "Using user ID $(id -u backup)."
 
 # Make sure the files are owned by the user executing backup, as we
 # will need to add/delete files.
+chown backup:backup backup.sh
 chown -R backup:backup /data
 
 # Set up crontab.
