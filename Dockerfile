@@ -8,60 +8,91 @@ RUN apt-get update && \
     apt-get install --reinstall ca-certificates && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# download extensions as in bundle
-COPY download-extension.sh .
-RUN bash download-extension.sh OAuth;\
-bash download-extension.sh Elastica;\
-bash download-extension.sh CirrusSearch;\
-bash download-extension.sh WikibaseCirrusSearch;\
-bash download-extension.sh UniversalLanguageSelector;\
-bash download-extension.sh cldr;\
-bash download-extension.sh EntitySchema;\
-bash download-extension.sh Babel;\
-bash download-extension.sh ConfirmEdit;\
-bash download-extension.sh Scribunto;\
-bash download-extension.sh VisualEditor;\
-bash download-extension.sh WikibaseManifest;\
-bash download-extension.sh Wikibase; \
-tar xzf OAuth.tar.gz;\
-tar xzf Elastica.tar.gz;\
-tar xzf CirrusSearch.tar.gz;\
-tar xzf WikibaseCirrusSearch.tar.gz;\
-tar xzf UniversalLanguageSelector.tar.gz;\
-tar xzf cldr.tar.gz;\
-tar xzf EntitySchema.tar.gz;\
-tar xzf Babel.tar.gz;\
-tar xzf ConfirmEdit.tar.gz;\
-tar xzf Scribunto.tar.gz;\
-tar xzf VisualEditor.tar.gz;\
-tar xzf WikibaseManifest.tar.gz;\
-tar xzf Wikibase.tar.gz;\
-rm ./*.tar.gz
+# clone extensions from github, using specific branch
 
-RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b REL1_35 WikibaseLocalMedia
-RUN rm -rf WikibaseLocalMedia/.git
+ENV BRANCH=REL1_35
 
-# c1233da is the last revision that works with the docker bundle based on mediawiki 1.35
-RUN git clone https://github.com/Wikidata/WikibaseImport.git WikibaseImport && \
-cd WikibaseImport && git checkout c1233da6b7122c55c95d9d925b8f4162de8807e7 && \
+COPY clone-extension.sh .
+
+RUN bash clone-extension.sh OAuth ${BRANCH};\
+bash clone-extension.sh Elastica ${BRANCH};\
+bash clone-extension.sh CirrusSearch ${BRANCH};\
+bash clone-extension.sh WikibaseCirrusSearch ${BRANCH};\
+bash clone-extension.sh UniversalLanguageSelector ${BRANCH};\
+bash clone-extension.sh cldr ${BRANCH};\
+bash clone-extension.sh EntitySchema ${BRANCH};\
+bash clone-extension.sh Babel ${BRANCH};\
+bash clone-extension.sh ConfirmEdit ${BRANCH};\
+bash clone-extension.sh Scribunto ${BRANCH};\
+bash clone-extension.sh VisualEditor ${BRANCH};\
+bash clone-extension.sh WikibaseManifest ${BRANCH};\
+bash clone-extension.sh Wikibase ${BRANCH};\
+bash clone-extension.sh TemplateStyles ${BRANCH};\
+bash clone-extension.sh JsonConfig ${BRANCH};\
+bash clone-extension.sh Lockdown ${BRANCH};\
+bash clone-extension.sh Nuke ${BRANCH};\
+bash clone-extension.sh Math ${BRANCH};\
+bash clone-extension.sh MathSearch ${BRANCH};
+
+
+
+#COPY download-extension.sh .
+#RUN bash download-extension.sh OAuth;\
+#bash download-extension.sh Elastica;\
+#bash download-extension.sh CirrusSearch;\
+#bash download-extension.sh WikibaseCirrusSearch;\
+#bash download-extension.sh UniversalLanguageSelector;\
+#bash download-extension.sh cldr;\
+#bash download-extension.sh EntitySchema;\
+#bash download-extension.sh Babel;\
+#bash download-extension.sh ConfirmEdit;\
+#bash download-extension.sh Scribunto;\
+#bash download-extension.sh VisualEditor;\
+#bash download-extension.sh WikibaseManifest;\
+#bash download-extension.sh Wikibase; \
+#tar xzf OAuth.tar.gz;\
+#tar xzf Elastica.tar.gz;\
+#tar xzf CirrusSearch.tar.gz;\
+#tar xzf WikibaseCirrusSearch.tar.gz;\
+#tar xzf UniversalLanguageSelector.tar.gz;\
+#tar xzf cldr.tar.gz;\
+#tar xzf EntitySchema.tar.gz;\
+#tar xzf Babel.tar.gz;\
+#tar xzf ConfirmEdit.tar.gz;\
+#tar xzf Scribunto.tar.gz;\
+#tar xzf VisualEditor.tar.gz;\
+#tar xzf WikibaseManifest.tar.gz;\
+#tar xzf Wikibase.tar.gz;\
+#rm ./*.tar.gz
+
+# clone extensions not officially distributed by mediawiki
+RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b ${BRANCH} WikibaseLocalMedia &&\
+rm -rf WikibaseLocalMedia/.git
+
+RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
+rm -rf TwitterWidget/.git
+
+# clone WikibaseImport from the mardi fork (no branch needed here, as extension is custom made for the portal)
+RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
 
 # clone MaRDI extensions
-RUN git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/Math -b REL1_35 Math
-RUN git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/MathSearch -b REL1_35 MathSearch
-RUN git clone https://github.com/wikimedia/mediawiki-extensions-TemplateStyles.git -b REL1_35 TemplateStyles
-RUN git clone https://github.com/wikimedia/mediawiki-extensions-JsonConfig.git -b REL1_35 JsonConfig
-RUN git clone https://github.com/wikimedia/mediawiki-extensions-Lockdown.git -b REL1_37 Lockdown
-RUN git clone https://github.com/wikimedia/mediawiki-extensions-Nuke.git -b REL1_35 Nuke
-RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget
+#RUN git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/Math -b REL1_35 Math
+#RUN git clone https://gerrit.wikimedia.org/r/mediawiki/extensions/MathSearch -b REL1_35 MathSearch
 
-RUN rm -rf Math/.git
-RUN rm -rf MathSearch/.git
-RUN rm -rf TemplateStyles/.git
-RUN rm -rf JsonConfig/.git
-RUN rm -rf Lockdown/.git
-RUN rm -rf Nuke/.git
-RUN rm -rf TwitterWidget/.git
+#RUN rm -rf Math/.git
+#RUN rm -rf MathSearch/.git
+
+#RUN git clone https://github.com/wikimedia/mediawiki-extensions-TemplateStyles.git -b REL1_35 TemplateStyles
+#RUN git clone https://github.com/wikimedia/mediawiki-extensions-JsonConfig.git -b REL1_35 JsonConfig
+#RUN git clone https://github.com/wikimedia/mediawiki-extensions-Lockdown.git -b REL1_37 Lockdown
+#RUN git clone https://github.com/wikimedia/mediawiki-extensions-Nuke.git -b REL1_35 Nuke
+
+#RUN rm -rf TemplateStyles/.git
+#RUN rm -rf JsonConfig/.git
+#RUN rm -rf Lockdown/.git
+#RUN rm -rf Nuke/.git
+#RUN rm -rf TwitterWidget/.git
 
 
 ################ 
