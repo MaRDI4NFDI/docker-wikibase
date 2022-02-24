@@ -1,6 +1,6 @@
-################ 
+################
 #   fetcher    #
-################ 
+################
 FROM ubuntu:xenial as fetcher
 
 RUN apt-get update && \
@@ -45,10 +45,16 @@ rm -rf TwitterWidget/.git
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
 
+# Download Medik skin and unpack
+RUN curl https://bitbucket.org/wikiskripta/medik/get/master.tar.gz --output Medik.tar.gz &&\
+tar -xf Medik.tar.gz &&\
+rm Medik.tar.gz
 
-################ 
+
+
+################
 #  collector   #
-################ 
+################
 FROM mediawiki:1.35  as collector
 
 # collect bundle extensions
@@ -77,10 +83,13 @@ COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 
+# collect skins
+COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 
-################ 
+
+################
 #  composer    #
-################ 
+################
 #FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
 FROM composer:1 as composer
 COPY --from=collector /var/www/html /var/www/html
@@ -94,7 +103,7 @@ RUN composer install --no-dev
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:1.35 
+FROM mediawiki:1.35
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
@@ -114,7 +123,7 @@ COPY htaccess /var/www/html/.htaccess
 RUN ln -s /var/www/html/ /var/www/html/w
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
-    
+
 COPY LocalSettings.php.wikibase-bundle.template /LocalSettings.php.wikibase-bundle.template
 COPY LocalSettings.php.mardi.template /LocalSettings.php.mardi.template
 COPY extra-install.sh /
@@ -122,6 +131,7 @@ COPY extra-entrypoint-run-first.sh /
 RUN cat /LocalSettings.php.wikibase-bundle.template >> /LocalSettings.php.template && rm /LocalSettings.php.wikibase-bundle.template
 RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
+
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
