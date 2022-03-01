@@ -48,5 +48,4 @@ jobs:
         with:
           context: dev
           push: true
-          tags: dev
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/mardi4nfdi/docker-wikibase:dev
