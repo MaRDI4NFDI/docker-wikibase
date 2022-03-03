@@ -135,7 +135,7 @@ COPY extra-entrypoint-run-first.sh /
 RUN cat /LocalSettings.php.wikibase-bundle.template >> /LocalSettings.php.template && rm /LocalSettings.php.wikibase-bundle.template
 RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
-
+RUN mkdir /shared
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
