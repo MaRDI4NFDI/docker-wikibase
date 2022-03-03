@@ -15,7 +15,7 @@ RUN docker-php-ext-install mysqli \
 
 # install cron and utilities
 RUN apt-get update && apt-get install --yes --no-install-recommends \
-        cron \
+		cron \
 		bash \
 		gzip \
 		tzdata \
@@ -40,6 +40,7 @@ COPY start.sh /app/
 
 # Make sure scripts are executable
 RUN chown backup:backup /app/*.sh && chmod 774 /app/*.sh
+COPY --from=ghcr.io/mardi4nfdi/docker-wikibase:main /var/www/html/ /var/www/html/
 
 # Set up entry point.
 WORKDIR /app
