@@ -41,6 +41,9 @@ rm -rf WikibaseLocalMedia/.git
 RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
 rm -rf TwitterWidget/.git
 
+RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
+rm -rf EmbedVideo/.git
+
 # clone WikibaseImport from the mardi fork (no branch needed here, as extension is custom made for the portal)
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
@@ -82,6 +85,7 @@ COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
+COPY --from=fetcher /EmbedVideo /var/www/html/extensions/EmbedVideo
 
 # collect skins
 COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
