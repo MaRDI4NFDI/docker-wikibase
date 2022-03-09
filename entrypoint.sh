@@ -26,7 +26,7 @@ if [ -f /extra-entrypoint-run-first.sh ]; then
 fi
 
 # Copy LocalSettings from share if exists
-if [ ! -e "/shared/LocalSettings.php" ]; then
+if [ -e "/shared/LocalSettings.php" ]; then
   cp /shared/LocalSettings.php /var/www/html/LocalSettings.php
 fi
 
