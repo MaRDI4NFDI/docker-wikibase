@@ -43,4 +43,3 @@ RUN chown backup:backup /app/*.sh && chmod 774 /app/*.sh
 
 # Set up entry point.
 WORKDIR /app
-ENTRYPOINT ["/app/start.sh"]
