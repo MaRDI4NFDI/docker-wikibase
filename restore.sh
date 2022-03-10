@@ -55,7 +55,7 @@ restore_db_backup() {
 restore_xml_backup() {
     _det_file
     printf "Attempting to restore XML backup from $BACKUP_FILE\n"
-    cd /var/www/html/ && php maintenance/importDump.php --conf LocalSettings.php $BACKUP_FILE --username-prefix=""
+    cd /var/www/html/ && php maintenance/importDump.php --conf /shared/LocalSettings.php $BACKUP_FILE --username-prefix=""
 }
 
 ###########################
