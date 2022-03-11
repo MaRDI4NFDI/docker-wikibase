@@ -39,6 +39,8 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     # https://stackoverflow.com/a/24964089/4746236
     export DOLLAR='$'
     envsubst < /LocalSettings.php.template > /var/www/html/LocalSettings.php
+    # Copy LocalSettings to shared location
+    cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 
     # Run update.php to install Wikibase
     php /var/www/html/maintenance/update.php --quick
@@ -47,8 +49,11 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     if [ -f /extra-install.sh ]; then
         source /extra-install.sh
     fi
-    # Copy LocalSettings to shared location
-    cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
+fi
+
+# Copy LocalSettings to shared location
+if [ ! -e "/shared/LocalSettings.php" ]; then
+  cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 fi
 
 # Run the actual entry point
