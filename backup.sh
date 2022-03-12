@@ -32,6 +32,8 @@ mysql_dump() {
 xml_dump() {
     printf "XML backup\n"
     XML_DUMP_FILE=portal_xml_backup_${DATE_STRING}.gz
+    # parsoid requires script to be executed from mw root
+    cd /var/www/html/
     /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:${BACKUP_DIR}/${XML_DUMP_FILE} --quiet --conf /shared/LocalSettings.php
     if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
         printf " - XML dump written to ${XML_DUMP_FILE}\n"
