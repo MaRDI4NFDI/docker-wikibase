@@ -45,7 +45,7 @@ xml_dump() {
 # Backups uploaded files
 files_dump() {
     printf "Files backup\n"
-    IMAGES_FILE=portal_files_${DATE_STRING}.tar.gz
+    IMAGES_FILE=images_${DATE_STRING}.tar.gz
     tar -czf ${BACKUP_DIR}/${IMAGES_FILE} -C /var/www/html/ images
     if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
         printf " - Uploaded images backup written to ${IMAGES_FILE}\n"
