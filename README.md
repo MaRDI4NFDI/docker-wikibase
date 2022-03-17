@@ -21,7 +21,7 @@ To build manually: `docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
 # Overview of the Shell-scripts 
 
 |shellscript  | description                                      |
-|!-----------!|!------------------------------------------------!|
+| ----------- | ------------------------------------------------ |
 |clone-extension.sh|clone an extension from github with the correct branch|
 |wait-for-it.sh|wait for ports in other containers to be actually available (not the same as waiting that the container has started)|
 |entrypoint.sh|Entrypoint of the container, installs the wiki's maintenance/install scripts|
