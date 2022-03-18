@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Entrypopint of the Dockerfile.
-# Sets up the crontab to call backup.sh on a regular basis
+# Sets up the crontab to call backup.sh on a regular basis.
 
 set +e
 
