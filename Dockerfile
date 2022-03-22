@@ -142,12 +142,11 @@ RUN mkdir /shared
 #########################
 # Set up vecollabpad    #
 #########################
-# RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install
-#RUN cd /var/www/html/extensions/VisualEditor/lib/ve && grunt build
-#RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser
-#RUN npm install
-#RUN cp config.dev.yaml config.yaml
-#RUN sed -i 's/localhost/mongodb/g' config.yaml
+RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install
+RUN cd /var/www/html/extensions/VisualEditor/lib/ve && grunt build
+RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install
+RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && cp config.dev.yaml config.yaml
+RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && sed -i 's/localhost/mongodb/g' config.yaml
 
 
 ENTRYPOINT ["/bin/bash"]
