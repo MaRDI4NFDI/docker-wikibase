@@ -58,8 +58,10 @@ files_dump() {
 # Logs the deleted files if any.
 cleanup() {
     printf "Cleanup\n"
-    find ${BACKUP_DIR} -maxdepth 1 -name "*.gz"  -type f -mtime +${KEEP_DAYS} -print -delete \
-    | printf " - No files deleted"
+    DELETED=$(find "${BACKUP_DIR}" -maxdepth 1 -name "*.gz"  -type f -mtime +"${KEEP_DAYS}" -print -delete)
+    if [[ -z $DELETED ]]; then
+        printf " - No files deleted"
+    fi
     printf "\n"
 }
 
@@ -74,4 +76,3 @@ printf "\n"
 # to do send mail
 # export AMB_REMOTE_EXEC="ssh -C $AMB_TARGET"
 # | mail -s "AutoMySQLBackup | $AMB_TARGET | `date +'%Y-%m-%d %r %Z'`" root
-
