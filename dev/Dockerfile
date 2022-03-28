@@ -9,4 +9,5 @@ RUN pecl install xhprof-2.2.0 && docker-php-ext-enable xhprof
 RUN pecl install ast-1.0.6 && docker-php-ext-enable ast
 RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/php.ini
 RUN echo "xdebug.profiler_enable=1" >> /usr/local/etc/php/php.ini
+CMD ["/entrypoint.sh"]
 ENTRYPOINT ["docker-php-entrypoint", "apache2-foreground"]
