@@ -7,6 +7,27 @@ The image is built by CI automatically on push to main
 
 To build manually: `docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
 
+# Description of the Dockerfile
+ The docker-wikibase build is realised by multiple containers. At first an ubuntu-container is created which has git and curl which downloads mediawiki-extensions from the specified source repositories (fetcher). Then git-artifacts (.git folders) are removed. The collector is a mediawiki-docker-container, the downloaded repositories from the fetcher are now placed in the extensions folder of mediawiki in the collectors filesystem. The composer copies the mediawiki-data (including the custom extensions) and calls composer install. Composer install launches the specific installation steps of the extensions which are usually defined in the composer.json files Finally the container-image for mardi-wikibase is created on base of mediawiki, prerequisited packages are installed, then the mediawiki-content is created from the mediawiki-files (which include the extensions) from composer, additional data and configuration is copied to the mardi-wikibase, endpoints are created. Several templates for settings are copied to the final container-image, the actual settings when using the container are defined in portal-compose, in the files here. 
+
+# Description of Localsettings.php Files 
+
+  1. LocalSettings.php.template is the original Localsettings from the official mediawiki.
+  2. LocalSettings.php.wikibase-bundle.template is the original Localsettings from the wikibase docker bundle.
+  3. LocalSettings.php.mardi.template activates the extensions required by the MaRDI portal
+
+2 and 3 are concatted to the final LocalSettings in shared folder in entrypoint.sh 
+
+# Overview of the Shell-scripts 
+
+|shellscript  | description                                      |
+| ----------- | ------------------------------------------------ |
+|clone-extension.sh|clone an extension from github with the correct branch|
+|wait-for-it.sh|wait for ports in other containers to be actually available (not the same as waiting that the container has started)|
+|entrypoint.sh|Entrypoint of the container, installs the wiki's maintenance/install scripts|
+|extra-install.sh|creates elastic search index and OAuth settings for Quickstatements|
+|extra-entrypoint-run-first.sh|Creates the elastic search index, after calling wait-for-it|
+
 ## Adding extensions
 To add a "standard" extension (an extension that will not be developed by MaRDI)
 you have to edit the Dockerfile. The Dockerfile builds 4 images called "fetcher", "collector", "composer" 
