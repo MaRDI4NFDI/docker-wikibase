@@ -8,7 +8,6 @@ RUN apt-get update && \
     apt-get install --reinstall ca-certificates && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-
 # clone extensions from github, using specific branch
 
 ENV BRANCH=REL1_35
@@ -112,7 +111,7 @@ FROM mediawiki:1.35
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt && \
+    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
@@ -136,15 +135,7 @@ COPY extra-entrypoint-run-first.sh /
 RUN cat /LocalSettings.php.wikibase-bundle.template >> /LocalSettings.php.template && rm /LocalSettings.php.wikibase-bundle.template
 RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
-
 RUN mkdir /shared
-
-#########################
-# Set up vecollabpad    #
-#########################
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
-
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
