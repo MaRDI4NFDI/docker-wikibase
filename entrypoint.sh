@@ -57,5 +57,4 @@ if [ ! -e "/shared/LocalSettings.php" ]; then
 fi
 
 # Run the actual entry point
-(cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser;npm start) &
 docker-php-entrypoint apache2-foreground
