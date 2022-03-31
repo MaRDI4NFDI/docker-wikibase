@@ -31,8 +31,7 @@ bash clone-extension.sh TemplateStyles ${BRANCH};\
 bash clone-extension.sh JsonConfig ${BRANCH};\
 bash clone-extension.sh Lockdown ${BRANCH};\
 bash clone-extension.sh Nuke ${BRANCH};\
-bash clone-extension.sh Math ${BRANCH};\
-bash clone-extension.sh MathSearch ${BRANCH};
+bash clone-extension.sh Math ${BRANCH};
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b ${BRANCH} WikibaseLocalMedia &&\
@@ -44,9 +43,13 @@ rm -rf TwitterWidget/.git
 RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
 rm -rf EmbedVideo/.git
 
-# clone WikibaseImport from the mardi fork (no branch needed here, as extension is custom made for the portal)
+# clone extensions from MaRDI4NFDI Project (no branch needed here, as extensions are custom made for the portal)
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
+
+RUN git clone https://github.com/MaRDI4NFDI/mathsearch_extension.git MathSearch &&\
+rm -rf MathSearch/.git
+
 
 # Download Medik skin and unpack
 RUN curl https://bitbucket.org/wikiskripta/medik/get/master.tar.gz --output Medik.tar.gz &&\
