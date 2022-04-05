@@ -102,6 +102,11 @@ FROM composer:1 as composer
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
+# remove ext-calendar requirement, causing composer install to fail
+# composer only checks if requirements are met, but does not install or
+# actually depend on ext-calendar.
+# ext-calendar is installed in the final stage via docker-php-ext-install
+RUN sed -i '/ext-calendar/d' composer.json
 RUN rm -f /var/www/html/composer.lock
 RUN composer install --no-dev
 
