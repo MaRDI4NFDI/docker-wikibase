@@ -43,6 +43,9 @@ rm -rf TwitterWidget/.git
 RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
 rm -rf EmbedVideo/.git
 
+RUN git clone https://github.com/PascalNoisette/mediawiki-extensions-Slides.git Slides &&\
+rm -rf Slides/.git
+
 # clone extensions from MaRDI4NFDI Project (no branch needed here, as extensions are custom made for the portal)
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
@@ -89,6 +92,7 @@ COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 COPY --from=fetcher /EmbedVideo /var/www/html/extensions/EmbedVideo
+COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 
 # collect skins
 COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
