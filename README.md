@@ -10,7 +10,7 @@ To build manually: `docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
 # Description of the Dockerfile
  The docker-wikibase build is realised by multiple containers. At first an ubuntu-container is created which has git and curl which downloads mediawiki-extensions from the specified source repositories (fetcher). Then git-artifacts (.git folders) are removed. The collector is a mediawiki-docker-container, the downloaded repositories from the fetcher are now placed in the extensions folder of mediawiki in the collectors filesystem. The composer copies the mediawiki-data (including the custom extensions) and calls composer install. Composer install launches the specific installation steps of the extensions which are usually defined in the composer.json files Finally the container-image for mardi-wikibase is created on base of mediawiki, prerequisited packages are installed, then the mediawiki-content is created from the mediawiki-files (which include the extensions) from composer, additional data and configuration is copied to the mardi-wikibase, endpoints are created. Several templates for settings are copied to the final container-image, the actual settings when using the container are defined in portal-compose, in the files here. 
 
-# Description of Localsettings.php Files 
+# Description of Localsettings.php Files asddsa
 
   1. LocalSettings.php.template is the original Localsettings from the official mediawiki.
   2. LocalSettings.php.wikibase-bundle.template is the original Localsettings from the wikibase docker bundle.
