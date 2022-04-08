@@ -1,8 +1,11 @@
-name: docker-quickstatements-actions-workflow
-on: 
+name: docker-backup-actions-workflow
+
+on:
   push:
     branches: 
       - 'main'
+  schedule:
+    - cron: "30 0 * * *"
 
 env:
   REGISTRY: ghcr.io
