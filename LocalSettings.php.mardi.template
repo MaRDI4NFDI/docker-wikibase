@@ -3,7 +3,16 @@
 ${DOLLAR}wgWBRepoSettings['wikibasePingback'] = false;
 
 # Load additional settings from LocalSettings.d
+/*
+To make loading order deterministic and to identify errors when loading the script, this script orders the include of settings.
+
+1) Include Localsettings in alphabetic order ignoring the extensions.
+2) Include Extensions in alphabetic order
+*/
+
 # Generate list of extensions
+${DOLLAR}extensionList = array();
+${DOLLAR}extensionsToLoad = array();
 foreach (glob("{${DOLLAR}wgExtensionDirectory}/*", GLOB_ONLYDIR) as ${DOLLAR}extension)
 {
     ${DOLLAR}extensionList[] = basename(${DOLLAR}extension);
