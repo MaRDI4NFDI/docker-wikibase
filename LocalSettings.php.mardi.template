@@ -1,11 +1,31 @@
 
-#Pingback
+# Pingback
 ${DOLLAR}wgWBRepoSettings['wikibasePingback'] = false;
 
-# load additional setting from LocalSettings.d
+# Load additional settings from LocalSettings.d
+/*
+To make loading order deterministic and to identify errors when loading the script, this script orders the include of settings.
+
+1) Include Localsettings in alphabetic order ignoring the extensions.
+2) Include Extensions in alphabetic order
+*/
+
+# Generate list of extensions
+${DOLLAR}extensionList = array();
+${DOLLAR}extensionsToLoad = array();
+foreach (glob("{${DOLLAR}wgExtensionDirectory}/*", GLOB_ONLYDIR) as ${DOLLAR}extension)
+{
+    ${DOLLAR}extensionList[] = basename(${DOLLAR}extension);
+}
+
+# Load settings alphabetically and save extension list
 foreach (glob("/shared/LocalSettings.d/*.php") as ${DOLLAR}filename)
+{
+    in_array(basename(${DOLLAR}filename, ".php"), ${DOLLAR}extensionList) ? ${DOLLAR}extensionsToLoad[] = ${DOLLAR}filename : include ${DOLLAR}filename;
+}
+
+# Load extensions list alphabetically
+foreach (${DOLLAR}extensionsToLoad as ${DOLLAR}filename)
 {
     include ${DOLLAR}filename;
 }
-
-
