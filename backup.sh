@@ -72,10 +72,19 @@ files_dump() {
 cleanup() {
     printf "Cleanup\n"
     DELETED=$(find "${BACKUP_DIR}" -maxdepth 1 -name "*.gz"  -type f -mtime +"${KEEP_DAYS}" -print -delete)
+    # convert to array
+    set -f # disable glob (wildcard) expansion
+    IFS=$'\n' # split on newline chars
+    DELETED=(${DELETED})
+    NUM_DELETED=${#DELETED[@]}
     if [[ -z $DELETED ]]; then
-        printf " - No files deleted"
+        printf " - No files deleted\n"
+    else
+        printf " - Deleted $NUM_DELETED files older than $KEEP_DAYS days\n"
+        for d in ${DELETED[@]}; do
+            printf "    $d\n"
+        done
     fi
-    printf "\n"
 }
 
 # export metrics for prometheus/node_exporter textfile collector
@@ -106,6 +115,9 @@ backup_total_size_bytes $TOTAL_BACKUP_SIZE
 backup_last_status_code{type="mysql"} $EXIT_CODE_MYSQL
 backup_last_status_code{type="xml"} $EXIT_CODE_XML
 backup_last_status_code{type="files"} $EXIT_CODE_FILES
+# HELP backup_cleanup_deleted_num number of deleted files by cleanup
+# TYPE backup_cleanup_deleted_num gauge
+backup_cleanup_deleted_num $NUM_DELETED
 EOF
     
     mv "${NODE_EXPORTER_DIR}/backup_full.prom.$$" "${NODE_EXPORTER_DIR}/backup_full.prom"
@@ -125,13 +137,13 @@ EXIT_CODE_XML=$?
 files_dump
 EXIT_CODE_FILES=$?
 
-END="$(date +%s)"
+cleanup
 
+END="$(date +%s)"
 TOTAL_BACKUP_SIZE="$(du -s ${BACKUP_DIR} | cut -f1)"
 
 metrics_dump
 
-cleanup
 printf "\n"
 
 # to do send mail
