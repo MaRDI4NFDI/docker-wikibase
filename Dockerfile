@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 # clone extensions from github, using specific branch
 
-ENV BRANCH=REL1_35
+ENV BRANCH=REL1_37
 
 COPY clone-extension.sh .
 
@@ -25,23 +25,24 @@ bash clone-extension.sh Babel ${BRANCH};\
 bash clone-extension.sh ConfirmEdit ${BRANCH};\
 bash clone-extension.sh Scribunto ${BRANCH};\
 bash clone-extension.sh VisualEditor ${BRANCH};\
-bash clone-extension.sh WikibaseManifest ${BRANCH};\
-bash clone-extension.sh Wikibase ${BRANCH};\
+bash clone-extension.sh WikibaseManifest REL1_35;\
+bash clone-extension.sh Wikibase REL1_35;\
 bash clone-extension.sh TemplateStyles ${BRANCH};\
 bash clone-extension.sh JsonConfig ${BRANCH};\
 bash clone-extension.sh Lockdown ${BRANCH};\
 bash clone-extension.sh Nuke ${BRANCH};\
-bash clone-extension.sh Math ${BRANCH};
+bash clone-extension.sh Math ${BRANCH};\
+bash clone-extension.sh YouTube ${BRANCH};
 
 # clone extensions not officially distributed by mediawiki
-RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b ${BRANCH} WikibaseLocalMedia &&\
+RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
 rm -rf WikibaseLocalMedia/.git
 
 RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
 rm -rf TwitterWidget/.git
 
-RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
-rm -rf EmbedVideo/.git
+#RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
+#rm -rf EmbedVideo/.git
 
 RUN git clone https://github.com/PascalNoisette/mediawiki-extensions-Slides.git Slides &&\
 rm -rf Slides/.git
@@ -64,7 +65,7 @@ rm Medik.tar.gz
 ################
 #  collector   #
 ################
-FROM mediawiki:1.35  as collector
+FROM mediawiki:1.37  as collector
 
 # collect bundle extensions
 COPY --from=fetcher /WikibaseImport /var/www/html/extensions/WikibaseImport
@@ -91,7 +92,8 @@ COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
-COPY --from=fetcher /EmbedVideo /var/www/html/extensions/EmbedVideo
+# COPY --from=fetcher /EmbedVideo /var/www/html/extensions/EmbedVideo
+COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 
 # collect skins
@@ -102,7 +104,7 @@ COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 #  composer    #
 ################
 #FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
-FROM composer:1 as composer
+FROM composer:2.3.5 as composer
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
@@ -112,6 +114,11 @@ COPY composer.local.json /var/www/html/composer.local.json
 # ext-calendar is installed in the final stage via docker-php-ext-install
 RUN sed -i '/ext-calendar/d' composer.json
 RUN rm -f /var/www/html/composer.lock
+
+RUN php -i  \
+#  Configuration File (php.ini) Path => /usr/local/etc/php
+# Loaded Configuration File => /usr/local/etc/php/php-cli.ini
+
 RUN composer install --no-dev
 
 
@@ -119,7 +126,7 @@ RUN composer install --no-dev
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:1.35
+FROM mediawiki:1.37
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
