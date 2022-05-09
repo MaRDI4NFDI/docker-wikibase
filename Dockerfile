@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 # clone extensions from github, using specific branch
 
-ENV BRANCH=REL1_37
+ENV BRANCH=master
 
 COPY clone-extension.sh .
 
@@ -20,7 +20,6 @@ bash clone-extension.sh CirrusSearch ${BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${BRANCH};\
 bash clone-extension.sh cldr ${BRANCH};\
-bash clone-extension.sh EntitySchema ${BRANCH};\
 bash clone-extension.sh Babel ${BRANCH};\
 bash clone-extension.sh ConfirmEdit ${BRANCH};\
 bash clone-extension.sh Scribunto ${BRANCH};\
@@ -33,6 +32,9 @@ bash clone-extension.sh Lockdown ${BRANCH};\
 bash clone-extension.sh Nuke ${BRANCH};\
 bash clone-extension.sh Math ${BRANCH};\
 bash clone-extension.sh YouTube ${BRANCH};
+
+# some extension do not have master branch with code, load these with fixed versions.
+RUN bash clone-extension.sh EntitySchema REL1_37;
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
@@ -65,7 +67,7 @@ rm Medik.tar.gz
 ################
 #  collector   #
 ################
-FROM mediawiki:1.37  as collector
+FROM mediawiki:latest  as collector
 
 # collect bundle extensions
 COPY --from=fetcher /WikibaseImport /var/www/html/extensions/WikibaseImport
@@ -141,7 +143,7 @@ RUN composer install --no-dev
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:1.37
+FROM mediawiki:latest
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
