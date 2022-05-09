@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 # clone extensions from github, using specific branch
 
-ENV BRANCH=master
+ENV BRANCH=REL1_37
 
 COPY clone-extension.sh .
 
@@ -20,6 +20,7 @@ bash clone-extension.sh CirrusSearch ${BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${BRANCH};\
 bash clone-extension.sh cldr ${BRANCH};\
+bash clone-extension.sh EntitySchema ${BRANCH};\
 bash clone-extension.sh Babel ${BRANCH};\
 bash clone-extension.sh ConfirmEdit ${BRANCH};\
 bash clone-extension.sh Scribunto ${BRANCH};\
@@ -33,18 +34,12 @@ bash clone-extension.sh Nuke ${BRANCH};\
 bash clone-extension.sh Math ${BRANCH};\
 bash clone-extension.sh YouTube ${BRANCH};
 
-# some extension do not have master branch with code, load these with fixed versions.
-RUN bash clone-extension.sh EntitySchema REL1_37;
-
 # clone extensions not officially distributed by mediawiki
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
 rm -rf WikibaseLocalMedia/.git
 
 RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
 rm -rf TwitterWidget/.git
-
-#RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
-#rm -rf EmbedVideo/.git
 
 RUN git clone https://github.com/PascalNoisette/mediawiki-extensions-Slides.git Slides &&\
 rm -rf Slides/.git
@@ -94,7 +89,6 @@ COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
-# COPY --from=fetcher /EmbedVideo /var/www/html/extensions/EmbedVideo
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 
@@ -119,18 +113,15 @@ RUN rm -f /var/www/html/composer.lock
 
 # installing the php intl extension on linux alpine (req. for running composer install)
 RUN set -xe \
-    && apk add --update \
-        icu \
-    && apk add --no-cache --virtual .php-deps \
-        make \
+    && apk add --update icu \
+    && apk add --no-cache --virtual .php-deps make \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         zlib-dev \
         icu-dev \
         g++ \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install \
-        intl \
+    && docker-php-ext-install intl \
     && docker-php-ext-enable intl \
     && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
     && apk del .build-deps \
