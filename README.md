@@ -33,21 +33,25 @@ Example docker-compose configuration:
       DB_PASS: ${DB_PASS}
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
       KEEP_DAYS: 100
+      BACKUP_CRON_ENABLE: false
 ```
 
-These must be set in .env:
+These must be set in `.env`:
 
-BACKUP_DIR: Folder on the host where to put the backups. Folder ownership will be set to "backup:backup".
+`$BACKUP_DIR`: Folder on the host where to put the backups. Folder ownership will be set to `backup:backup`.
 
-DB_NAME: name of the database to backup
+`$DB_NAME`: name of the database to backup
 
-DB_USER: username of the database username
+`$DB_USER`: username of the database username
 
-DB_PASS: password of the database user
+`$DB_PASS`: password of the database user
 
-BACKUP_SCHEDULE: a cron string, e.g. '15 5 * * *' # every day at 05:15
+`$BACKUP_SCHEDULE`: a cron string, e.g. `'15 5 * * *' # every day at 05:15`
 
-KEEPD_DAYS: how many days shall the backups be kept, e.g. 100
+`$KEEP_DAYS`: how many days shall the backups be kept, e.g. 100
+
+`$BACKUP_CRON_ENABLE`: bool flag to enable/disable automatic backups via cron job when `start.sh` is called (e.g., as entrypoint of the backup container in https://github.com/mardi4nfdi/portal-compose)
+
 
 Creating a backup
 -----------------
