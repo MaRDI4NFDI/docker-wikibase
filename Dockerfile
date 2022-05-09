@@ -25,8 +25,8 @@ bash clone-extension.sh Babel ${BRANCH};\
 bash clone-extension.sh ConfirmEdit ${BRANCH};\
 bash clone-extension.sh Scribunto ${BRANCH};\
 bash clone-extension.sh VisualEditor ${BRANCH};\
-bash clone-extension.sh WikibaseManifest REL1_35;\
-bash clone-extension.sh Wikibase REL1_35;\
+bash clone-extension.sh WikibaseManifest ${BRANCH};\
+bash clone-extension.sh Wikibase ${BRANCH};\
 bash clone-extension.sh TemplateStyles ${BRANCH};\
 bash clone-extension.sh JsonConfig ${BRANCH};\
 bash clone-extension.sh Lockdown ${BRANCH};\
@@ -104,7 +104,7 @@ COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 #  composer    #
 ################
 #FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
-FROM composer:2.3.5 as composer
+FROM composer:1 as composer
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
@@ -115,9 +115,24 @@ COPY composer.local.json /var/www/html/composer.local.json
 RUN sed -i '/ext-calendar/d' composer.json
 RUN rm -f /var/www/html/composer.lock
 
-RUN php -i  \
-#  Configuration File (php.ini) Path => /usr/local/etc/php
-# Loaded Configuration File => /usr/local/etc/php/php-cli.ini
+# installing the php intl extension on linux alpine (req. for running composer install)
+RUN set -xe \
+    && apk add --update \
+        icu \
+    && apk add --no-cache --virtual .php-deps \
+        make \
+    && apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        zlib-dev \
+        icu-dev \
+        g++ \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install \
+        intl \
+    && docker-php-ext-enable intl \
+    && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
+    && apk del .build-deps \
+    && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
 
 RUN composer install --no-dev
 
