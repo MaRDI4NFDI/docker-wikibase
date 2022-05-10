@@ -9,7 +9,7 @@ set +e
 # TIMEZONE is set in the Dockerfile
 cp /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 echo ${TIMEZONE} > /etc/timezone
-echo "Date: `date`."
+echo "Date: $(date)."
 
 # Set up backup group.
 # BACKUP_GID is set in the Dockerfile
@@ -36,7 +36,14 @@ chown -R backup:backup /data
 # CRONTAB is set in the Dockerfile
 # CRON_SCHEDULE and the other environment variables are set in docker-compose.yml
 echo "" > $CRONTAB
-echo "${BACKUP_SCHEDULE} DB_HOST=${DB_HOST} DB_NAME=${DB_NAME} DB_USER=${DB_USER} DB_PASS=${DB_PASS} KEEP_DAYS=${KEEP_DAYS} /app/backup.sh" >> $CRONTAB
+
+if [ "$BACKUP_CRON_ENABLE" = true ]; then
+    echo "Setting up backup cronjob"
+    echo "${BACKUP_SCHEDULE} DB_HOST=${DB_HOST} DB_NAME=${DB_NAME} DB_USER=${DB_USER} DB_PASS=${DB_PASS} KEEP_DAYS=${KEEP_DAYS} /app/backup.sh" >> $CRONTAB
+else
+    echo "Setting up do-nothing cronjob: automatic backups are disabled"
+fi
+
 crontab -u backup - < /var/spool/cron/crontabs/backup
 
 #echo "Starting cron."
