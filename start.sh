@@ -35,13 +35,13 @@ chown -R backup:backup /data
 # Set up crontab.
 # CRONTAB is set in the Dockerfile
 # CRON_SCHEDULE and the other environment variables are set in docker-compose.yml
-echo "Setting up backup cronjob"
 echo "" > $CRONTAB
-echo "${BACKUP_SCHEDULE} DB_HOST=${DB_HOST} DB_NAME=${DB_NAME} DB_USER=${DB_USER} DB_PASS=${DB_PASS} KEEP_DAYS=${KEEP_DAYS} /app/backup.sh" >> $CRONTAB
 
-if [ "$BACKUP_CRON_ENABLE" != true ]; then
-    echo " - do-nothing cronjob: automatic backups are disabled"
-    echo "" > $CRONTAB
+if [ "$BACKUP_CRON_ENABLE" = true ]; then
+    echo "Setting up backup cronjob"
+    echo "${BACKUP_SCHEDULE} DB_HOST=${DB_HOST} DB_NAME=${DB_NAME} DB_USER=${DB_USER} DB_PASS=${DB_PASS} KEEP_DAYS=${KEEP_DAYS} /app/backup.sh" >> $CRONTAB
+else
+    echo "Setting up do-nothing cronjob: automatic backups are disabled"
 fi
 
 crontab -u backup - < /var/spool/cron/crontabs/backup
