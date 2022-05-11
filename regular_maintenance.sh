@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/sh
 # Refreshing the content of external pages imported pages.
 # Only use this for maintenance scripts which do not take much time.
 echo "starting regular_maintenance at:"`date +"%Y-%m-%d %T"`

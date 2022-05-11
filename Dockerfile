@@ -143,7 +143,7 @@ FROM mediawiki:latest
 # NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron && \
+    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
@@ -171,7 +171,7 @@ RUN mkdir /shared
 
 # Setup regular maintenance cron in MediaWiki container.
 COPY regular_maintenance.sh /var/www/html/regular_maintenance.sh
-RUN chmod +x /var/www/html/regular_maintenance.sh
+RUN chmod ugo+rwx /var/www/html/regular_maintenance.sh
 RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/www/html/regular_maintenance.log"  \
     >> /etc/cron.d/regular_maintenance
 
