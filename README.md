@@ -18,6 +18,8 @@ To build manually: `docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
 
 2 and 3 are concatted to the final LocalSettings in shared folder in entrypoint.sh 
 
+**Note**: edits of `LocalSettings.php.*template` files are **not** deployed on a running system, but are only considered on initialization. Fixes must therefore be carried out manually on the production system.
+
 # Overview of the Shell-scripts 
 
 |shellscript  | description                                      |
