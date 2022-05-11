@@ -31,13 +31,17 @@ if [ -e "/shared/LocalSettings.php" ]; then
     export DOLLAR='$'
     envsubst < /LocalSettings.php.template > /var/www/html/LocalSettings.php
     # Copy LocalSettings to shared location
+    diff /shared/LocalSettings.php /var/www/html/LocalSettings.php
     cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 fi
 
 # Do the mediawiki install (only if LocalSettings doesn't already exist)
 if [ ! -e "/var/www/html/LocalSettings.php" ]; then
+    printf "*********** 1 ***********"
     php /var/www/html/maintenance/install.php --dbuser "$DB_USER" --dbpass "$DB_PASS" --dbname "$DB_NAME" --dbserver "$DB_SERVER" --lang "$MW_SITE_LANG" --pass "$MW_ADMIN_PASS" "$MW_SITE_NAME" "$MW_ADMIN_NAME"
+    printf "*********** 2 ***********"
     php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
+    printf "*********** 3 ***********"
 
     # Copy our LocalSettings into place after install from the template
     # https://stackoverflow.com/a/24964089/4746236
@@ -48,11 +52,13 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
 
     # Run update.php to install Wikibase
     php /var/www/html/maintenance/update.php --quick
+    printf "*********** 4 ***********"
 
     # Run extrascripts on first run
     if [ -f /extra-install.sh ]; then
         source /extra-install.sh
     fi
+    printf "*********** 5 ***********"
 fi
 
 if [ ! -e "/shared/LocalSettings.php" ]; then
