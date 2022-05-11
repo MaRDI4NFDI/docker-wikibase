@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 # clone extensions from github, using specific branch
 
-ENV BRANCH=REL1_35
+ENV BRANCH=REL1_37
 
 COPY clone-extension.sh .
 
@@ -31,17 +31,15 @@ bash clone-extension.sh TemplateStyles ${BRANCH};\
 bash clone-extension.sh JsonConfig ${BRANCH};\
 bash clone-extension.sh Lockdown ${BRANCH};\
 bash clone-extension.sh Nuke ${BRANCH};\
-bash clone-extension.sh Math ${BRANCH};
+bash clone-extension.sh Math ${BRANCH};\
+bash clone-extension.sh YouTube ${BRANCH};
 
 # clone extensions not officially distributed by mediawiki
-RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git -b ${BRANCH} WikibaseLocalMedia &&\
+RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
 rm -rf WikibaseLocalMedia/.git
 
 RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
 rm -rf TwitterWidget/.git
-
-RUN git clone https://gitlab.com/hydrawiki/extensions/EmbedVideo.git EmbedVideo &&\
-rm -rf EmbedVideo/.git
 
 RUN git clone https://github.com/PascalNoisette/mediawiki-extensions-Slides.git Slides &&\
 rm -rf Slides/.git
@@ -64,7 +62,7 @@ rm Medik.tar.gz
 ################
 #  collector   #
 ################
-FROM mediawiki:1.35  as collector
+FROM mediawiki:latest  as collector
 
 # collect bundle extensions
 COPY --from=fetcher /WikibaseImport /var/www/html/extensions/WikibaseImport
@@ -91,7 +89,7 @@ COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
-COPY --from=fetcher /EmbedVideo /var/www/html/extensions/EmbedVideo
+COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 
 # collect skins
@@ -112,6 +110,23 @@ COPY composer.local.json /var/www/html/composer.local.json
 # ext-calendar is installed in the final stage via docker-php-ext-install
 RUN sed -i '/ext-calendar/d' composer.json
 RUN rm -f /var/www/html/composer.lock
+
+# installing the php intl extension on linux alpine (req. for running composer install)
+RUN set -xe \
+    && apk add --update icu \
+    && apk add --no-cache --virtual .php-deps make \
+    && apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        zlib-dev \
+        icu-dev \
+        g++ \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
+    && docker-php-ext-enable intl \
+    && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
+    && apk del .build-deps \
+    && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
+
 RUN composer install --no-dev
 
 
@@ -119,7 +134,7 @@ RUN composer install --no-dev
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:1.35
+FROM mediawiki:latest
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
