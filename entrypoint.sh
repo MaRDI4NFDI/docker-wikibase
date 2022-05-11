@@ -56,6 +56,9 @@ if [ ! -e "/shared/LocalSettings.php" ]; then
   cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 fi
 
+# Starting the cron-service for regular_maintenance
+/etc/init.d/cron start
+
 # Run the actual entry point
 (cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser;npm start) &
 docker-php-entrypoint apache2-foreground

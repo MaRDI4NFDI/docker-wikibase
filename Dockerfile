@@ -51,6 +51,8 @@ rm -rf WikibaseImport/.git
 RUN git clone https://github.com/MaRDI4NFDI/mathsearch_extension.git MathSearch &&\
 rm -rf MathSearch/.git
 
+RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
+rm -rf ExternalContent/.git
 
 # Download Medik skin and unpack
 RUN curl https://bitbucket.org/wikiskripta/medik/get/master.tar.gz --output Medik.tar.gz &&\
@@ -91,6 +93,7 @@ COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
+COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 
 # collect skins
 COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
@@ -136,9 +139,11 @@ RUN composer install --no-dev
 #######################################
 FROM mediawiki:latest
 
+# PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+# NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt && \
+    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
@@ -163,6 +168,12 @@ RUN cat /LocalSettings.php.wikibase-bundle.template >> /LocalSettings.php.templa
 RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
 RUN mkdir /shared
+
+# Setup regular maintenance cron in MediaWiki container.
+COPY regular_maintenance.sh /var/www/html/regular_maintenance.sh
+RUN chmod ugo+rwx /var/www/html/regular_maintenance.sh
+RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/www/html/regular_maintenance.log"  \
+    >> /etc/cron.d/regular_maintenance
 
 #########################
 # Set up vecollabpad    #
