@@ -25,6 +25,15 @@ if [ -f /extra-entrypoint-run-first.sh ]; then
     source /extra-entrypoint-run-first.sh
 fi
 
+# check if shared LocalSettings exists already
+if [ -e "/shared/LocalSettings.php" ]; then
+    # do not install wiki, just update LocalSettings from template
+    export DOLLAR='$'
+    envsubst < /LocalSettings.php.template > /var/www/html/LocalSettings.php
+    # Copy LocalSettings to shared location
+    cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
+fi
+
 # Do the mediawiki install (only if LocalSettings doesn't already exist)
 if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     php /var/www/html/maintenance/install.php --dbuser "$DB_USER" --dbpass "$DB_PASS" --dbname "$DB_NAME" --dbserver "$DB_SERVER" --lang "$MW_SITE_LANG" --pass "$MW_ADMIN_PASS" "$MW_SITE_NAME" "$MW_ADMIN_NAME"
@@ -44,11 +53,9 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     if [ -f /extra-install.sh ]; then
         source /extra-install.sh
     fi
+fi
 
-else
-    # LocalSettings.php exists: do not install wiki, just update LocalSettings from template
-    export DOLLAR='$'
-    envsubst < /LocalSettings.php.template > /var/www/html/LocalSettings.php
+if [ ! -e "/shared/LocalSettings.php" ]; then
     # Copy LocalSettings to shared location
     cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 fi
