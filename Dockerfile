@@ -9,9 +9,10 @@ ENV BACKUP_DEFAULT_GID="9000" \
 
 VOLUME /data
 
-# install php-mysql driver and mysqldump
+# install php-mysql driver and mysqldump and intl deps.
 RUN docker-php-ext-install mysqli \
-&& apt-get update && apt-get install --yes --no-install-recommends default-mysql-client
+&& apt-get update && apt-get install --yes --no-install-recommends default-mysql-client libicu-dev
+RUN docker-php-ext-install intl
 
 # install cron and utilities
 RUN apt-get update && apt-get install --yes --no-install-recommends \
