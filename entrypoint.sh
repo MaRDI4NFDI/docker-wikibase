@@ -5,7 +5,7 @@
 
 set -eu
 
-if [[ -z "${DB_SERVER}" ]]; then
+if [[ -z "${DB_SERVER:-}" ]]; then
   # Wait for the db to come up
   /wait-for-it.sh $DB_SERVER -t 300
   # Sometimes it appears to come up and then go back down meaning MW install fails
