@@ -3,9 +3,7 @@
 
 
 
-set -eu
-
-if [[ -z "${DB_SERVER:-}" ]]; then
+if [[ "${DB_SERVER:-}" ]]; then
   # Wait for the db to come up
   /wait-for-it.sh $DB_SERVER -t 300
   # Sometimes it appears to come up and then go back down meaning MW install fails
@@ -35,6 +33,7 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
         exit 1;
         fi
     done
+    set -eu
     php /var/www/html/maintenance/install.php --dbuser "$DB_USER" --dbpass "$DB_PASS" --dbname "$DB_NAME" --dbserver "$DB_SERVER" --lang "$MW_SITE_LANG" --pass "$MW_ADMIN_PASS" "$MW_SITE_NAME" "$MW_ADMIN_NAME"
     php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
 
