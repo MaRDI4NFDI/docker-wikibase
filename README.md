@@ -1,9 +1,12 @@
 # docker-wikibase
 Wikibase Docker image 
-* built from from official latest mediawiki Docker image
+* built from official latest mediawiki Docker image
 * with standard and MaRDI extensions preinstalled
 
-The image is built by CI automatically on push to main
+The image is built by CI automatically on push to main.
+The built takes about 10 minutes.
+The new image will be deployed to production automatically.
+Please test that the new image works in production by comparing the hash of the production and the new build image.
 
 To build manually: `docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
 
