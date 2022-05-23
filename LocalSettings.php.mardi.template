@@ -29,3 +29,5 @@ foreach (${DOLLAR}extensionsToLoad as ${DOLLAR}filename)
 {
     include ${DOLLAR}filename;
 }
+
+error_reporting = E_ALL & ~E_DEPRECATED;
