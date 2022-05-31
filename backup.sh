@@ -71,7 +71,7 @@ files_dump() {
 # Logs the deleted files if any.
 cleanup() {
     printf "Cleanup\n"
-    DELETED=$(find "${BACKUP_DIR}" -maxdepth 1 -name "*.gz"  -type f -mtime +"${KEEP_DAYS}" -print -delete)
+    DELETED=$(find "${BACKUP_DIR}" -maxdepth 1 -name "*.gz"  -type f -daystart -mtime +"${KEEP_DAYS}" -print -delete)
     # convert to array
     set -f # disable glob (wildcard) expansion
     IFS=$'\n' # split on newline chars
