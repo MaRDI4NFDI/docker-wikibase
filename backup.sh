@@ -7,7 +7,7 @@ set +e # continue on error
 
 LOG_FILE="/data/backup.log" # internal path to log file
 BACKUP_DIR="/data" # internal mount path of backup directory on the host
-DATE_STRING=`date +\%Y.\%m.\%d_%H.%M.%S` # date string to use in file names
+DATE_STRING=$(date +%Y.%m.%d_%H.%M.%S)  # date string to use in file names
 
 NODE_EXPORTER_DIR="/data/"  # path where node_exporter metrics are stored
 XML_SIZE=0
@@ -23,13 +23,13 @@ exec 2>&1
 mysql_dump() {
     printf "MySQL backup\n"
     MYSQL_DUMP_FILE=portal_db_backup_${DATE_STRING}.gz
-    mysqldump -u${DB_USER} -p${DB_PASS} -h${DB_HOST} --databases ${DB_NAME} | gzip > ${BACKUP_DIR}/${MYSQL_DUMP_FILE}
+    mysqldump -u"${DB_USER}" -p"${DB_PASS}" -h"${DB_HOST}" --databases "${DB_NAME}" | gzip > "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
     STATUS=$?
-    if [[ -f ${BACKUP_DIR}/${MYSQL_DUMP_FILE} ]]; then
-        printf " - MySQL dump written to ${MYSQL_DUMP_FILE}\n"
+    if [[ -f "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" ]]; then
+        printf ' - MySQL dump written to %s\n' "$MYSQL_DUMP_FILE"
         MYSQL_SIZE=$(du "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" | cut -f1)
     else
-        printf " - MySQL dump failed with status $STATUS\n"
+        printf ' - MySQL dump failed with status %s\n' "$STATUS"
     fi
     return $STATUS
 }
@@ -40,14 +40,14 @@ xml_dump() {
     printf "XML backup\n"
     XML_DUMP_FILE=portal_xml_backup_${DATE_STRING}.gz
     # parsoid requires script to be executed from mw root
-    cd /var/www/html/
-    /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:${BACKUP_DIR}/${XML_DUMP_FILE} --quiet --conf /shared/LocalSettings.php
+    cd /var/www/html/ || return 255
+    /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --conf /shared/LocalSettings.php
     STATUS=$?
     if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
-        printf " - XML dump written to ${XML_DUMP_FILE}\n"
+        printf ' - XML dump written to %s\n' "$XML_DUMP_FILE"
         XML_SIZE=$(du "${BACKUP_DIR}/${XML_DUMP_FILE}" | cut -f1)
     else
-        printf " - XML dump failed with status $STATUS\n"
+        printf ' - XML dump failed with status %s\n' "$STATUS"
     fi    
     return $STATUS
 }
@@ -56,13 +56,13 @@ xml_dump() {
 files_dump() {
     printf "Files backup\n"
     IMAGES_FILE=images_${DATE_STRING}.tar.gz
-    tar -czf ${BACKUP_DIR}/${IMAGES_FILE} -C /var/www/html/ images
+    tar -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
     STATUS=$?
     if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
-        printf " - Uploaded images backup written to ${IMAGES_FILE}\n"
+        printf ' - Uploaded images backup written to %s\n' "$IMAGES_FILE"
         FILES_SIZE=$(du "${BACKUP_DIR}/${IMAGES_FILE}" | cut -f1)
     else
-        printf " - Uploaded images backup failed with status $STATUS\n"
+        printf ' - Uploaded images backup failed with status %s\n' "$STATUS"
     fi
     return $STATUS
 }
@@ -75,14 +75,14 @@ cleanup() {
     # convert to array
     set -f # disable glob (wildcard) expansion
     IFS=$'\n' # split on newline chars
-    DELETED=(${DELETED})
+    DELETED=("${DELETED}")
     NUM_DELETED=${#DELETED[@]}
-    if [[ -z $DELETED ]]; then
+    if [[ -z ${DELETED[0]} ]]; then
         printf " - No files deleted\n"
     else
-        printf " - Deleted $NUM_DELETED files older than $KEEP_DAYS days\n"
-        for d in ${DELETED[@]}; do
-            printf "    $d\n"
+        printf ' - Deleted %s files older than %s days\n' "$NUM_DELETED" "$KEEP_DAYS"
+        for d in "${DELETED[@]}"; do
+            printf '    %s\n' "$d"
         done
     fi
 }
@@ -93,7 +93,7 @@ cleanup() {
 #   - backup file sizes
 #   - duration
 metrics_dump() {
-    printf "Writing backup metrics to file ${NODE_EXPORTER_DIR}/backup_full.prom\n"
+    printf 'Writing backup metrics to file %s/backup_full.prom\n' "$NODE_EXPORTER_DIR"
 
     cat << EOF > "${NODE_EXPORTER_DIR}/backup_full.prom.$$"
 # HELP backup_last_time_seconds system time of last backup in seconds
@@ -125,7 +125,7 @@ EOF
 
 
 # main script
-printf "Backup started ${DATE_STRING}\n" 
+printf 'Backup started %s\n' "$DATE_STRING"
 START="$(date +%s)"
 
 mysql_dump 
@@ -137,9 +137,10 @@ EXIT_CODE_XML=$?
 files_dump
 EXIT_CODE_FILES=$?
 
+END="$(date +%s)"
+
 cleanup
 
-END="$(date +%s)"
 TOTAL_BACKUP_SIZE="$(du -s ${BACKUP_DIR} | cut -f1)"
 
 metrics_dump
