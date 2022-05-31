@@ -75,9 +75,9 @@ cleanup() {
     # convert to array
     set -f # disable glob (wildcard) expansion
     IFS=$'\n' # split on newline chars
-    DELETED=("${DELETED}")
+    DELETED=(${DELETED})
     NUM_DELETED=${#DELETED[@]}
-    if [[ -z ${DELETED[0]} ]]; then
+    if [[ -z $DELETED ]]; then
         printf " - No files deleted\n"
     else
         printf ' - Deleted %s files older than %s days\n' "$NUM_DELETED" "$KEEP_DAYS"
