@@ -48,7 +48,7 @@ rm -rf Slides/.git
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
 
-RUN git clone https://github.com/MaRDI4NFDI/mathsearch_extension.git MathSearch &&\
+RUN git clone -b mardi https://github.com/wikimedia/mediawiki-extensions-MathSearch.git MathSearch &&\
 rm -rf MathSearch/.git
 
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
