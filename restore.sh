@@ -84,7 +84,7 @@ _help() {
     printf "Usage:  restore.sh                      restore last MySQL and images backups\n"
     printf "        restore.sh -t type              restore last backup of given type\n"
     printf "        restore.sh -t type -f file      restore backup of given type from file\n\n"
-    printf "          _OVERWRITE                              supported type:\n"
+    printf "                                        supported type:\n"
     printf "                                            -t xml     XML backup\n"
     printf "                                            -t sql     MySQL backup\n"
     printf "                                            -t img     images backup\n"

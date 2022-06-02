@@ -35,6 +35,8 @@ RUN adduser \
 		-G "backup" \
 		backup
 
+COPY --from=ghcr.io/mardi4nfdi/docker-wikibase:main /var/www/html/ /var/www/html/
+
 # Copy files.
 RUN mkdir /app
 COPY backup.sh /app/
@@ -43,7 +45,6 @@ COPY start.sh /app/
 
 # Make sure scripts are executable
 RUN chown backup:backup /app/*.sh && chmod 774 /app/*.sh
-COPY --from=ghcr.io/mardi4nfdi/docker-wikibase:main /var/www/html/ /var/www/html/
 
 # Set up entry point.
 WORKDIR /app
