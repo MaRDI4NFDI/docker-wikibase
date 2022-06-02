@@ -71,10 +71,7 @@ Open a shell to the backup container. In the /app dir, do:
 
 **Please note that:** 
 * When restoring the database from a SQL backup, all revisions will be overwritten.
-* When restoring the pages from an XML backup, if a page has a newer revision than the page in the backup, then the newer revision will be kept.
-* When restoring the images directory, all existing files will be overwritten, and
-  existing files inside `/var/www/html/images/` will be kept if not present in the
-  backup (make sure to delete that folder first if keeping old files is not desired).
+* When restoring the pages from an XML backup, if a page has a newer revision than the page in the backup, then the newer revision will be kept (in particular the main page of a newly created mediawiki).
 
 Pages erased since the backup was made will be restored. 
 
