@@ -5,7 +5,7 @@
 
 set -e # do not continue on error
 
-LOG_FILE="/data/backup.log" # internal path to log file
+LOG_FILE="/data/restore.log" # internal path to log file
 BACKUP_DIR="/data" # internal mount path of backup directory on the host
 
 # redirect all output to log file
@@ -22,6 +22,7 @@ _det_file() {
         case ${BACKUP_TYPE} in
             sql) BACKUP_FILE=$(ls -t ${BACKUP_DIR}/portal_db_backup_*.gz | head -1);;
             xml) BACKUP_FILE=$(ls -t ${BACKUP_DIR}/portal_xml_backup_*.gz | head -1);;
+            img) BACKUP_FILE=$(ls -t ${BACKUP_DIR}/images_*.gz | head -1);;
         esac
     else
         # a backup file was passed to the command line, prepend the full path to the backup folder (as mounted in the container)
@@ -49,6 +50,27 @@ restore_db_backup() {
     fi
 }
 
+restore_images_backup() {
+    _det_file
+    printf "Restoring images directory backup from $BACKUP_FILE\n"
+    # use importImages.php maintenance script https://www.mediawiki.org/wiki/Manual:ImportImages.php
+    # extract files to /tmp/
+    FILE_NAME=$(basename -- $BACKUP_FILE)
+    IMAGE_BACKUP_DIR=/tmp/${FILE_NAME%.*.*}
+    mkdir -p "$IMAGE_BACKUP_DIR"
+    tar -xzf "$BACKUP_FILE" -C "$IMAGE_BACKUP_DIR" images
+    # import images as apache user, in order to get the correct permissions
+    su -l www-data -s /bin/bash -c 'php /var/www/html/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images'
+    rm -rf "$IMAGE_BACKUP_DIR"
+
+    if [[ $? -eq 0 ]]; then
+        printf "Done\n"
+    else
+        printf "ERROR restoring images directory\n\n"
+        exit 1
+    fi
+}
+
 # Restores a XML backup
 # If no XML file was specified from the command line (-f filename), then the most recent XML backup is restored.
 # https://www.mediawiki.org/wiki/Manual:Importing_XML_dumps
@@ -58,30 +80,58 @@ restore_xml_backup() {
     cd /var/www/html/ && php maintenance/importDump.php --conf /shared/LocalSettings.php $BACKUP_FILE --username-prefix=""
 }
 
+_help() {
+    printf "Usage:  restore.sh                      restore last MySQL and images backups\n"
+    printf "        restore.sh -t type              restore last backup of given type\n"
+    printf "        restore.sh -t type -f file      restore backup of given type from file\n\n"
+    printf "                                        supported type:\n"
+    printf "                                            -t xml     XML backup\n"
+    printf "                                            -t sql     MySQL backup\n"
+    printf "                                            -t img     images backup\n"
+
+}
+
+
 ###########################
 #       Main script       #
 ###########################
 
-printf "Restore started at `date +\%Y.\%m.\%d_%H.%M.%S`\n"
-
 # Handle input flags
-BACKUP_TYPE=sql
-while getopts "t:f:" flag; do
+while getopts "ht:f:" flag; do
 case ${flag} in
     t) BACKUP_TYPE=$OPTARG;;
     f) BACKUP_FILE=$OPTARG;;
+    h) _help
+        exit 0;;
+    \?) _help
+        exit 1;;
 esac
 done
 
+if [[ "$BACKUP_FILE" ]] && [[ -z "$BACKUP_TYPE" ]]; then
+    printf "ERROR: missing option -t type\n\n"
+    _help
+    exit 1
+fi
+
+printf "Restore started at `date +\%Y.\%m.\%d_%H.%M.%S`\n"
+
 # call restore from sql backup by default
-if [[ -z "${BACKUP_TYPE}" ]]; then
+if [[ -z "$BACKUP_TYPE" ]]; then
+    BACKUP_TYPE=sql
     restore_db_backup
+    unset BACKUP_FILE
+    BACKUP_TYPE=img
+    restore_images_backup
 else
     # a backup type was set explicitly
     case ${BACKUP_TYPE} in
         sql) restore_db_backup;;
         xml) restore_xml_backup;;
-        *) printf "Unknown backup type ${BACKUP_TYPE}\n\n"; exit 1;;
+        img) restore_images_backup;;
+        *) printf "ERROR: Unknown backup type \"${BACKUP_TYPE}\"\n\n"
+            _help
+            exit 1;;
     esac
 fi
 printf "\n"
