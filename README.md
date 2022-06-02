@@ -61,15 +61,20 @@ To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.
 Restoring a backup
 -------------------
 Open a shell to the backup container. In the /app dir, do:
-* `bash ./restore.sh` to restore the database from the latest SQL dump 
-* `bash ./restore.sh -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific SQL dump. Pass the name of the file, not the full path.
-* `bash ./restore.sh -t sql -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` same as above
+* `bash ./restore.sh -h` shows the help text 
+* `bash ./restore.sh` to restore the database from the latest SQL dump and the last image backup
+* `bash ./restore.sh -t sql -f portal_db_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific SQL dump. Pass the name of the file, not the full path.
 * `bash ./restore.sh -t xml` to restore the wiki pages from the latest XML backup 
 * `bash ./restore.sh -t xml -f portal_xml_backup_xxxx.xx.xx_xx.xx.xx.gz` to restore a specific XML backup. Pass the name of the file, not the full path.
+* `bash ./restore.sh -t img` to restore the latest images backup
+* `bash ./restore.sh -t img -f images_xxxx.xx.xx_xx.xx.xx.tar.gz` to restore a specific image backup. Pass the name of the file, not the full path.
 
 **Please note that:** 
 * When restoring the database from a SQL backup, all revisions will be overwritten.
 * When restoring the pages from an XML backup, if a page has a newer revision than the page in the backup, then the newer revision will be kept.
+* When restoring the images directory, all existing files will be overwritten, and
+  existing files inside `/var/www/html/images/` will be kept if not present in the
+  backup (make sure to delete that folder first if keeping old files is not desired).
 
 Pages erased since the backup was made will be restored. 
 
@@ -77,7 +82,3 @@ Tests
 ------
 This thing only works if there's a wiki to backup, therefore the tests are in the portal-compose repo. 
 Start the portal from docker-compose-dev.yml and call `bash run_tests.sh` to run all tests.
-
-To do
-------
-* Email out reports through ssmtp

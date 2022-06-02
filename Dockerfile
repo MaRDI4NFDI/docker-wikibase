@@ -21,7 +21,9 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
 		gzip \
 		tzdata \
 		nano \
+        vim \
 	&& rm -rf /var/cache/apk/*
+    
 
 # Set up non-root user.
 # RUN addgroup -g "$BACKUP_DEFAULT_GID" backup \BACKUP_DEFAULT_GID
