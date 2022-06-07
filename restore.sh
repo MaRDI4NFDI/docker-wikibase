@@ -50,7 +50,7 @@ restore_images_backup() {
     printf 'Restoring images directory backup from %s\n' "$BACKUP_FILE"
     # use importImages.php maintenance script https://www.mediawiki.org/wiki/Manual:ImportImages.php
     # extract files to /tmp/
-    IGNORE_FOLDERS=(deleted thumb)
+    IGNORE_FOLDERS=(deleted thumb archive)
     FILE_NAME=$(basename -- "$BACKUP_FILE")
     IMAGE_BACKUP_DIR=/tmp/${FILE_NAME%.*.*}
     mkdir -p "$IMAGE_BACKUP_DIR"
