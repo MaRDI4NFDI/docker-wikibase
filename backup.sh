@@ -5,7 +5,6 @@
 
 set +e # continue on error
 
-LOG_FILE="/data/backup.log" # internal path to log file
 BACKUP_DIR="/data" # internal mount path of backup directory on the host
 DATE_STRING=$(date +%Y.%m.%d_%H.%M.%S)  # date string to use in file names
 
@@ -14,55 +13,71 @@ XML_SIZE=0
 MYSQL_SIZE=0
 FILES_SIZE=0
 
-# redirect all output to log file
-exec 1>>$LOG_FILE
-exec 2>&1
-
 # Backups the portal wiki database.
 # https://mariadb.com/kb/en/mysqldump/
 mysql_dump() {
-    printf "MySQL backup\n"
+    printf "\nMySQL backup\n"
     MYSQL_DUMP_FILE=portal_db_backup_${DATE_STRING}.gz
     mysqldump -u"${DB_USER}" -p"${DB_PASS}" -h"${DB_HOST}" --databases "${DB_NAME}" | gzip > "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
-    STATUS=$?
-    if [[ -f "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" ]]; then
-        printf ' - MySQL dump written to %s\n' "$MYSQL_DUMP_FILE"
-        MYSQL_SIZE=$(du "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" | cut -f1)
+    PSTAT=(${PIPESTATUS[@]})
+    if [[ ${PSTAT[0]} -eq 0 ]] && [[ ${PSTAT[1]} -eq 0 ]]; then
+        STATUS=0
+        if [[ -f "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" ]]; then
+            printf ' SUCCESS: MySQL dump written to %s\n' "$MYSQL_DUMP_FILE"
+            MYSQL_SIZE=$(du "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" | cut -f1)
+        else
+            printf ' ERROR: MySQL dump terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
+            STATUS=255
+        fi
     else
-        printf ' - MySQL dump failed with status %s\n' "$STATUS"
+        STATUS=${PSTAT[0]}
+        printf ' ERROR: MYSQL backup failed with status mysqldump: %s, gunzip: %s\n' "${PSTAT[0]}" "${PSTAT[1]}"
     fi
-    return $STATUS
+    return "$STATUS"
 }
 
 # Backups the portal wiki pages as xml.
 # https://www.mediawiki.org/wiki/Manual:DumpBackup.php
 xml_dump() {
-    printf "XML backup\n"
+    printf "\nXML backup\n"
     XML_DUMP_FILE=portal_xml_backup_${DATE_STRING}.gz
     # parsoid requires script to be executed from mw root
     cd /var/www/html/ || return 255
-    /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --conf /shared/LocalSettings.php
-    STATUS=$?
-    if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
-        printf ' - XML dump written to %s\n' "$XML_DUMP_FILE"
-        XML_SIZE=$(du "${BACKUP_DIR}/${XML_DUMP_FILE}" | cut -f1)
+    if /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --conf /shared/LocalSettings.php
+    then
+        STATUS=$?
+        if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
+            printf ' SUCCESS: XML dump written to %s\n' "$XML_DUMP_FILE"
+            XML_SIZE=$(du "${BACKUP_DIR}/${XML_DUMP_FILE}" | cut -f1)
+        else
+            printf ' ERROR: XML dump terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${XML_DUMP_FILE}"
+            STATUS=255
+        fi
     else
-        printf ' - XML dump failed with status %s\n' "$STATUS"
+        STATUS=$?
+        printf ' ERROR: XML dump failed with status %s\n' "$STATUS"
     fi    
     return $STATUS
 }
 
 # Backups uploaded files
 files_dump() {
-    printf "Files backup\n"
+    printf "\nUploaded files backup\n"
     IMAGES_FILE=images_${DATE_STRING}.tar.gz
-    tar -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
-    STATUS=$?
-    if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
-        printf ' - Uploaded images backup written to %s\n' "$IMAGES_FILE"
-        FILES_SIZE=$(du "${BACKUP_DIR}/${IMAGES_FILE}" | cut -f1)
+    if \
+        tar -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
+    then
+        STATUS=$?
+        if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
+            printf ' SUCCESS: Uploaded images backup written to %s\n' "$IMAGES_FILE"
+            FILES_SIZE=$(du "${BACKUP_DIR}/${IMAGES_FILE}" | cut -f1)
+        else
+            printf ' ERROR: Files backup terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${IMAGES_FILE}"
+            STATUS=255
+        fi
     else
-        printf ' - Uploaded images backup failed with status %s\n' "$STATUS"
+        STATUS=$?
+        printf ' ERROR: Files backup failed with status %s\n' "$STATUS"
     fi
     return $STATUS
 }
@@ -70,7 +85,7 @@ files_dump() {
 # Cleanups backup files older than KEEP_DAYS.
 # Logs the deleted files if any.
 cleanup() {
-    printf "Cleanup\n"
+    printf "\nCleanup\n"
     DELETED=$(find "${BACKUP_DIR}" -maxdepth 1 -name "*.gz"  -type f -daystart -mtime +"${KEEP_DAYS}" -print -delete)
     # convert to array
     set -f # disable glob (wildcard) expansion
@@ -125,7 +140,8 @@ EOF
 
 
 # main script
-printf 'Backup started %s\n' "$DATE_STRING"
+printf '==================================\n' | tee /tmp/stderr 
+printf 'Backup started %s\n' "$DATE_STRING" | tee /tmp/stderr 
 START="$(date +%s)"
 
 mysql_dump 
@@ -146,7 +162,3 @@ TOTAL_BACKUP_SIZE="$(du -s ${BACKUP_DIR} | cut -f1)"
 metrics_dump
 
 printf "\n"
-
-# to do send mail
-# export AMB_REMOTE_EXEC="ssh -C $AMB_TARGET"
-# | mail -s "AutoMySQLBackup | $AMB_TARGET | `date +'%Y-%m-%d %r %Z'`" root
