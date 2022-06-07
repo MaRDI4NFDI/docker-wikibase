@@ -3,7 +3,7 @@ Docker image for backups
 A Docker image that runs backups on a regular basis.
 
 * Creates a "backup" user
-* Calls the backup script (./backup.sh) on a regular basis (BACKUP_SCHEDULE) using cron
+* Calls the backup script (`./backup.sh`) on a regular basis (BACKUP_SCHEDULE) using cron
 * Saves backups of database and pages (in XML format) as compressed files on the host (BACKUP_DIR)
 * Deletes old backups (older than KEEP_DAYS)
 
@@ -33,7 +33,7 @@ Example docker-compose configuration:
       DB_PASS: ${DB_PASS}
       BACKUP_SCHEDULE: ${BACKUP_SCHEDULE}
       KEEP_DAYS: 100
-      BACKUP_CRON_ENABLE: false
+      BACKUP_CRON_ENABLE: true
 ```
 
 These must be set in `.env`:
@@ -57,6 +57,8 @@ Creating a backup
 -----------------
 Normally, backups are created by a cronjob. 
 To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.sh`
+Output of `backup.sh` is logged to the file `$BACKUP_DIR/backup.log` and to the logs of
+the docker container.
 
 Restoring a backup
 -------------------
@@ -74,6 +76,8 @@ Open a shell to the backup container. In the /app dir, do:
 * When restoring the pages from an XML backup, if a page has a newer revision than the page in the backup, then the newer revision will be kept (in particular the main page of a newly created mediawiki).
 
 Pages erased since the backup was made will be restored. 
+
+In order to include the output of `restore.sh` in the logs, execute `restore.sh > /tmp/stdout 2> /tmp/stderr`.
 
 Tests
 ------

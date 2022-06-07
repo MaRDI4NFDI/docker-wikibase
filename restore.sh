@@ -5,12 +5,7 @@
 
 set -e # do not continue on error
 
-LOG_FILE="/data/restore.log" # internal path to log file
 BACKUP_DIR="/data" # internal mount path of backup directory on the host
-
-# redirect all output to log file
-exec 1>>$LOG_FILE
-exec 2>&1
 
 # Determine the full path to the backup file (as mounted in the container).
 # If no file was specified, then sets the most recent backup file,
@@ -20,18 +15,16 @@ _det_file() {
     if [[ -z ${BACKUP_FILE}  ]]; then
         # no backup file passed to the command line, find the most recent backup file
         case ${BACKUP_TYPE} in
-            sql) BACKUP_FILE=$(ls -t ${BACKUP_DIR}/portal_db_backup_*.gz | head -1);;
-            xml) BACKUP_FILE=$(ls -t ${BACKUP_DIR}/portal_xml_backup_*.gz | head -1);;
-            img) BACKUP_FILE=$(ls -t ${BACKUP_DIR}/images_*.gz | head -1);;
+            sql) BACKUP_FILE=$(find $BACKUP_DIR -name "portal_db_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
+            xml) BACKUP_FILE=$(find $BACKUP_DIR -name "portal_xml_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
+            img) BACKUP_FILE=$(find $BACKUP_DIR -name "images_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
         esac
-    else
-        # a backup file was passed to the command line, prepend the full path to the backup folder (as mounted in the container)
-        BACKUP_FILE=${BACKUP_DIR}/${BACKUP_FILE}
-        # check that the backup file exists
-        if [[ ! -f ${BACKUP_FILE} ]]; then
-           printf "ERROR file ${BACKUP_FILE} not found\n\n"
-           exit 1
-        fi
+    fi
+    BACKUP_FILE=${BACKUP_DIR}/${BACKUP_FILE}
+    # check that the backup file exists
+    if [[ ! -f ${BACKUP_FILE} ]]; then
+       printf 'ERROR file %s not found\n\n' "$BACKUP_FILE"
+       exit 1
     fi
 }
 
@@ -39,10 +32,12 @@ _det_file() {
 # If no SQL file was specified from the command line (-f filename), then the most recent SQL backup is restored.
 restore_db_backup() {
     _det_file
-    printf "Restoring SQL database backup from $BACKUP_FILE\n"
+    printf 'Restoring SQL database backup from %s\n' "$BACKUP_FILE"
     # unzip the backup file and restore the database
-    gzip -d -c $BACKUP_FILE|mysql -u${DB_USER} -p${DB_PASS} -h${DB_HOST} --database ${DB_NAME} 
-    if [[ $? -eq 0 ]]; then
+    if \
+        gzip -d -c "$BACKUP_FILE"|mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" --database "$DB_NAME" 
+    then
+    # if [[ $? -eq 0 ]]; then
         printf "Done\n"
     else
         printf "ERROR restoring database\n\n"
@@ -52,19 +47,19 @@ restore_db_backup() {
 
 restore_images_backup() {
     _det_file
-    printf "Restoring images directory backup from $BACKUP_FILE\n"
+    printf 'Restoring images directory backup from %s\n' "$BACKUP_FILE"
     # use importImages.php maintenance script https://www.mediawiki.org/wiki/Manual:ImportImages.php
     # extract files to /tmp/
-    FILE_NAME=$(basename -- $BACKUP_FILE)
+    FILE_NAME=$(basename -- "$BACKUP_FILE")
     IMAGE_BACKUP_DIR=/tmp/${FILE_NAME%.*.*}
-    mkdir -p "$IMAGE_BACKUP_DIR"
-    tar -xzf "$BACKUP_FILE" -C "$IMAGE_BACKUP_DIR" images
-    # import images as apache user, in order to get the correct permissions
-    su -l www-data -s /bin/bash -c 'php /var/www/html/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images'
-    rm -rf "$IMAGE_BACKUP_DIR"
-
-    if [[ $? -eq 0 ]]; then
-        printf "Done\n"
+    if \
+        mkdir -p "$IMAGE_BACKUP_DIR" &&\
+        tar -xzf "$BACKUP_FILE" -C "$IMAGE_BACKUP_DIR" images &&\
+        # import images as apache user, in order to get the correct permissions
+        su -l www-data -s /bin/bash -c 'php /var/www/html/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images' &&\
+        rm -rf "$IMAGE_BACKUP_DIR"
+    then
+         printf "Done\n"
     else
         printf "ERROR restoring images directory\n\n"
         exit 1
@@ -76,8 +71,15 @@ restore_images_backup() {
 # https://www.mediawiki.org/wiki/Manual:Importing_XML_dumps
 restore_xml_backup() {
     _det_file
-    printf "Attempting to restore XML backup from $BACKUP_FILE\n"
-    cd /var/www/html/ && php maintenance/importDump.php --conf /shared/LocalSettings.php $BACKUP_FILE --username-prefix=""
+    printf 'Attempting to restore XML backup from %s\n' "$BACKUP_FILE"
+    if \
+        cd /var/www/html/ && php maintenance/importDump.php --conf /shared/LocalSettings.php "$BACKUP_FILE" --username-prefix=""
+    then
+        printf "Done\n"
+    else
+        printf "ERROR restoring database\n\n"
+        exit 1
+    fi
 }
 
 _help() {
@@ -114,7 +116,7 @@ if [[ "$BACKUP_FILE" ]] && [[ -z "$BACKUP_TYPE" ]]; then
     exit 1
 fi
 
-printf "Restore started at `date +\%Y.\%m.\%d_%H.%M.%S`\n"
+printf 'Restore started at %s\n' "$(date +%Y.%m.%d_%H.%M.%S)"
 
 # call restore from sql backup by default
 if [[ -z "$BACKUP_TYPE" ]]; then
@@ -129,7 +131,7 @@ else
         sql) restore_db_backup;;
         xml) restore_xml_backup;;
         img) restore_images_backup;;
-        *) printf "ERROR: Unknown backup type \"${BACKUP_TYPE}\"\n\n"
+        *) printf 'ERROR: Unknown backup type "%s"\n\n' "$BACKUP_TYPE"
             _help
             exit 1;;
     esac
