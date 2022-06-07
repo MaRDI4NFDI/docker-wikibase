@@ -50,12 +50,16 @@ restore_images_backup() {
     printf 'Restoring images directory backup from %s\n' "$BACKUP_FILE"
     # use importImages.php maintenance script https://www.mediawiki.org/wiki/Manual:ImportImages.php
     # extract files to /tmp/
+    IGNORE_FOLDERS=(deleted thumb)
     FILE_NAME=$(basename -- "$BACKUP_FILE")
     IMAGE_BACKUP_DIR=/tmp/${FILE_NAME%.*.*}
+    mkdir -p "$IMAGE_BACKUP_DIR"
+    tar -xzf "$BACKUP_FILE" -C "$IMAGE_BACKUP_DIR" images
+    for ignore in "${IGNORE_FOLDERS[@]}"; do
+        rm -rf "$IMAGE_BACKUP_DIR/images/$ignore"
+    done
+    # import images as apache user, in order to get the correct permissions
     if \
-        mkdir -p "$IMAGE_BACKUP_DIR" &&\
-        tar -xzf "$BACKUP_FILE" -C "$IMAGE_BACKUP_DIR" images &&\
-        # import images as apache user, in order to get the correct permissions
         su -l www-data -s /bin/bash -c 'php /var/www/html/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images' &&\
         rm -rf "$IMAGE_BACKUP_DIR"
     then
