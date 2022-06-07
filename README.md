@@ -56,8 +56,8 @@ These must be set in `.env`:
 Creating a backup
 -----------------
 Normally, backups are created by a cronjob. 
-To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.sh`
-The cronjob automatically logs the output of `backup.sh` is logged 1) in the docker logs and in the files `$BACKUP_DIR/backup.log` (normal output/stdout) and `$BACKUP_DIR/backup_errors.log` (error messages/stderr).
+To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.sh`.
+The cronjob automatically logs the output of `backup.sh` in 1) the docker logs and 2) in the files `$BACKUP_DIR/backup.log` (standard output) and `$BACKUP_DIR/backup_errors.log` (error messages).
 To also log manually executed scripts, use, e.q.,  `docker exec -ti mardi-backup bash -c './backup.sh > /tmp/stdout 2> /tmp/stderr'`
 
 Restoring a backup
