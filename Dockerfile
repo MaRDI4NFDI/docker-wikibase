@@ -10,29 +10,35 @@ RUN apt-get update && \
 
 # clone extensions from github, using specific branch
 
-ENV BRANCH=REL1_37
+ARG WMF_BRANCH=wmf/1.39.0-wmf.13
+ARG REL_BRANCH=REL1_38
+ARG WMDE_BRANCH=wmde.6
 
 COPY clone-extension.sh .
 
-RUN bash clone-extension.sh OAuth ${BRANCH};\
-bash clone-extension.sh Elastica ${BRANCH};\
-bash clone-extension.sh CirrusSearch ${BRANCH};\
-bash clone-extension.sh WikibaseCirrusSearch ${BRANCH};\
-bash clone-extension.sh UniversalLanguageSelector ${BRANCH};\
-bash clone-extension.sh cldr ${BRANCH};\
-bash clone-extension.sh EntitySchema ${BRANCH};\
-bash clone-extension.sh Babel ${BRANCH};\
-bash clone-extension.sh ConfirmEdit ${BRANCH};\
-bash clone-extension.sh Scribunto ${BRANCH};\
-bash clone-extension.sh VisualEditor ${BRANCH};\
-bash clone-extension.sh WikibaseManifest ${BRANCH};\
-bash clone-extension.sh Wikibase ${BRANCH};\
-bash clone-extension.sh TemplateStyles ${BRANCH};\
-bash clone-extension.sh JsonConfig ${BRANCH};\
-bash clone-extension.sh Lockdown ${BRANCH};\
-bash clone-extension.sh Nuke ${BRANCH};\
-bash clone-extension.sh Math ${BRANCH};\
-bash clone-extension.sh YouTube ${BRANCH};
+RUN \
+bash clone-extension.sh Babel ${WMF_BRANCH};\
+bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
+bash clone-extension.sh cldr ${WMF_BRANCH};\
+bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
+bash clone-extension.sh Elastica ${WMF_BRANCH};\
+bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
+bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
+bash clone-extension.sh Lockdown ${REL_BRANCH};\
+bash clone-extension.sh Math ${WMF_BRANCH};\
+bash clone-extension.sh MathSearch master;\
+bash clone-extension.sh Nuke ${WMF_BRANCH};\
+bash clone-extension.sh OAuth ${WMF_BRANCH};\
+bash clone-extension.sh Scribunto ${WMF_BRANCH};\
+bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
+bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
+bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
+bash clone-extension.sh Wikibase ${WMF_BRANCH};\
+bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
+bash clone-extension.sh WikibaseManifest ${WMDE_BRANCH};\
+bash clone-extension.sh YouTube ${REL_BRANCH};
+
+
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
@@ -48,8 +54,6 @@ rm -rf Slides/.git
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
 
-RUN git clone -b mardi https://github.com/wikimedia/mediawiki-extensions-MathSearch.git MathSearch &&\
-rm -rf MathSearch/.git
 
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
