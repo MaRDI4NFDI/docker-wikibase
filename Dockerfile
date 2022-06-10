@@ -14,7 +14,7 @@ ENV BRANCH=REL1_37
 
 COPY clone-extension.sh .
 
-RUN bash clone-extension.sh OAuth ${BRANCH};\
+RUN bash clone-extension.sh OAuth REL1_38;\
 bash clone-extension.sh Elastica ${BRANCH};\
 bash clone-extension.sh CirrusSearch ${BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${BRANCH};\
