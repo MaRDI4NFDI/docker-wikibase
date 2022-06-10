@@ -63,6 +63,8 @@ RUN curl https://bitbucket.org/wikiskripta/medik/get/master.tar.gz --output Medi
 tar -xf Medik.tar.gz &&\
 rm Medik.tar.gz
 
+RUN git clone https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH}
+
 
 
 ################
@@ -70,6 +72,7 @@ rm Medik.tar.gz
 ################
 FROM mediawiki:latest  as collector
 
+COPY --from=fetcher /mediawiki /var/www/html
 # collect bundle extensions
 COPY --from=fetcher /WikibaseImport /var/www/html/extensions/WikibaseImport
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
