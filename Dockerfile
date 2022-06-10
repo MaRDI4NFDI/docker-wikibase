@@ -14,7 +14,7 @@ ENV BRANCH=REL1_37
 
 COPY clone-extension.sh .
 
-RUN bash clone-extension.sh OAuth REL1_38;\
+RUN bash clone-extension.sh OAuth ${BRANCH};\
 bash clone-extension.sh Elastica ${BRANCH};\
 bash clone-extension.sh CirrusSearch ${BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${BRANCH};\
@@ -31,7 +31,7 @@ bash clone-extension.sh TemplateStyles ${BRANCH};\
 bash clone-extension.sh JsonConfig ${BRANCH};\
 bash clone-extension.sh Lockdown ${BRANCH};\
 bash clone-extension.sh Nuke ${BRANCH};\
-bash clone-extension.sh Math REL1_38;\
+bash clone-extension.sh Math ${BRANCH};\
 bash clone-extension.sh YouTube ${BRANCH};
 
 # clone extensions not officially distributed by mediawiki
