@@ -112,7 +112,7 @@ COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 # lct.wmflabs.org
 COPY --from=fetcher /Popups /var/www/html/extensions/Popups
 #drmf-beta.wmflabs.org
-COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer 
+#COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer 
 
 
 ################
