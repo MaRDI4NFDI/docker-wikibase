@@ -109,9 +109,10 @@ COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 
 # extensions usd in wmflabs
-COPY --from=fetcher /Popups /var/www/html/extensions/Popups #lct.wmflabs.org
-COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData #drmf-beta.wmflabs.org
-
+# lct.wmflabs.org
+COPY --from=fetcher /Popups /var/www/html/extensions/Popups
+#drmf-beta.wmflabs.org
+COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData 
 
 
 ################
