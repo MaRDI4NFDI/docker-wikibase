@@ -23,6 +23,7 @@ bash clone-extension.sh cldr ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
+bash clone-extension.sh ExternalData master;\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
@@ -106,6 +107,11 @@ COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 
 # collect skins
 COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
+
+# extensions usd in wmflabs
+COPY --from=fetcher /Popups /var/www/html/extensions/Popups #lct.wmflabs.org
+COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData #drmf-beta.wmflabs.org
+
 
 
 ################
