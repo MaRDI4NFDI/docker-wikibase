@@ -21,9 +21,10 @@ bash clone-extension.sh Babel ${WMF_BRANCH};\
 bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
+bash clone-extension.sh DataTransfer master;\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
-bash clone-extension.sh DataTransfer master;\
+bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
@@ -85,6 +86,7 @@ COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirru
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /cldr /var/www/html/extensions/cldr
 COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
+COPY --from=fetcher /Flow /var/www/html/extensions/Flow
 COPY --from=fetcher /Babel /var/www/html/extensions/Babel
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
