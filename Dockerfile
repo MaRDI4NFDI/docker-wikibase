@@ -112,7 +112,7 @@ COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 # lct.wmflabs.org
 COPY --from=fetcher /Popups /var/www/html/extensions/Popups
 #drmf-beta.wmflabs.org
-#COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer 
+COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
 
 
 ################
@@ -139,17 +139,23 @@ RUN set -xe \
         zlib-dev \
         icu-dev \
         g++ \
+        freetype-dev \
         libpng-dev \
+        jpeg-dev \
+        libjpeg-turbo-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
     && docker-php-ext-enable intl \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
     && docker-php-ext-enable gd \
     && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
     && apk del .build-deps \
     && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
-
-RUN composer install --no-dev
+# rather than ignoring plattform devs one should use the mediawiki as a base image an copy composer via
+# COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
+# See section PHP version & extensions on https://hub.docker.com/_/composer
+RUN composer install --no-dev --ignore-platform-reqs
 
 
 #######################################
