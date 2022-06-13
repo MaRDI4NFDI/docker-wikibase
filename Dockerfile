@@ -1,3 +1,9 @@
+######################
+#   global settings  #
+######################
+
+ARG MEDIAWIKI_VERSION=1.38.1
+
 ################
 #   fetcher    #
 ################
@@ -8,11 +14,12 @@ RUN apt-get update && \
     apt-get install --reinstall ca-certificates && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# fetcher specific settings
 # clone extensions from github, using specific branch
-
 ARG WMF_BRANCH=wmf/1.39.0-wmf.13
 ARG REL_BRANCH=REL1_38
 ARG WMDE_BRANCH=wmde.6
+
 
 COPY clone-extension.sh .
 
@@ -75,7 +82,7 @@ rm -rf mediawiki/.git
 ################
 #  collector   #
 ################
-FROM mediawiki:latest  as collector
+FROM mediawiki:${MEDIAWIKI_VERSION}  as collector
 
 COPY --from=fetcher /mediawiki /var/www/html
 # collect bundle extensions
@@ -167,7 +174,7 @@ RUN composer install --no-dev --ignore-platform-reqs
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:latest
+FROM mediawiki:${MEDIAWIKI_VERSION}
 
 # PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
 # NAME="Debian GNU/Linux"
