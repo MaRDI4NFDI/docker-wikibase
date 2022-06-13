@@ -5,10 +5,13 @@
 
 set +e # continue on error
 
-BACKUP_DIR="/data" # internal mount path of backup directory on the host
 DATE_STRING=$(date +%Y.%m.%d_%H.%M.%S)  # date string to use in file names
 
-NODE_EXPORTER_DIR="/data/"  # path where node_exporter metrics are stored
+# redirect all output to stdout && log file
+# Note: $BACKUP_DIR is set in the Dockerfile.
+exec &> >(tee -a "$BACKUP_DIR/backup.log")
+
+NODE_EXPORTER_DIR="$BACKUP_DIR"  # path where node_exporter metrics are stored
 XML_SIZE=0
 MYSQL_SIZE=0
 FILES_SIZE=0
@@ -140,8 +143,9 @@ EOF
 
 
 # main script
-printf '==================================\n' | tee /tmp/stderr 
-printf 'Backup started %s\n' "$DATE_STRING" | tee /tmp/stderr 
+printf '==================================\n'
+printf 'Backup started %s\n' "$DATE_STRING"
+printf '==================================\n'
 START="$(date +%s)"
 
 mysql_dump 
