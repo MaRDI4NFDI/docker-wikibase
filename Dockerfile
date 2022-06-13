@@ -13,6 +13,7 @@ RUN apt-get update && \
 ARG WMF_BRANCH=wmf/1.39.0-wmf.13
 ARG REL_BRANCH=REL1_38
 ARG WMDE_BRANCH=wmde.6
+ARG MEDIAWIKI_VERSION=1.38.1
 
 COPY clone-extension.sh .
 
@@ -167,7 +168,7 @@ RUN composer install --no-dev --ignore-platform-reqs
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:1.38.1
+FROM mediawiki:${MEDIAWIKI_VERSION}
 
 # PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
 # NAME="Debian GNU/Linux"
