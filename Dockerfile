@@ -167,7 +167,7 @@ RUN composer install --no-dev --ignore-platform-reqs
 #            MaRDI wikibase           #
 # build from official mediawiki image #
 #######################################
-FROM mediawiki:latest
+FROM mediawiki:1.38.1
 
 # PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
 # NAME="Debian GNU/Linux"
