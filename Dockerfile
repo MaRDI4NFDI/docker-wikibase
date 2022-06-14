@@ -3,6 +3,7 @@ FROM php:7.4-cli
 # some defaults
 ENV BACKUP_DEFAULT_GID="9000" \
 	BACKUP_DEFAULT_UID="9000" \
+    BACKUP_DIR="/data" \
 	TIMEZONE="CET" \
 	DEFAULT_SCHEDULE="0 1 * * *" \
 	CRONTAB="/var/spool/cron/crontabs/backup"

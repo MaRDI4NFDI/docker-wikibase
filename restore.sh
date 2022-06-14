@@ -5,7 +5,9 @@
 
 set -e # do not continue on error
 
-BACKUP_DIR="/data" # internal mount path of backup directory on the host
+# redirect all output to stdout && log file
+# Note: $BACKUP_DIR is set in the Dockerfile.
+exec &> >(tee -a "$BACKUP_DIR/restore.log")
 
 # Determine the full path to the backup file (as mounted in the container).
 # If no file was specified, then sets the most recent backup file,
@@ -15,9 +17,9 @@ _det_file() {
     if [[ -z ${BACKUP_FILE}  ]]; then
         # no backup file passed to the command line, find the most recent backup file
         case ${BACKUP_TYPE} in
-            sql) BACKUP_FILE=$(find $BACKUP_DIR -name "portal_db_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
-            xml) BACKUP_FILE=$(find $BACKUP_DIR -name "portal_xml_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
-            img) BACKUP_FILE=$(find $BACKUP_DIR -name "images_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
+            sql) BACKUP_FILE=$(find "$BACKUP_DIR" -name "portal_db_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
+            xml) BACKUP_FILE=$(find "$BACKUP_DIR" -name "portal_xml_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
+            img) BACKUP_FILE=$(find "$BACKUP_DIR" -name "images_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
         esac
     fi
     BACKUP_FILE=${BACKUP_DIR}/${BACKUP_FILE}
@@ -120,7 +122,9 @@ if [[ "$BACKUP_FILE" ]] && [[ -z "$BACKUP_TYPE" ]]; then
     exit 1
 fi
 
+printf '=============================\n'
 printf 'Restore started at %s\n' "$(date +%Y.%m.%d_%H.%M.%S)"
+printf '=============================\n'
 
 # call restore from sql backup by default
 if [[ -z "$BACKUP_TYPE" ]]; then

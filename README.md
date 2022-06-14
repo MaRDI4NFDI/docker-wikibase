@@ -46,7 +46,7 @@ These must be set in `.env`:
 
 `$DB_PASS`: password of the database user
 
-`$BACKUP_SCHEDULE`: a cron string, e.g. `'15 5 * * *' # every day at 05:15`
+`$BACKUP_SCHEDULE`: a cron string, e.g. `15 5 * * *` (no quotes; daily backups at 5:15AM)
 
 `$KEEP_DAYS`: how many days shall the backups be kept, e.g. 100
 
@@ -57,8 +57,7 @@ Creating a backup
 -----------------
 Normally, backups are created by a cronjob. 
 To run a backup manually, do `docker exec -ti name-of-backup-container ./backup.sh`.
-The cronjob automatically logs the output of `backup.sh` in 1) the docker logs and 2) in the files `$BACKUP_DIR/backup.log` (standard output) and `$BACKUP_DIR/backup_errors.log` (error messages).
-To also log manually executed scripts, use, e.q.,  `docker exec -ti mardi-backup bash -c './backup.sh > /tmp/stdout 2> /tmp/stderr'`
+The cronjob automatically logs the output of `backup.sh` in 1) the docker container logs (`docker logs -f name-of-backup-container`) and 2) in the file `$BACKUP_DIR/backup.log`.
 
 Restoring a backup
 -------------------
@@ -77,7 +76,8 @@ Open a shell to the backup container. In the /app dir, do:
 
 Pages erased since the backup was made will be restored. 
 
-In order to include the output of `restore.sh` in the logs, execute `restore.sh > /tmp/stdout 2> /tmp/stderr`.
+The output of `restore.sh` is logged to `$BACKUP_DIR/restore.log` and to the docker
+container logs.
 
 Tests
 ------
