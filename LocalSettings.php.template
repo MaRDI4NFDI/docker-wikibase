@@ -53,3 +53,9 @@ wfLoadExtension( 'WikibaseRepository', "${DOLLAR}IP/extensions/Wikibase/extensio
 require_once "${DOLLAR}IP/extensions/Wikibase/repo/ExampleSettings.php";
 wfLoadExtension( 'WikibaseClient', "${DOLLAR}IP/extensions/Wikibase/extension-client.json" );
 require_once "${DOLLAR}IP/extensions/Wikibase/client/ExampleSettings.php";
+
+# Production env
+${DOLLAR}productionComparator = 'prod';
+if (${DOLLAR}productionComparator == '${DEPLOYMENT_ENV}') {
+    ${DOLLAR}wgDeprecationReleaseLimit = '1.20';
+}
