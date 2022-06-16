@@ -11,7 +11,7 @@ RUN docker-php-ext-enable xdebug
 # RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/php.ini
 # RUN echo "xdebug.profiler_enable=1" >> /usr/local/etc/php/php.ini
 RUN touch /tmp/xdebug.log
-RUN chmod ug+rw  /tmp/xdebug.log
+RUN chmod ugo+rw  /tmp/xdebug.log
 # ENTRYPOINT ["docker-php-entrypoint", "apache2-foreground"]
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
