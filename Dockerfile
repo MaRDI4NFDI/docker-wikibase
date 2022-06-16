@@ -25,16 +25,12 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
         vim \
 	&& rm -rf /var/cache/apk/*
     
-
 # Set up non-root user.
-# RUN addgroup -g "$BACKUP_DEFAULT_GID" backup \BACKUP_DEFAULT_GID
-RUN adduser \
-		-h "/home/backup" \
-		-D `# Don't assign a password` \
-		-u "$BACKUP_DEFAULT_UID" \
-		-s "/bin/bash" \
-		-G "backup" \
-		backup
+# NOTE that a system user called "backup" already exists
+RUN useradd \
+		--uid "$BACKUP_DEFAULT_UID" \
+		--shell "/bin/bash" \
+		mardi-backup
 
 COPY --from=ghcr.io/mardi4nfdi/docker-wikibase:main /var/www/html/ /var/www/html/
 
@@ -45,7 +41,7 @@ COPY restore.sh /app/
 COPY start.sh /app/
 
 # Make sure scripts are executable
-RUN chown backup:backup /app/*.sh && chmod 774 /app/*.sh
+RUN chown mardi-backup:mardi-backup /app/*.sh && chmod 774 /app/*.sh
 
 # Set up entry point.
 WORKDIR /app
