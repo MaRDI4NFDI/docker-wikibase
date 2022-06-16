@@ -1,4 +1,6 @@
 #!/bin/bash
+
+ # Restores backup, either SQL database dump or XML pages backup, and uploaded images.
 # Call this manually, see README
 
 set -e # do not continue on error
@@ -28,7 +30,7 @@ _det_file() {
     BACKUP_FILE=${BACKUP_DIR}/${BACKUP_FILE}
     # check that the backup file exists
     if [[ ! -f ${BACKUP_FILE} ]]; then
-       printf 'ERROR file %s not found\n\n' "$BACKUP_FILE"
+       echo "ERROR file $BACKUP_FILE not found"; echo
        exit 1
     fi
 }
@@ -41,15 +43,15 @@ _det_file() {
 # If no SQL file was specified from the command line (-f filename), then the most recent SQL backup is restored.
 restore_db_backup() {
     _det_file
-    printf 'Restoring SQL database backup from %s\n' "$BACKUP_FILE"
+    echo "Restoring SQL database backup from $BACKUP_FILE"
     # unzip the backup file and restore the database
     if \
         gzip -d -c "$BACKUP_FILE"|mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" --database "$DB_NAME" 
     then
     # if [[ $? -eq 0 ]]; then
-        printf "Done\n"
+        echo "Done"
     else
-        printf "ERROR restoring database\n\n"
+        echo "ERROR restoring database"; echo
         exit 1
     fi
 }
@@ -58,13 +60,13 @@ restore_db_backup() {
 # restore images by copying backup of /var/www/html/images folder
 restore_images_backup() {
     _det_file
-    printf 'Restoring images directory backup from %s\n' "$BACKUP_FILE"
+    echo "Restoring images directory backup from $BACKUP_FILE"
     if \
         tar --overwrite --owner www-data --group www-data -xzv -f "$BACKUP_FILE" -C /var/www/html/ images
     then
-         printf "Done\n"
+         echo "Done"
     else
-        printf "ERROR restoring images directory\n\n"
+        echo "ERROR restoring images directory"; echo
         exit 1
     fi
 }
@@ -73,7 +75,7 @@ restore_images_backup() {
 # restore images by uploading images to the wiki as new files
 restore_images_backup_import() {
     _det_file
-    printf 'Importing images directory backup from %s\n' "$BACKUP_FILE"
+    echo "Importing images directory backup from $BACKUP_FILE"
     # use importImages.php maintenance script https://www.mediawiki.org/wiki/Manual:ImportImages.php
     # extract files to /tmp/
     IGNORE_FOLDERS=(deleted thumb archive)
@@ -89,9 +91,9 @@ restore_images_backup_import() {
         su -l www-data -s /bin/bash -c 'php /var/www/html/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images' &&\
         rm -rf "$IMAGE_BACKUP_DIR"
     then
-         printf "Done\n"
+         echo "Done"
     else
-        printf "ERROR restoring images directory\n\n"
+        echo "ERROR restoring images directory"; echo
         exit 1
     fi
 }
@@ -101,13 +103,13 @@ restore_images_backup_import() {
 # https://www.mediawiki.org/wiki/Manual:Importing_XML_dumps
 restore_xml_backup() {
     _det_file
-    printf 'Attempting to restore XML backup from %s\n' "$BACKUP_FILE"
+    echo "Attempting to restore XML backup from $BACKUP_FILE"
     if \
         cd /var/www/html/ && php maintenance/importDump.php --conf /shared/LocalSettings.php "$BACKUP_FILE" --username-prefix=""
     then
-        printf "Done\n"
+        echo "Done"
     else
-        printf "ERROR restoring database\n\n"
+        echo "ERROR restoring database"; echo
         exit 1
     fi
 }
@@ -116,42 +118,43 @@ restore_xml_backup() {
 ## Help text
 
 _help() {
-    printf "Usage:  restore.sh [-t <type> [-f <file>]]\n"
-    printf "\n"
-    printf "Backup type (-t):\n"
-    printf "  -t sql            Restore database from MySQL backup\n"
-    printf "  -t xml            Restore database from XML backup (does not preserve edit\n"
-    printf "                    history).\n"
-    printf "  -t img            Restore uploaded images via copy; overwrites existing \n"
-    printf "                    files and keeps files not included in the backup.\n"
-    printf "                    This works only if the DB is intact or is restored via\n"
-    printf "                    SQL backup!\n"
-    printf "  -t img-import     Restore uploaded images via ImportImages.php; uploads all\n"
-    printf "                    image files found in backup folder, ignoring subfolders\n"
-    printf "                    archive, deleted, thumb, temp).\n"
-    printf "                    This is a re-upload and may cause duplicates; useful\n"
-    printf "                    together with restoring the Wiki from a XML backup.\n"
-    printf "\n"
-    printf "Backup file (-f):\n"
-    printf "  -f                Restore backup from specified file. Requires -t type!\n"
-    printf "                    If -f is not set, the most recent file is used, matching\n"
-    printf "                    the given backup type (-t)\n"
-    printf "\n"
-    printf "Examples:\n\n"
-    printf "  * Default: restore MySQL backup (type=sql) and image backup (type=img),\n"
-    printf "    using the most recent backup files:\n"
-    printf "\n"
-    printf "      restore.sh\n"
-    printf "\n"
-    printf "  * Restore backup of <type> xml|img|sql|img-import, using the most recent\n"
-    printf "    backup file:\n"
-    printf "\n"
-    printf "      restore.sh -t <type>\n"
-    printf "\n"
-    printf "  * Restore backup of <type> xml|img|sql|img-import from <file>:\n"
-    printf "\n"
-    printf "      restore.sh -t <type> -f <file>\n"
-    printf "\n"
+    echo "Usage:  restore.sh [-t <type> [-f <file>]]"
+    echo 
+    echo "Backup type (-t):"
+    echo "  -t sql            Restore database from MySQL backup"
+    echo "  -t xml            Restore database from XML backup (does not preserve edit"
+    echo "                    history)."
+    echo "  -t img            Restore uploaded images via copy; overwrites existing "
+    echo "                    files and keeps files not included in the backup."
+    echo "                    This works only if the DB is intact or is restored via"
+    echo "                    SQL backup!"
+    echo "  -t img-import     Restore uploaded images via ImportImages.php; uploads all"
+    echo "                    image files found in backup folder, ignoring subfolders"
+    echo "                    archive, deleted, thumb, temp)."
+    echo "                    This is a re-upload and may cause duplicates; useful"
+    echo "                    together with restoring the Wiki from a XML backup."
+    echo ""
+    echo "Backup file (-f):"
+    echo "  -f                Restore backup from specified file. Requires -t type!"
+    echo "                    If -f is not set, the most recent file is used, matching"
+    echo "                    the given backup type (-t)"
+    echo 
+    echo "Examples:"
+    echo
+    echo "  * Default: restore MySQL backup (type=sql) and image backup (type=img),"
+    echo "    using the most recent backup files:"
+    echo
+    echo "      restore.sh"
+    echo
+    echo "  * Restore backup of <type> xml|img|sql|img-import, using the most recent"
+    echo "    backup file:"
+    echo
+    echo "      restore.sh -t <type>"
+    echo
+    echo "  * Restore backup of <type> xml|img|sql|img-import from <file>:"
+    echo
+    echo "      restore.sh -t <type> -f <file>"
+    echo
 }
 
 
@@ -173,14 +176,15 @@ esac
 done
 
 if [[ "$BACKUP_FILE" ]] && [[ -z "$BACKUP_TYPE" ]]; then
-    printf "ERROR: missing option -t type\n\n"
+    echo "ERROR: missing option -t type"; echo
     _help
     exit 1
 fi
 
-printf '=============================\n'
-printf 'Restore started at %s\n' "$(date +%Y.%m.%d_%H.%M.%S)"
-printf '=============================\n\n'
+echo "============================="
+echo "Restore started at $(date +%Y.%m.%d_%H.%M.%S)"
+echo "============================="
+echo
 
 # call restore from sql backup by default
 if [[ -z "$BACKUP_TYPE" ]]; then
@@ -196,9 +200,9 @@ else
         xml) restore_xml_backup;;
         img) restore_images_backup;;
         img-import) restore_images_backup_import;;
-        *) printf 'ERROR: Unknown backup type "%s"\n\n' "$BACKUP_TYPE"
+        *) echo "ERROR: Unknown backup type \"$BACKUP_TYPE\""; echo
             _help
             exit 1;;
     esac
 fi
-printf "\n"
+echo
