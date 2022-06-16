@@ -26,7 +26,7 @@ mysql_dump() {
     if [[ ${PSTAT[0]} -eq 0 ]] && [[ ${PSTAT[1]} -eq 0 ]]; then
         STATUS=0
         if [[ -f "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" ]]; then
-            printf ' SUCCESS: MySQL dump written to %s\n' "$MYSQL_DUMP_FILE"
+            printf ' SUCCESS: MySQL dump written to %s\n' "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
             MYSQL_SIZE=$(du "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" | cut -f1)
         else
             printf ' ERROR: MySQL dump terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
@@ -50,7 +50,7 @@ xml_dump() {
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
-            printf ' SUCCESS: XML dump written to %s\n' "$XML_DUMP_FILE"
+            printf ' SUCCESS: XML dump written to %s\n' "${BACKUP_DIR}/${XML_DUMP_FILE}"
             XML_SIZE=$(du "${BACKUP_DIR}/${XML_DUMP_FILE}" | cut -f1)
         else
             printf ' ERROR: XML dump terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${XML_DUMP_FILE}"
@@ -72,7 +72,7 @@ files_dump() {
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
-            printf ' SUCCESS: Uploaded images backup written to %s\n' "$IMAGES_FILE"
+            printf ' SUCCESS: Uploaded images backup written to %s\n' "${BACKUP_DIR}/${IMAGES_FILE}"
             FILES_SIZE=$(du "${BACKUP_DIR}/${IMAGES_FILE}" | cut -f1)
         else
             printf ' ERROR: Files backup terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${IMAGES_FILE}"

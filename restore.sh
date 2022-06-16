@@ -1,6 +1,4 @@
 #!/bin/bash
-
-# Restores backup, either SQL database dump or XML pages backup.
 # Call this manually, see README
 
 set -e # do not continue on error
@@ -8,6 +6,10 @@ set -e # do not continue on error
 # redirect all output to stdout && log file
 # Note: $BACKUP_DIR is set in the Dockerfile.
 exec &> >(tee -a "$BACKUP_DIR/restore.log")
+
+
+################################################################################
+## Determine backup file
 
 # Determine the full path to the backup file (as mounted in the container).
 # If no file was specified, then sets the most recent backup file,
@@ -20,6 +22,7 @@ _det_file() {
             sql) BACKUP_FILE=$(find "$BACKUP_DIR" -name "portal_db_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
             xml) BACKUP_FILE=$(find "$BACKUP_DIR" -name "portal_xml_backup_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
             img) BACKUP_FILE=$(find "$BACKUP_DIR" -name "images_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
+            img-import) BACKUP_FILE=$(find "$BACKUP_DIR" -name "images_*.gz" -printf "%T@ %P\n" | sort -n | tail -1 | cut -d' ' -f2);;
         esac
     fi
     BACKUP_FILE=${BACKUP_DIR}/${BACKUP_FILE}
@@ -29,6 +32,10 @@ _det_file() {
        exit 1
     fi
 }
+
+
+################################################################################
+## Restore functions
 
 # Restores the wiki database from a SQL backup
 # If no SQL file was specified from the command line (-f filename), then the most recent SQL backup is restored.
@@ -47,9 +54,26 @@ restore_db_backup() {
     fi
 }
 
+
+# restore images by copying backup of /var/www/html/images folder
 restore_images_backup() {
     _det_file
     printf 'Restoring images directory backup from %s\n' "$BACKUP_FILE"
+    if \
+        tar --overwrite --owner www-data --group www-data -xzv -f "$BACKUP_FILE" -C /var/www/html/ images
+    then
+         printf "Done\n"
+    else
+        printf "ERROR restoring images directory\n\n"
+        exit 1
+    fi
+}
+
+
+# restore images by uploading images to the wiki as new files
+restore_images_backup_import() {
+    _det_file
+    printf 'Importing images directory backup from %s\n' "$BACKUP_FILE"
     # use importImages.php maintenance script https://www.mediawiki.org/wiki/Manual:ImportImages.php
     # extract files to /tmp/
     IGNORE_FOLDERS=(deleted thumb archive)
@@ -88,21 +112,53 @@ restore_xml_backup() {
     fi
 }
 
-_help() {
-    printf "Usage:  restore.sh                      restore last MySQL and images backups\n"
-    printf "        restore.sh -t type              restore last backup of given type\n"
-    printf "        restore.sh -t type -f file      restore backup of given type from file\n\n"
-    printf "                                        supported type:\n"
-    printf "                                            -t xml     XML backup\n"
-    printf "                                            -t sql     MySQL backup\n"
-    printf "                                            -t img     images backup\n"
+################################################################################
+## Help text
 
+_help() {
+    printf "Usage:  restore.sh [-t <type> [-f <file>]]\n"
+    printf "\n"
+    printf "Backup type (-t):\n"
+    printf "  -t sql            Restore database from MySQL backup\n"
+    printf "  -t xml            Restore database from XML backup (does not preserve edit\n"
+    printf "                    history).\n"
+    printf "  -t img            Restore uploaded images via copy; overwrites existing \n"
+    printf "                    files and keeps files not included in the backup.\n"
+    printf "                    This works only if the DB is intact or is restored via\n"
+    printf "                    SQL backup!\n"
+    printf "  -t img-import     Restore uploaded images via ImportImages.php; uploads all\n"
+    printf "                    image files found in backup folder, ignoring subfolders\n"
+    printf "                    archive, deleted, thumb, temp).\n"
+    printf "                    This is a re-upload and may cause duplicates; useful\n"
+    printf "                    together with restoring the Wiki from a XML backup.\n"
+    printf "\n"
+    printf "Backup file (-f):\n"
+    printf "  -f                Restore backup from specified file. Requires -t type!\n"
+    printf "                    If -f is not set, the most recent file is used, matching\n"
+    printf "                    the given backup type (-t)\n"
+    printf "\n"
+    printf "Examples:\n\n"
+    printf "  * Default: restore MySQL backup (type=sql) and image backup (type=img),\n"
+    printf "    using the most recent backup files:\n"
+    printf "\n"
+    printf "      restore.sh\n"
+    printf "\n"
+    printf "  * Restore backup of <type> xml|img|sql|img-import, using the most recent\n"
+    printf "    backup file:\n"
+    printf "\n"
+    printf "      restore.sh -t <type>\n"
+    printf "\n"
+    printf "  * Restore backup of <type> xml|img|sql|img-import from <file>:\n"
+    printf "\n"
+    printf "      restore.sh -t <type> -f <file>\n"
+    printf "\n"
 }
 
 
-###########################
-#       Main script       #
-###########################
+
+################################################################################
+#                                  MAIN                                        #
+################################################################################
 
 # Handle input flags
 while getopts "ht:f:" flag; do
@@ -124,7 +180,7 @@ fi
 
 printf '=============================\n'
 printf 'Restore started at %s\n' "$(date +%Y.%m.%d_%H.%M.%S)"
-printf '=============================\n'
+printf '=============================\n\n'
 
 # call restore from sql backup by default
 if [[ -z "$BACKUP_TYPE" ]]; then
@@ -139,6 +195,7 @@ else
         sql) restore_db_backup;;
         xml) restore_xml_backup;;
         img) restore_images_backup;;
+        img-import) restore_images_backup_import;;
         *) printf 'ERROR: Unknown backup type "%s"\n\n' "$BACKUP_TYPE"
             _help
             exit 1;;
