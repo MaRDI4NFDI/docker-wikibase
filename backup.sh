@@ -19,22 +19,23 @@ FILES_SIZE=0
 # Backups the portal wiki database.
 # https://mariadb.com/kb/en/mysqldump/
 mysql_dump() {
-    printf "\nMySQL backup\n"
+    echo
+    echo "MySQL backup"
     MYSQL_DUMP_FILE=portal_db_backup_${DATE_STRING}.gz
     mysqldump -u"${DB_USER}" -p"${DB_PASS}" -h"${DB_HOST}" --databases "${DB_NAME}" | gzip > "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
     PSTAT=(${PIPESTATUS[@]})
     if [[ ${PSTAT[0]} -eq 0 ]] && [[ ${PSTAT[1]} -eq 0 ]]; then
         STATUS=0
         if [[ -f "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" ]]; then
-            printf ' SUCCESS: MySQL dump written to %s\n' "$MYSQL_DUMP_FILE"
+            echo " SUCCESS: MySQL dump written to ${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
             MYSQL_SIZE=$(du "${BACKUP_DIR}/${MYSQL_DUMP_FILE}" | cut -f1)
         else
-            printf ' ERROR: MySQL dump terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
+            echo " ERROR: MySQL dump terminated successfully, but backup file ${BACKUP_DIR}/${MYSQL_DUMP_FILE} was not created!"
             STATUS=255
         fi
     else
         STATUS=${PSTAT[0]}
-        printf ' ERROR: MYSQL backup failed with status mysqldump: %s, gunzip: %s\n' "${PSTAT[0]}" "${PSTAT[1]}"
+        echo " ERROR: MYSQL backup failed with status mysqldump: ${PSTAT[0]}, gunzip: ${PSTAT[1]}"
     fi
     return "$STATUS"
 }
@@ -42,7 +43,8 @@ mysql_dump() {
 # Backups the portal wiki pages as xml.
 # https://www.mediawiki.org/wiki/Manual:DumpBackup.php
 xml_dump() {
-    printf "\nXML backup\n"
+    echo
+    echo "XML backup"
     XML_DUMP_FILE=portal_xml_backup_${DATE_STRING}.gz
     # parsoid requires script to be executed from mw root
     cd /var/www/html/ || return 255
@@ -50,37 +52,38 @@ xml_dump() {
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
-            printf ' SUCCESS: XML dump written to %s\n' "$XML_DUMP_FILE"
+            echo " SUCCESS: XML dump written to ${BACKUP_DIR}/${XML_DUMP_FILE}"
             XML_SIZE=$(du "${BACKUP_DIR}/${XML_DUMP_FILE}" | cut -f1)
         else
-            printf ' ERROR: XML dump terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${XML_DUMP_FILE}"
+            echo " ERROR: XML dump terminated successfully, but backup file ${BACKUP_DIR}/${XML_DUMP_FILE} was not created!"
             STATUS=255
         fi
     else
         STATUS=$?
-        printf ' ERROR: XML dump failed with status %s\n' "$STATUS"
+        echo " ERROR: XML dump failed with status $STATUS"
     fi    
     return $STATUS
 }
 
 # Backups uploaded files
 files_dump() {
-    printf "\nUploaded files backup\n"
+    echo
+    echo "Uploaded files backup"
     IMAGES_FILE=images_${DATE_STRING}.tar.gz
     if \
         tar -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
-            printf ' SUCCESS: Uploaded images backup written to %s\n' "$IMAGES_FILE"
+            echo " SUCCESS: Uploaded images backup written to ${BACKUP_DIR}/${IMAGES_FILE}"
             FILES_SIZE=$(du "${BACKUP_DIR}/${IMAGES_FILE}" | cut -f1)
         else
-            printf ' ERROR: Files backup terminated successfully, but backup file %s was not created!\n' "${BACKUP_DIR}/${IMAGES_FILE}"
+            echo " ERROR: Files backup terminated successfully, but backup file ${BACKUP_DIR}/${IMAGES_FILE} was not created!"
             STATUS=255
         fi
     else
         STATUS=$?
-        printf ' ERROR: Files backup failed with status %s\n' "$STATUS"
+        echo " ERROR: Files backup failed with status $STATUS"
     fi
     return $STATUS
 }
@@ -88,7 +91,8 @@ files_dump() {
 # Cleanups backup files older than KEEP_DAYS.
 # Logs the deleted files if any.
 cleanup() {
-    printf "\nCleanup\n"
+    echo
+    echo "Cleanup"
     DELETED=$(find "${BACKUP_DIR}" -maxdepth 1 -name "*.gz"  -type f -daystart -mtime +"${KEEP_DAYS}" -print -delete)
     # convert to array
     set -f # disable glob (wildcard) expansion
@@ -96,11 +100,11 @@ cleanup() {
     DELETED=(${DELETED})
     NUM_DELETED=${#DELETED[@]}
     if [[ -z $DELETED ]]; then
-        printf " - No files deleted\n"
+        echo " - No files deleted"
     else
-        printf ' - Deleted %s files older than %s days\n' "$NUM_DELETED" "$KEEP_DAYS"
+        echo " - Deleted $NUM_DELETED files older than $KEEP_DAYS days"
         for d in "${DELETED[@]}"; do
-            printf '    %s\n' "$d"
+            echo "    $d"
         done
     fi
 }
@@ -111,7 +115,7 @@ cleanup() {
 #   - backup file sizes
 #   - duration
 metrics_dump() {
-    printf 'Writing backup metrics to file %s/backup_full.prom\n' "$NODE_EXPORTER_DIR"
+    echo "Writing backup metrics to file $NODE_EXPORTER_DIR/backup_full.prom"
 
     cat << EOF > "${NODE_EXPORTER_DIR}/backup_full.prom.$$"
 # HELP backup_last_time_seconds system time of last backup in seconds
@@ -143,9 +147,9 @@ EOF
 
 
 # main script
-printf '==================================\n'
-printf 'Backup started %s\n' "$DATE_STRING"
-printf '==================================\n'
+echo "=================================="
+echo "Backup started $DATE_STRING"
+echo "=================================="
 START="$(date +%s)"
 
 mysql_dump 
@@ -161,8 +165,9 @@ END="$(date +%s)"
 
 cleanup
 
-TOTAL_BACKUP_SIZE="$(du -s ${BACKUP_DIR} | cut -f1)"
+TOTAL_BACKUP_SIZE="$(du -s "${BACKUP_DIR}" | cut -f1)"
 
 metrics_dump
 
-printf "\n"
+echo
+
