@@ -212,7 +212,10 @@ RUN mkdir /shared
 COPY regular_maintenance.sh /var/www/html/regular_maintenance.sh
 RUN chmod ugo+rwx /var/www/html/regular_maintenance.sh
 RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/www/html/regular_maintenance.log"  \
-    >> /etc/cron.d/regular_maintenance
+    >> /etc/cron.d/Regular_maintenance
+
+# set ownership of the uploaded images directory
+RUN chown www-data:www-data /var/www/html/images
 
 #########################
 # Set up vecollabpad    #
