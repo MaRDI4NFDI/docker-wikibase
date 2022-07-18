@@ -181,9 +181,9 @@ if [[ "$BACKUP_FILE" ]] && [[ -z "$BACKUP_TYPE" ]]; then
     exit 1
 fi
 
-echo "============================="
+echo "==================================="
 echo "Restore started at $(date +%Y.%m.%d_%H.%M.%S)"
-echo "============================="
+echo "==================================="
 echo
 
 # call restore from sql backup by default
