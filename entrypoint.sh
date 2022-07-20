@@ -58,6 +58,11 @@ if [ ! -e "/shared/LocalSettings.php" ]; then
   cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 fi
 
+if [[ "${BOTUSER_NAME:-}" ]]; then
+  php /var/www/html/maintenance/createAndPromote.php $BOTUSER_NAME $BOTUSER_PW --bot
+fi
+
+
 # Starting the cron-service for regular_maintenance
 /etc/init.d/cron start
 
