@@ -67,7 +67,6 @@ rm -rf Slides/.git
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
 
-
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
@@ -76,9 +75,11 @@ RUN curl https://bitbucket.org/wikiskripta/medik/get/master.tar.gz --output Medi
 tar -xf Medik.tar.gz &&\
 rm Medik.tar.gz
 
+RUN git clone https://github.com/octfx/mediawiki-extension-Plausible.git Plausible &&\
+rm -rf Plausible/.git
+
 RUN git clone https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
 rm -rf mediawiki/.git
-
 
 
 ################
@@ -116,6 +117,7 @@ COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
+COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
 
 # collect skins
 COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
