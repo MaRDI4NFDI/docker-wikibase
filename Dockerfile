@@ -49,7 +49,9 @@ bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${WMDE_BRANCH};\
-bash clone-extension.sh YouTube ${REL_BRANCH};
+bash clone-extension.sh YouTube ${REL_BRANCH};\
+bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
+bash clone-extension.sh Shibboleth ${REL_BRANCH};
 
 
 
@@ -113,6 +115,8 @@ COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
+COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
+COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
@@ -176,10 +180,12 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 # NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin && \
+    apt-get install --yes --no-install-recommends \
+    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libapache2-mod-shib && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
+# RUN a2enmod shib
 RUN install -d /var/log/mediawiki -o www-data
 RUN docker-php-ext-install calendar bz2
 
@@ -211,12 +217,16 @@ RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/ww
 # set ownership of the uploaded images directory
 RUN chown www-data:www-data /var/www/html/images
 
+# copy shibboleth apache config
+COPY shib_mod.conf /etc/apache2/conf-available
+RUN a2enconf shib_mod
+
 #########################
 # Set up vecollabpad    #
 #########################
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
 
-
+##
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
