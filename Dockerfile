@@ -70,11 +70,6 @@ rm -rf WikibaseImport/.git
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
-# Download Medik skin and unpack
-RUN curl https://bitbucket.org/wikiskripta/medik/get/master.tar.gz --output Medik.tar.gz &&\
-tar -xf Medik.tar.gz &&\
-rm Medik.tar.gz
-
 RUN git clone https://github.com/octfx/mediawiki-extension-Plausible.git Plausible &&\
 rm -rf Plausible/.git
 
@@ -118,9 +113,6 @@ COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
-
-# collect skins
-COPY --from=fetcher /wikiskripta-medik-* /var/www/html/skins/Medik
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
