@@ -163,7 +163,7 @@ RUN set -xe \
 # rather than ignoring plattform devs one should use the mediawiki as a base image an copy composer via
 # COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 # See section PHP version & extensions on https://hub.docker.com/_/composer
-RUN composer install --no-dev --ignore-platform-reqs
+RUN composer install --ignore-platform-reqs
 
 
 #######################################
