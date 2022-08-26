@@ -176,7 +176,7 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 # NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin && \
+    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin logrotate && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
@@ -224,6 +224,7 @@ RUN chown www-data:www-data /var/www/html/images
 #########################
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
+
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
