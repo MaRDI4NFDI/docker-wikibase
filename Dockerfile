@@ -185,7 +185,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
-# RUN a2enmod shib
+
 RUN install -d /var/log/mediawiki -o www-data
 RUN docker-php-ext-install calendar bz2
 
