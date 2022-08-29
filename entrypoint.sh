@@ -2,10 +2,6 @@
 # This file is provided by the wikibase/wikibase docker image.
 
 
-tail -F -n 0 /var/log/access.log &
-tail -F -n 0 /var/log/other_vhosts_access.log &
-tail -F -n 0 /var/log/error.log 1>&2 &
-
 if [[ "${DB_SERVER:-}" ]]; then
   # Wait for the db to come up
   /wait-for-it.sh $DB_SERVER -t 300
