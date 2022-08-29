@@ -176,7 +176,7 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 # NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
-    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin logrotate && \
+    apt-get install --yes --no-install-recommends nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
