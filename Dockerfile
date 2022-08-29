@@ -208,14 +208,6 @@ RUN chmod ugo+rwx /var/www/html/regular_maintenance.sh
 RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/www/html/regular_maintenance.log"  \
     >> /etc/cron.d/Regular_maintenance
 
-# The php:7.4-apache docker image creates symlinks for /var/log/apache2/access.log and
-# error.log to /dev/stdout and /dev/stderr, such that the logs can be viewed with
-# `docker logs`. In order for a containerized log analyzer (goaccess) to read the actual
-# log files (processed with logrotate), this needs to be undone:
-RUN rm /var/log/apache2/access.log /var/log/apache2/error.log /var/log/apache2/other_vhosts_access.log 
-# NOTE: for docker logs to still show the logs, add tail -F access.log (etc) to
-# entrypoint.sh
-
 # set ownership of the uploaded images directory
 RUN chown www-data:www-data /var/www/html/images
 
