@@ -69,6 +69,9 @@ rm -rf Slides/.git
 RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
 rm -rf WikibaseImport/.git
 
+RUN git clone https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
+rm -rf MatomoAnalytics/.git
+
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
@@ -117,6 +120,7 @@ COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
 COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
+COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
