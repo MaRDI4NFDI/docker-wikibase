@@ -51,6 +51,7 @@ bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${WMDE_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
+bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
 bash clone-extension.sh Shibboleth ${REL_BRANCH};
 
 
@@ -120,6 +121,7 @@ COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
 COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
+COPY --from=fetcher /PluggableAuth /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
 
 # extensions usd in wmflabs
