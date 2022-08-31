@@ -121,7 +121,7 @@ COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
 COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
-COPY --from=fetcher /PluggableAuth /var/www/html/extensions/OpenIDConnect
+COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
 
 # extensions usd in wmflabs
