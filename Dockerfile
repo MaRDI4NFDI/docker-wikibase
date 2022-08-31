@@ -76,9 +76,6 @@ rm -rf MatomoAnalytics/.git
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
-RUN git clone https://github.com/octfx/mediawiki-extension-Plausible.git Plausible &&\
-rm -rf Plausible/.git
-
 RUN git clone https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
 rm -rf mediawiki/.git
 
@@ -118,7 +115,6 @@ COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /Slides /var/www/html/extensions/Slides
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
-COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
 COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/OpenIDConnect
