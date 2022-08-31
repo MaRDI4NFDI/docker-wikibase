@@ -6,6 +6,7 @@ on:
       - 'main'
   schedule:
     - cron: "30 0 * * *"
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
