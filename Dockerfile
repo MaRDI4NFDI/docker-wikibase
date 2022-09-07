@@ -22,7 +22,8 @@ RUN apt-get update && apt-get install --yes --no-install-recommends \
 		gzip \
 		tzdata \
 		nano \
-        vim \
+		vim \
+		jq \
 	&& rm -rf /var/cache/apk/*
     
 # Set up non-root user.
