@@ -52,8 +52,8 @@ bash clone-extension.sh WikibaseManifest ${WMDE_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
-bash clone-extension.sh Shibboleth ${REL_BRANCH};
-
+bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
+bash clone-extension.sh Graph ${WMF_BRANCH}
 
 
 # clone extensions not officially distributed by mediawiki
@@ -123,6 +123,7 @@ COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
+COPY --from=fetcher /Graph /var/www/html/extensions/Graph
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
