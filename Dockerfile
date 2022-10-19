@@ -53,7 +53,7 @@ bash clone-extension.sh YouTube ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
 bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
-bash clone-extension.sh Graph ${WMF_BRANCH}
+bash clone-extension.sh Graph ${WMF_BRANCH}; \
 bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH}
 
 # clone extensions not officially distributed by mediawiki
