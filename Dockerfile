@@ -54,7 +54,7 @@ bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
 bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
 bash clone-extension.sh Graph ${WMF_BRANCH}
-
+bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH}
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
@@ -124,6 +124,7 @@ COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
 COPY --from=fetcher /Graph /var/www/html/extensions/Graph
+COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
