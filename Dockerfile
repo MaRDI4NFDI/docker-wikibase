@@ -1,5 +1,5 @@
 ######################
-#   global settings  #
+#   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=1.38.1
 ARG WMF_BRANCH=wmf/1.39.0-wmf.22
@@ -7,7 +7,7 @@ ARG REL_BRANCH=REL1_38
 ARG WMDE_BRANCH=wmde.6
 
 ################
-#   fetcher    #
+#   Fetcher    #
 ################
 FROM ubuntu:xenial as fetcher
 
@@ -84,7 +84,7 @@ rm -rf mediawiki/.git
 
 
 ################
-#  collector   #
+#  Collector   #
 ################
 FROM mediawiki:${MEDIAWIKI_VERSION} as collector
 
@@ -136,7 +136,7 @@ COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldow
 
 
 ################
-#  composer    #
+#  Composer    #
 ################
 #FROM composer@sha256:d374b2e1f715621e9d9929575d6b35b11cf4a6dc237d4a08f2e6d1611f534675 as composer
 FROM composer:1 as composer
@@ -180,7 +180,7 @@ RUN composer install --no-dev --ignore-platform-reqs
 
 #######################################
 #            MaRDI wikibase           #
-# build from official mediawiki image #
+# Build from official mediawiki image #
 #######################################
 FROM mediawiki:${MEDIAWIKI_VERSION}
 
@@ -222,10 +222,10 @@ RUN chmod ugo+rwx /var/www/html/regular_maintenance.sh
 RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/www/html/regular_maintenance.log"  \
     >> /etc/cron.d/Regular_maintenance
 
-# set ownership of the uploaded images directory
+# Set ownership of the uploaded images directory
 RUN chown www-data:www-data /var/www/html/images
 
-# copy shibboleth apache config
+# Copy shibboleth apache config
 COPY shib_mod.conf /etc/apache2/conf-available
 RUN a2enconf shib_mod
 
