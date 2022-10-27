@@ -203,6 +203,7 @@ RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY LocalSettings.php.template /LocalSettings.php.template
 COPY htaccess /var/www/html/.htaccess
+COPY images /var/www/html/images_repo/
 RUN ln -s /var/www/html/ /var/www/html/w
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
