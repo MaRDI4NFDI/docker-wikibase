@@ -228,7 +228,8 @@ RUN chown www-data:www-data /var/www/html/images
 
 # Copy shibboleth apache config
 COPY shib_mod.conf /etc/apache2/conf-available
-RUN a2enconf shib_mod
+# Enable mod shibboleth and generate self signed keys 
+RUN shib-keygen && a2enconf shib_mod
 
 #########################
 # Set up vecollabpad    #
