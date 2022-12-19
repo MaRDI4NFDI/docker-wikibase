@@ -55,6 +55,7 @@ bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
 bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
 bash clone-extension.sh Graph ${WMF_BRANCH}; \
 bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH}; \
+bash clone-extension.sh Echo ${WMF_BRANCH}; \
 bash clone-extension.sh Thanks ${WMF_BRANCH}
 
 # clone extensions not officially distributed by mediawiki
@@ -127,6 +128,7 @@ COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
 COPY --from=fetcher /Graph /var/www/html/extensions/Graph
 COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
+COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
