@@ -233,6 +233,8 @@ RUN chown www-data:www-data /var/www/html/images
 # Copy shibboleth apache config
 COPY shib_mod.conf /etc/apache2/conf-available
 COPY shibboleth2.xml /etc/shibboleth/shibboleth2.xml
+#Test creating default location for shibboleth socket file
+RUN mkdir /var/run/shibboleth
 # Enable mod shibboleth and generate self signed keys 
 RUN shib-keygen && a2enconf shib_mod
 
