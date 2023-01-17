@@ -49,6 +49,7 @@ bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${WMDE_BRANCH};\
+bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
@@ -106,6 +107,7 @@ COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
 COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
 COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
+COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
 
