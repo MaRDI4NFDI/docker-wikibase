@@ -1,7 +1,7 @@
 ######################
 #   Global settings  #
 ######################
-ARG MEDIAWIKI_VERSION=1.38.1
+ARG MEDIAWIKI_VERSION=lts
 ARG WMF_BRANCH=wmf/1.40.0-wmf.23
 ARG REL_BRANCH=REL1_39
 ARG WMDE_BRANCH=wmde.6
