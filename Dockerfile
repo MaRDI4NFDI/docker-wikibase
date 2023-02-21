@@ -2,7 +2,7 @@
 #   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=1.38.1
-ARG WMF_BRANCH=wmf/1.39.0-wmf.22
+ARG WMF_BRANCH=wmf/1.40.0-wmf.23
 ARG REL_BRANCH=REL1_38
 ARG WMDE_BRANCH=wmde.6
 
@@ -63,6 +63,9 @@ bash clone-extension.sh Thanks ${WMF_BRANCH}
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
 rm -rf WikibaseLocalMedia/.git
 
+RUN git clone https://github.com/ProfessionalWiki/WikibaseExport.git WikibaseExport &&\
+rm -rf WikibaseExport/.git
+
 RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
 rm -rf TwitterWidget/.git
 
@@ -109,6 +112,7 @@ COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
 COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
 COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
+COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
 
 # collect MaRDI extensions
