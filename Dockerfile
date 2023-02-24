@@ -33,7 +33,8 @@ bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
 bash clone-extension.sh DataTransfer master;\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
-bash clone-extension.sh ExternalData master;\
+# master version has composer problem?
+bash clone-extension.sh ExternalData 3.1;\
 bash clone-extension.sh UrlGetParameters master;\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
