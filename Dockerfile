@@ -176,15 +176,12 @@ RUN set -xe \
         libpng-dev \
         jpeg-dev \
         libjpeg-turbo-dev \
-        libpq-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
     && docker-php-ext-enable intl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
     && docker-php-ext-enable gd \
-    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql \
     && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
     && apk del .build-deps \
     && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
@@ -205,13 +202,13 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
-    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libapache2-mod-shib && \
+    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libapache2-mod-shib libpq-dev  && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
 
 RUN install -d /var/log/mediawiki -o www-data
-RUN docker-php-ext-install calendar bz2
+RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 COPY --from=composer /var/www/html /var/www/html
 COPY wait-for-it.sh /wait-for-it.sh
