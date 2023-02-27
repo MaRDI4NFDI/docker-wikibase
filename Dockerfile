@@ -174,12 +174,14 @@ RUN set -xe \
         libpng-dev \
         jpeg-dev \
         libjpeg-turbo-dev \
+        libpq-dev \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
     && docker-php-ext-enable intl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
     && docker-php-ext-enable gd \
+    && docker-php-ext-install pdo pdo_pgsql \
     && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
     && apk del .build-deps \
     && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
