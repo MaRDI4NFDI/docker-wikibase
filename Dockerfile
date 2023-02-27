@@ -44,7 +44,6 @@ bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
-bash clone-extension.sh SemanticDrilldown master;\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
@@ -81,6 +80,9 @@ rm -rf MatomoAnalytics/.git
 
 RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
+
+RUN git clone https://github.com/SemanticMediaWiki/SemanticDrilldown.git SemanticDrilldown &&\
+rm -rf SemanticDrilldown/.git
 
 RUN git clone https://github.com/octfx/mediawiki-extension-Plausible.git Plausible &&\
 rm -rf Plausible/.git
