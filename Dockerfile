@@ -71,10 +71,6 @@ rm -rf WikibaseExport/.git
 RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
 rm -rf TwitterWidget/.git
 
-# clone extensions from MaRDI4NFDI Project (no branch needed here, as extensions are custom made for the portal)
-RUN git clone https://github.com/MaRDI4NFDI/WikibaseImport.git WikibaseImport &&\
-rm -rf WikibaseImport/.git
-
 RUN git clone https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
 rm -rf MatomoAnalytics/.git
 
@@ -98,7 +94,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION} as collector
 
 COPY --from=fetcher /mediawiki /var/www/html
 # collect bundle extensions
-COPY --from=fetcher /WikibaseImport /var/www/html/extensions/WikibaseImport
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
