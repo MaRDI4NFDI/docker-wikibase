@@ -1,4 +1,4 @@
-FROM php:7.4-cli
+FROM php:8.0-cli
 
 # some defaults
 ENV BACKUP_DEFAULT_GID="9000" \
