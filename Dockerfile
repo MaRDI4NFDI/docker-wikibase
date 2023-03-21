@@ -133,7 +133,7 @@ COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 #swmath
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
-COPY --from=fetcher /ExternalData /var/www/html/extensions/UrlGetParameters
+COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 
 # extensions usd in wmflabs
 # lct.wmflabs.org
