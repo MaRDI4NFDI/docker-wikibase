@@ -39,7 +39,7 @@ bash clone-extension.sh UrlGetParameters master;\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
-bash clone-extension.sh Math ${WMF_BRANCH};\
+bash clone-extension.sh Math master;\
 bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
