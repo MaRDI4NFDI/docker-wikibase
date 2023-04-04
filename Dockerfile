@@ -59,7 +59,8 @@ bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
 bash clone-extension.sh Graph ${WMF_BRANCH}; \
 bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH}; \
 bash clone-extension.sh Echo ${WMF_BRANCH}; \
-bash clone-extension.sh Thanks ${WMF_BRANCH}
+bash clone-extension.sh Thanks ${WMF_BRANCH}; \
+bash clone-extension.sh LinkedWiki ${REL_BRANCH}
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
@@ -131,6 +132,7 @@ COPY --from=fetcher /Graph /var/www/html/extensions/Graph
 COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
+COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
 #swmath
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
