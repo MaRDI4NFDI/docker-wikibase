@@ -249,7 +249,8 @@ RUN shib-keygen && a2enconf shib_mod
 #########################
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
-
+# Install node modules for LinkedWiki
+RUN cd /var/www/html/extensions/LinkedWiki && npm install
 ##
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
