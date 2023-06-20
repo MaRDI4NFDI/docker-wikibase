@@ -175,11 +175,6 @@ RUN chmod ugo+rwx /var/www/html/regular_maintenance.sh
 RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/www/html/regular_maintenance.log"  \
     >> /etc/cron.d/regular_maintenance
 
-#########################
-# Set up vecollabpad    #
-#########################
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
