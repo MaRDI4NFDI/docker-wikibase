@@ -10,7 +10,7 @@ RUN apt-get update && \
 
 # clone extensions from github, using specific branch
 
-ENV BRANCH=REL1_37
+ENV BRANCH=REL1_38
 
 COPY clone-extension.sh .
 
@@ -31,7 +31,7 @@ bash clone-extension.sh TemplateStyles ${BRANCH};\
 bash clone-extension.sh JsonConfig ${BRANCH};\
 bash clone-extension.sh Lockdown ${BRANCH};\
 bash clone-extension.sh Nuke ${BRANCH};\
-bash clone-extension.sh Math REL1_38;\
+bash clone-extension.sh Math ${BRANCH};\
 bash clone-extension.sh YouTube ${BRANCH};
 
 # clone extensions not officially distributed by mediawiki
