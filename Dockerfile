@@ -55,7 +55,7 @@ bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
-bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
+# bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
 bash clone-extension.sh Graph ${WMF_BRANCH}; \
 bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH}; \
 bash clone-extension.sh Echo ${WMF_BRANCH}; \
@@ -124,7 +124,7 @@ COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
-COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
+# COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
@@ -199,7 +199,7 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
-    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libapache2-mod-shib libpq-dev  && \
+    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libpq-dev  && \ # libapache2-mod-shib
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
