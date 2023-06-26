@@ -143,13 +143,13 @@ COPY --from=fetcher /Popups /var/www/html/extensions/Popups
 # drmf-beta.wmflabs.org
 COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
 # wiki.physikerwelt.de
-# COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
+COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
 
 
 ################
 #  Composer    #
 ################
-FROM composer as composer
+FROM ghcr.io/mardi4nfdi/docker-composer:main as composer
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
