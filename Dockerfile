@@ -137,13 +137,13 @@ COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 
-# extensions usd in wmflabs
+# extensions used in wmflabs
 # lct.wmflabs.org
 COPY --from=fetcher /Popups /var/www/html/extensions/Popups
-#drmf-beta.wmflabs.org
+# drmf-beta.wmflabs.org
 COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
-#wiki.physikerwelt.de
-COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
+# wiki.physikerwelt.de
+# COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
 
 
 ################
