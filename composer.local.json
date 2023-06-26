@@ -6,5 +6,8 @@
 				"skins/*/composer.json"
 			]
 		}
-	}
+	},
+	"require": {
+                  "mediawiki/semantic-media-wiki": "~4.0"
+        }
 }
