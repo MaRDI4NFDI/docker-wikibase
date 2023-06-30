@@ -69,9 +69,6 @@ rm -rf WikibaseLocalMedia/.git
 RUN git clone https://github.com/ProfessionalWiki/WikibaseExport.git WikibaseExport &&\
 rm -rf WikibaseExport/.git
 
-RUN git clone https://github.com/ciencia/mediawiki-extensions-TwitterWidget.git TwitterWidget &&\
-rm -rf TwitterWidget/.git
-
 RUN git clone https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
 rm -rf MatomoAnalytics/.git
 
@@ -81,11 +78,12 @@ rm -rf ExternalContent/.git
 RUN git clone https://github.com/SemanticMediaWiki/SemanticDrilldown.git SemanticDrilldown &&\
 rm -rf SemanticDrilldown/.git
 
-RUN git clone https://github.com/octfx/mediawiki-extension-Plausible.git Plausible &&\
-rm -rf Plausible/.git
-
 RUN git clone https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
 rm -rf mediawiki/.git
+
+# Clone Vector Skin (not included in the mediawiki repository)
+RUN git clone https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
+rm -rf Vector/.git
 
 
 ################
@@ -120,10 +118,8 @@ COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
 COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
-COPY --from=fetcher /TwitterWidget /var/www/html/extensions/TwitterWidget
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
-COPY --from=fetcher /Plausible /var/www/html/extensions/Plausible
 # COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
@@ -145,9 +141,12 @@ COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
 # wiki.physikerwelt.de
 COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
 
+# collect Vector Skin
+COPY --from=fetcher /Vector /var/www/html/skins/Vector
+
 
 ################
-#  Composer    #
+#   Composer   #
 ################
 FROM composer as composer
 COPY --from=collector /var/www/html /var/www/html
