@@ -4,7 +4,6 @@
 ARG MEDIAWIKI_VERSION=lts
 ARG WMF_BRANCH=wmf/1.41.0-wmf.15
 ARG REL_BRANCH=REL1_40
-ARG WMDE_BRANCH=wmde.6
 
 ################
 #   Fetcher    #
@@ -19,7 +18,6 @@ RUN apt-get update && \
 # make global settings known in this build stage
 ARG WMF_BRANCH
 ARG REL_BRANCH
-ARG WMDE_BRANCH
 
 # clone extensions from github, using specific branch
 
@@ -30,17 +28,16 @@ bash clone-extension.sh Babel ${WMF_BRANCH};\
 bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
-bash clone-extension.sh DataTransfer master;\
+bash clone-extension.sh DataTransfer ${REL_BRANCH};\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
-# master version has composer problem?
-bash clone-extension.sh ExternalData 3.1;\
-bash clone-extension.sh UrlGetParameters master;\
+bash clone-extension.sh ExternalData ${REL_BRANCH};\
+bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
-bash clone-extension.sh Math master;\
-bash clone-extension.sh MathSearch master;\
+bash clone-extension.sh Math ${WMF_BRANCH};\
+bash clone-extension.sh MathSearch ${REL_BRANCH};\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
@@ -50,16 +47,16 @@ bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
-bash clone-extension.sh WikibaseManifest ${WMDE_BRANCH};\
+bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
-bash clone-extension.sh PluggableAuth ${REL_BRANCH}; \
-bash clone-extension.sh OpenIDConnect ${REL_BRANCH}; \
+bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
+bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
 # bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
-bash clone-extension.sh Graph ${WMF_BRANCH}; \
-bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH}; \
-bash clone-extension.sh Echo ${WMF_BRANCH}; \
-bash clone-extension.sh Thanks ${WMF_BRANCH}; \
+bash clone-extension.sh Graph ${WMF_BRANCH};\
+bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH};\
+bash clone-extension.sh Echo ${WMF_BRANCH};\
+bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh LinkedWiki ${REL_BRANCH}
 
 # clone extensions not officially distributed by mediawiki
@@ -90,6 +87,8 @@ rm -rf Vector/.git
 #  Collector   #
 ################
 FROM mediawiki:${MEDIAWIKI_VERSION} as collector
+
+RUN rm -rf /var/www/html/*
 
 COPY --from=fetcher /mediawiki /var/www/html
 # collect bundle extensions
@@ -148,43 +147,29 @@ COPY --from=fetcher /Vector /var/www/html/skins/Vector
 ################
 #   Composer   #
 ################
-FROM composer as composer
+FROM mediawiki:${MEDIAWIKI_VERSION} as build
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
-# remove ext-calendar requirement, causing composer install to fail
-# composer only checks if requirements are met, but does not install or
-# actually depend on ext-calendar.
-# ext-calendar is installed in the final stage via docker-php-ext-install
-RUN sed -i '/ext-calendar/d' composer.json
-RUN rm -f /var/www/html/composer.lock
 
-# installing the php intl extension on linux alpine (req. for running composer install)
+# Temporary fix to allow ExternalData installation with composer < 2
+RUN sed -i '/"composer\/installers": "~2\.1"/d' /var/www/html/extensions/ExternalData/composer.json
+
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install --yes --no-install-recommends \
+    zlib1g-dev libjpeg-dev libpng-dev libfreetype6-dev libzip-dev zip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN set -xe \
-    && apk add --update icu \
-    && apk add --no-cache --virtual .php-deps make \
-    && apk add --no-cache --virtual .build-deps \
-        $PHPIZE_DEPS \
-        zlib-dev \
-        icu-dev \
-        g++ \
-        freetype-dev \
-        libpng-dev \
-        jpeg-dev \
-        libjpeg-turbo-dev \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \
-    && docker-php-ext-enable intl \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
     && docker-php-ext-enable gd \
-    && { find /usr/local/lib -type f -print0 | xargs -0r strip --strip-all -p 2>/dev/null || true; } \
-    && apk del .build-deps \
-    && rm -rf /tmp/* /usr/local/lib/php/doc/* /var/cache/apk/*
-# rather than ignoring plattform devs one should use the mediawiki as a base image an copy composer via
-# COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
-# See section PHP version & extensions on https://hub.docker.com/_/composer
-RUN composer install --no-dev --ignore-platform-reqs
+    && docker-php-ext-install zip
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev
 
 
 #######################################
@@ -195,7 +180,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 
 # PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
 # NAME="Debian GNU/Linux"
-# Add libapache2-mod-shib for shib
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
@@ -207,7 +191,8 @@ RUN a2enmod rewrite
 RUN install -d /var/log/mediawiki -o www-data
 RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
-COPY --from=composer /var/www/html /var/www/html
+RUN rm -rf /var/www/html/*
+COPY --from=build /var/www/html /var/www/html
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
@@ -244,13 +229,13 @@ RUN chown www-data:www-data /var/www/html/images
 # Enable mod shibboleth and generate self signed keys 
 # RUN shib-keygen && a2enconf shib_mod
 
-#########################
-# Set up vecollabpad    #
-#########################
+# Set up vecollabpad
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
+
 # Install node modules for LinkedWiki
 RUN cd /var/www/html/extensions/LinkedWiki && npm install
+
 ##
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
