@@ -61,26 +61,27 @@ bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh LinkedWiki ${REL_BRANCH}
 
 # clone extensions not officially distributed by mediawiki
-RUN git clone https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
 rm -rf WikibaseLocalMedia/.git
 
-RUN git clone https://github.com/ProfessionalWiki/WikibaseExport.git WikibaseExport &&\
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseExport.git WikibaseExport &&\
 rm -rf WikibaseExport/.git
 
-RUN git clone https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
+RUN git clone --depth=1 https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
 rm -rf MatomoAnalytics/.git
 
-RUN git clone https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
-RUN git clone https://github.com/SemanticMediaWiki/SemanticDrilldown.git SemanticDrilldown &&\
+RUN git clone --depth=1 https://github.com/SemanticMediaWiki/SemanticDrilldown.git SemanticDrilldown &&\
 rm -rf SemanticDrilldown/.git
 
-RUN git clone https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
+# clone core
+RUN git clone --depth=1 https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
 rm -rf mediawiki/.git
 
 # Clone Vector Skin (not included in the mediawiki repository)
-RUN git clone https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
+RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
 rm -rf Vector/.git
 
 
