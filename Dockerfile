@@ -40,8 +40,8 @@ bash clone-extension.sh Math ${WMF_BRANCH};\
 # Here, we store MaRDI-specific code.
 bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
-bash -extension.sh OAuth ${WMF_BRANCH};\
-bash -extension.sh Popups ${WMF_BRANCH};\
+bash clone-extension.sh OAuth ${WMF_BRANCH};\
+bash clone-extension.sh Popups ${WMF_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
