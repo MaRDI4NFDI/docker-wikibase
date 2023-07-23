@@ -170,7 +170,7 @@ RUN set -xe \
     && docker-php-ext-enable gd \
     && docker-php-ext-install zip
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=ghcr.io/mardi4nfdi/docker-composer:main /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev
 
 
