@@ -73,7 +73,7 @@ rm -rf MatomoAnalytics/.git
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
-RUN git clone --depth=1 https://github.com/SemanticMediaWiki/SemanticDrilldown.git SemanticDrilldown &&\
+RUN git clone --depth=1 https://github.com/MaRDI4NFDI/SemanticDrilldown.git SemanticDrilldown &&\
 rm -rf SemanticDrilldown/.git
 
 # clone core
