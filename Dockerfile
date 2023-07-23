@@ -78,7 +78,10 @@ rm -rf SemanticDrilldown/.git
 
 # clone core
 RUN git clone --depth=1 https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
-rm -rf mediawiki/.git
+cd mediawiki &&\
+git fetch https://gerrit.wikimedia.org/r/mediawiki/core refs/changes/64/939764/5 && git checkout FETCH_HEAD &&\
+rm -rf .git &&\
+cd .. 
 
 # Clone Vector Skin (not included in the mediawiki repository)
 RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
