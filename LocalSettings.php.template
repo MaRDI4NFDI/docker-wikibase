@@ -46,14 +46,6 @@ ${DOLLAR}wgSecretKey = "${MW_WG_SECRET_KEY}";
 # Set this to 1 year to avoid any changes being removed from the RC table over a shorter period of time.
 ${DOLLAR}wgRCMaxAge = 365 * 24 * 3600;
 
-wfLoadSkin( 'Vector' );
-
-## Wikibase
-wfLoadExtension( 'WikibaseRepository', "${DOLLAR}IP/extensions/Wikibase/extension-repo.json" );
-require_once "${DOLLAR}IP/extensions/Wikibase/repo/ExampleSettings.php";
-wfLoadExtension( 'WikibaseClient', "${DOLLAR}IP/extensions/Wikibase/extension-client.json" );
-require_once "${DOLLAR}IP/extensions/Wikibase/client/ExampleSettings.php";
-
 # Production env
 ${DOLLAR}productionComparator = 'prod';
 if (${DOLLAR}productionComparator == '${DEPLOYMENT_ENV}') {

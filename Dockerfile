@@ -205,11 +205,9 @@ RUN ln -s /var/www/html/ /var/www/html/w
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
 
-COPY LocalSettings.php.wikibase-bundle.template /LocalSettings.php.wikibase-bundle.template
 COPY LocalSettings.php.mardi.template /LocalSettings.php.mardi.template
 COPY extra-install.sh /
 COPY extra-entrypoint-run-first.sh /
-RUN cat /LocalSettings.php.wikibase-bundle.template >> /LocalSettings.php.template && rm /LocalSettings.php.wikibase-bundle.template
 RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
 RUN mkdir /shared
