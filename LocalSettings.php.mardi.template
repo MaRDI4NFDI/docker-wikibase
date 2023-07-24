@@ -1,7 +1,3 @@
-
-# Pingback
-${DOLLAR}wgWBRepoSettings['wikibasePingback'] = false;
-
 # Load additional settings from LocalSettings.d
 /*
 To make loading order deterministic and to identify errors when loading the script, this script orders the include of settings.
@@ -29,3 +25,4 @@ foreach (${DOLLAR}extensionsToLoad as ${DOLLAR}filename)
 {
     include ${DOLLAR}filename;
 }
+
