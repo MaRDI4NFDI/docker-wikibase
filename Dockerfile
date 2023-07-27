@@ -93,54 +93,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION} as collector
 RUN rm -rf /var/www/html/*
 
 COPY --from=fetcher /mediawiki /var/www/html
-# collect bundle extensions
-COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
-COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
-COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
-COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
-COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
-COPY --from=fetcher /cldr /var/www/html/extensions/cldr
-COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
-COPY --from=fetcher /Flow /var/www/html/extensions/Flow
-COPY --from=fetcher /Babel /var/www/html/extensions/Babel
-COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
-COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
-COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
-COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
-COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
-COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
-COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
-COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
-
-# collect MaRDI extensions
-COPY --from=fetcher /Math /var/www/html/extensions/Math
-COPY --from=fetcher /MathSearch /var/www/html/extensions/MathSearch
-COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
-COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
-COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
-COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
-COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
-COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
-# COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
-COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
-COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
-COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
-COPY --from=fetcher /Graph /var/www/html/extensions/Graph
-COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
-COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
-COPY --from=fetcher /Echo /var/www/html/extensions/Echo
-COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
-#swmath
-COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
-COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
-
-# extensions used in wmflabs
-# lct.wmflabs.org
-COPY --from=fetcher /Popups /var/www/html/extensions/Popups
-# drmf-beta.wmflabs.org
-COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
-# wiki.physikerwelt.de
-COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
 
 # collect Vector Skin
 COPY --from=fetcher /Vector /var/www/html/skins/Vector
@@ -153,9 +105,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION} as build
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
-
-# Temporary fix to allow ExternalData installation with composer < 2
-RUN sed -i '/"composer\/installers": "~2\.1"/d' /var/www/html/extensions/ExternalData/composer.json
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
@@ -221,20 +170,6 @@ RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/ww
 # Set ownership of the uploaded images directory
 RUN chown www-data:www-data /var/www/html/images
 
-# Copy shibboleth apache config
-# COPY shib_mod.conf /etc/apache2/conf-available
-# COPY shibboleth2.xml /etc/shibboleth/shibboleth2.xml
-#Test creating default location for shibboleth socket file
-# RUN mkdir /var/run/shibboleth
-# Enable mod shibboleth and generate self signed keys 
-# RUN shib-keygen && a2enconf shib_mod
-
-# Set up vecollabpad
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
-
-# Install node modules for LinkedWiki
-RUN cd /var/www/html/extensions/LinkedWiki && npm install
 
 ##
 ENTRYPOINT ["/bin/bash"]

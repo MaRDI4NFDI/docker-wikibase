@@ -1,9 +1,11 @@
 {
+	"require": {
+        "mediawiki/semantic-media-wiki": "~4.1"
+    },
 	"extra": {
 		"merge-plugin": {
 			"include": [
-				"extensions/*/composer.json",
-				"skins/*/composer.json"
+				"extensions/*/composer.json"
 			]
 		}
 	}
