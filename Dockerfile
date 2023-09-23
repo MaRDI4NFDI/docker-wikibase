@@ -235,6 +235,9 @@ RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp
 
 # Install node modules for LinkedWiki
 RUN cd /var/www/html/extensions/LinkedWiki && npm install
+ENV TZ=Europe/Berlin
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
 ##
 ENTRYPOINT ["/bin/bash"]
