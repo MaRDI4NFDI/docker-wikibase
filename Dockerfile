@@ -27,6 +27,8 @@ RUN \
 bash clone-extension.sh Babel ${WMF_BRANCH};\
 bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
+bash clone-extension.sh CodeEditor ${WMF_BRANCH};\
+bash clone-extension.sh CodeMirror ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
 bash clone-extension.sh DataTransfer ${REL_BRANCH};\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
@@ -37,7 +39,6 @@ bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
-# Here, we store MaRDI-specific code.
 bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
@@ -53,7 +54,6 @@ bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
-# bash clone-extension.sh Shibboleth ${REL_BRANCH}; \
 bash clone-extension.sh Graph ${WMF_BRANCH};\
 bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH};\
 bash clone-extension.sh Echo ${WMF_BRANCH};\
@@ -93,6 +93,7 @@ FROM mediawiki:${MEDIAWIKI_VERSION} as collector
 RUN rm -rf /var/www/html/*
 
 COPY --from=fetcher /mediawiki /var/www/html
+
 # collect bundle extensions
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
@@ -100,6 +101,8 @@ COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /cldr /var/www/html/extensions/cldr
+COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
+COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
 COPY --from=fetcher /Flow /var/www/html/extensions/Flow
 COPY --from=fetcher /Babel /var/www/html/extensions/Babel
@@ -111,8 +114,6 @@ COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
 COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
-
-# collect MaRDI extensions
 COPY --from=fetcher /Math /var/www/html/extensions/Math
 COPY --from=fetcher /MathSearch /var/www/html/extensions/MathSearch
 COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
@@ -121,7 +122,6 @@ COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
-# COPY --from=fetcher /Shibboleth /var/www/html/extensions/Shibboleth
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
@@ -130,7 +130,6 @@ COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlacehol
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
-#swmath
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 
