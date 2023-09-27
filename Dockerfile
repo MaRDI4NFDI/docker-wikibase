@@ -24,41 +24,43 @@ ARG REL_BRANCH
 COPY clone-extension.sh .
 
 RUN \
+bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH};\
 bash clone-extension.sh Babel ${WMF_BRANCH};\
-bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
+bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh CodeEditor ${WMF_BRANCH};\
 bash clone-extension.sh CodeMirror ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
 bash clone-extension.sh DataTransfer ${REL_BRANCH};\
+bash clone-extension.sh Echo ${WMF_BRANCH};\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
 bash clone-extension.sh ExternalData ${REL_BRANCH};\
-bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
+bash clone-extension.sh Graph ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
+bash clone-extension.sh LinkedWiki ${REL_BRANCH};\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
 bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
+bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
+bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
+bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
+bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
-bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
+bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
+bash clone-extension.sh WikiEditor ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
-bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
-bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
-bash clone-extension.sh Graph ${WMF_BRANCH};\
-bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH};\
-bash clone-extension.sh Echo ${WMF_BRANCH};\
-bash clone-extension.sh Thanks ${WMF_BRANCH};\
-bash clone-extension.sh LinkedWiki ${REL_BRANCH}
+echo 'finished cloning'
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
@@ -94,44 +96,45 @@ RUN rm -rf /var/www/html/*
 
 COPY --from=fetcher /mediawiki /var/www/html
 
-# collect bundle extensions
-COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
-COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
-COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
-COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
-COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
+COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
+COPY --from=fetcher /Babel /var/www/html/extensions/Babel
 COPY --from=fetcher /cldr /var/www/html/extensions/cldr
+COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
-COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
-COPY --from=fetcher /Flow /var/www/html/extensions/Flow
-COPY --from=fetcher /Babel /var/www/html/extensions/Babel
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
-COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
-COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
-COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
-COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
-COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
-COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
-COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
+COPY --from=fetcher /Echo /var/www/html/extensions/Echo
+COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
+COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
+COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
+COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
+COPY --from=fetcher /Flow /var/www/html/extensions/Flow
+COPY --from=fetcher /Graph /var/www/html/extensions/Graph
+COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
+COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
+COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Math /var/www/html/extensions/Math
 COPY --from=fetcher /MathSearch /var/www/html/extensions/MathSearch
-COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
-COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
-COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
-COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
-COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
-COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
-COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
-COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
-COPY --from=fetcher /Graph /var/www/html/extensions/Graph
-COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
+COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
+COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
+COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
+COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
+COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
+COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
-COPY --from=fetcher /Echo /var/www/html/extensions/Echo
-COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
-COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
+COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
+COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
+COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
+COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
+COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
+COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
+COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
+COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
+COPY --from=fetcher /WikiEditor /var/www/html/extensions/WikiEditor
+COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
+
 
 # extensions used in wmflabs
 # lct.wmflabs.org
