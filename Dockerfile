@@ -3,7 +3,7 @@
 ######################
 ARG MEDIAWIKI_VERSION=lts
 ARG WMF_BRANCH=wmf/1.41.0-wmf.27
-ARG REL_BRANCH=REL1_40
+ARG REL_BRANCH=REL1_41
 
 ################
 #   Fetcher    #
@@ -155,9 +155,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION} as build
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
-
-# Temporary fix to allow ExternalData installation with composer < 2
-RUN sed -i '/"composer\/installers": "~2\.1"/d' /var/www/html/extensions/ExternalData/composer.json
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
