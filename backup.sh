@@ -22,7 +22,7 @@ mysql_dump() {
     echo
     echo "MySQL backup"
     MYSQL_DUMP_FILE=portal_db_backup_${DATE_STRING}.gz
-    mysqldump -u"${DB_USER}" -p"${DB_PASS}" -h"${DB_HOST}" --databases "${DB_NAME}" | gzip > "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
+    mysqldump -u"${DB_USER}" -p"${DB_PASS}" -h"${DB_HOST}" --single-transaction --quick --databases "${DB_NAME}" | gzip > "${BACKUP_DIR}/${MYSQL_DUMP_FILE}"
     PSTAT=(${PIPESTATUS[@]})
     if [[ ${PSTAT[0]} -eq 0 ]] && [[ ${PSTAT[1]} -eq 0 ]]; then
         STATUS=0
