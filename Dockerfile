@@ -190,6 +190,7 @@ RUN apt-get update && \
 RUN a2enmod rewrite
 
 RUN install -d /var/log/mediawiki -o www-data
+RUN pecl install redis && docker-php-ext-enable redis
 RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 RUN rm -rf /var/www/html/*
