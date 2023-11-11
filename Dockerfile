@@ -32,6 +32,7 @@ bash clone-extension.sh CodeEditor ${WMF_BRANCH};\
 bash clone-extension.sh CodeMirror ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
 bash clone-extension.sh DataTransfer ${REL_BRANCH};\
+bash clone-extension.sh DisplayTitle ${REL_BRANCH};\
 bash clone-extension.sh Echo ${WMF_BRANCH};\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
@@ -103,6 +104,7 @@ COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
+COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/DisplayTitle
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
 COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
