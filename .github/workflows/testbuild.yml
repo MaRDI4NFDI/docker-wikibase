@@ -31,7 +31,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - 
         name: Build Docker image
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           push: false
@@ -39,7 +39,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
       -
         name: Build Docker dev image
-        uses: docker/build-push-action@v5.0.0
+        uses: docker/build-push-action@v5.1.0
         with:
           context: dev
           push: false
