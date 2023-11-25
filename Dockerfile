@@ -79,6 +79,9 @@ rm -rf ExternalContent/.git
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/SPARQL.git SPARQL &&\
 rm -rf SPARQL/.git
 
+RUN git clone --depth=1 https://github.com/SemanticMediaWiki/SemanticMediaWiki.git SemanticMediaWiki &&\
+rm -rf SemanticMediaWiki.git
+
 RUN git clone --depth=1 https://github.com/MaRDI4NFDI/SemanticDrilldown.git SemanticDrilldown &&\
 rm -rf SemanticDrilldown/.git
 
@@ -125,6 +128,7 @@ COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
+COPY --from=fetcher /SemanticMediaWiki /var/www/html/extensions/SemanticMediaWiki
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
 COPY --from=fetcher /SPARQL /var/www/html/extensions/SPARQL
 COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
