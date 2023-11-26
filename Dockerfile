@@ -47,6 +47,7 @@ bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
+bash clone-extension.sh PageForms ${REL_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
@@ -127,6 +128,7 @@ COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
+COPY --from=fetcher /PageForms /var/www/html/extensions/PageForms
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /SemanticMediaWiki /var/www/html/extensions/SemanticMediaWiki
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
