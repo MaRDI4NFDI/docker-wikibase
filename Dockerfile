@@ -40,7 +40,7 @@ bash clone-extension.sh ExternalData ${REL_BRANCH};\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh Graph ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
-bash clone-extension.sh LinkedWiki ${REL_BRANCH};\
+bash clone-extension.sh LinkedWiki master;\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
 bash clone-extension.sh MathSearch master;\
