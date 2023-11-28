@@ -94,6 +94,16 @@ rm -rf mediawiki/.git
 RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
 rm -rf Vector/.git
 
+# other skins
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/chameleon chameleon &&\
+rm -rf chameleon/.git
+
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin MardiSkin &&\
+rm -rf MardiSkin/.git
+
+
+
+
 
 ################
 #  Collector   #
@@ -158,6 +168,10 @@ COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldow
 
 # collect Vector Skin
 COPY --from=fetcher /Vector /var/www/html/skins/Vector
+# other Skins
+COPY --from=fetcher /Vector /var/www/html/skins/chameleon
+COPY --from=fetcher /Vector /var/www/html/skins/MardiSkin
+
 
 
 ################
