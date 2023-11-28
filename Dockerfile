@@ -169,8 +169,8 @@ COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldow
 # collect Vector Skin
 COPY --from=fetcher /Vector /var/www/html/skins/Vector
 # other Skins
-COPY --from=fetcher /Vector /var/www/html/skins/chameleon
-COPY --from=fetcher /Vector /var/www/html/skins/MardiSkin
+COPY --from=fetcher /chameleon /var/www/html/skins/chameleon
+COPY --from=fetcher /MardiSkin /var/www/html/skins/MardiSkin
 
 
 
