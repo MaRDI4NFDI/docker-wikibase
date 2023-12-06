@@ -101,6 +101,9 @@ rm -rf chameleon/.git
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin MardiSkin &&\
 rm -rf MardiSkin/.git
 
+RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-DeleteBatch DeleteBatch &&\
+rm -rf DeleteBatch/.git
+
 
 
 
@@ -121,6 +124,7 @@ COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
+COPY --from=fetcher /DeleteBatch /var/www/html/extensions/DeleteBatch
 COPY --from=fetcher /DisplayTitle /var/www/html/extensions/DisplayTitle
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
