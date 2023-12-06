@@ -62,6 +62,7 @@ bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
 bash clone-extension.sh WikiEditor ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
+bash clone-extension.sh DeleteBatch ${REL_BRANCH};\
 echo 'finished cloning'
 
 # clone extensions not officially distributed by mediawiki
@@ -105,6 +106,7 @@ rm -rf MardiSkin/.git
 
 
 
+
 ################
 #  Collector   #
 ################
@@ -121,6 +123,7 @@ COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
+COPY --from=fetcher /DeleteBatch /var/www/html/extensions/DeleteBatch
 COPY --from=fetcher /DisplayTitle /var/www/html/extensions/DisplayTitle
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
