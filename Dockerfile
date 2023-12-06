@@ -62,6 +62,7 @@ bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
 bash clone-extension.sh WikiEditor ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
+bash clone-extension.sh DeleteBatch ${REL_BRANCH};\
 echo 'finished cloning'
 
 # clone extensions not officially distributed by mediawiki
@@ -101,8 +102,6 @@ rm -rf chameleon/.git
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin MardiSkin &&\
 rm -rf MardiSkin/.git
 
-RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-DeleteBatch DeleteBatch &&\
-rm -rf DeleteBatch/.git
 
 
 
