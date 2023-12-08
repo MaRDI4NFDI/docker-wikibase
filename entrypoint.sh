@@ -34,7 +34,6 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     done
     set -eu
     php /var/www/html/maintenance/install.php --dbuser "$DB_USER" --dbpass "$DB_PASS" --dbname "$DB_NAME" --dbserver "$DB_SERVER" --lang "$MW_SITE_LANG" --pass "$MW_ADMIN_PASS" "$MW_SITE_NAME" "$MW_ADMIN_NAME"
-    php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
 
     # Copy our LocalSettings into place after install from the template
     # https://stackoverflow.com/a/24964089/4746236
@@ -50,6 +49,8 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     if [ -f /extra-install.sh ]; then
         source /extra-install.sh
     fi
+
+    php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
 fi
 
 # Copy LocalSettings to shared location
