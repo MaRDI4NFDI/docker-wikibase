@@ -95,6 +95,10 @@ rm -rf mediawiki/.git
 RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
 rm -rf Vector/.git
 
+# Clone redis jobrunner service
+RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-services-jobrunner.git jobrunner &&\
+rm -rf Jobrunner/.git
+
 # other skins
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/chameleon chameleon &&\
 rm -rf chameleon/.git
@@ -169,6 +173,9 @@ COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
 # wiki.physikerwelt.de
 COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
 
+# services
+COPY --from=fetcher /jobrunner /jobrunner
+
 # collect Vector Skin
 COPY --from=fetcher /Vector /var/www/html/skins/Vector
 # other Skins
@@ -200,6 +207,10 @@ RUN set -xe \
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev
+# services
+COPY --from=collector /jobrunner /jobrunner
+WORKDIR /jobrunner
+RUN composer install --no-dev
 
 
 #######################################
@@ -224,6 +235,8 @@ RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 RUN rm -rf /var/www/html/*
 COPY --from=build /var/www/html /var/www/html
+COPY --from=build /jobrunner /jobrunner
+
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
