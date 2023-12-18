@@ -11,11 +11,6 @@ if [[ "${DB_SERVER:-}" ]]; then
   /wait-for-it.sh $DB_SERVER -t 300
 fi
 
-# Run extra scripts everytime
-if [ -f /extra-entrypoint-run-first.sh ]; then
-    source /extra-entrypoint-run-first.sh
-fi
-
 # Copy LocalSettings from share if exists
 if [ -e "/shared/LocalSettings.php" ]; then
   cp /shared/LocalSettings.php /var/www/html/LocalSettings.php
@@ -58,14 +53,9 @@ if [ ! -e "/shared/LocalSettings.php" ]; then
   cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
 fi
 
-if [[ "${BOTUSER_NAME:-}" ]]; then
-  php /var/www/html/maintenance/createAndPromote.php $BOTUSER_NAME $BOTUSER_PW --bot
-fi
-
 
 # Starting the cron-service for regular_maintenance
 /etc/init.d/cron start
 
 # Run the actual entry point
-(cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser;npm start) &
 docker-php-entrypoint apache2-foreground
