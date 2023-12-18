@@ -51,3 +51,11 @@ jobs:
           context: dev
           push: true
           tags: ghcr.io/mardi4nfdi/docker-wikibase:dev
+      -
+        name: Build and push Docker jobrunner image
+
+        uses: docker/build-push-action@v5.0.0
+        with:
+          context: jobrunner
+          push: true
+          tags: ghcr.io/mardi4nfdi/docker-redis-jobrunner
