@@ -13,7 +13,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push:
+  build-base:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -43,6 +43,13 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+  build-dev:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: build-base
+    steps:
       -
         name: Build and push Docker dev image
 
@@ -51,6 +58,13 @@ jobs:
           context: dev
           push: true
           tags: ghcr.io/mardi4nfdi/docker-wikibase:dev
+  build-jobrunner:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: build-base
+    steps:
       -
         name: Build and push Docker jobrunner image
 
@@ -59,3 +73,19 @@ jobs:
           context: jobrunner
           push: true
           tags: ghcr.io/mardi4nfdi/docker-redis-jobrunner
+          
+  build-backup:
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        packages: write
+      needs: build-base
+      steps:
+        -
+          name: Build and push Docker jobrunner image
+  
+          uses: docker/build-push-action@v5.1.0
+          with:
+            context: backup
+            push: true
+            tags: ghcr.io/mardi4nfdi/docker-backup
