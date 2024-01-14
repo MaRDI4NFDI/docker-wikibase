@@ -2,8 +2,6 @@ name: docker-wikibase-actions-workflow
 
 on:
   push:
-    branches: 
-      - 'main'
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -12,8 +10,9 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  PULL_REQUEST: ${{ github.event_name != 'pull_request' && true || false}}
-
+  PUSH_IMAGE: ${{ github.event_name != 'pull_request'
+    && github.ref == 'refs/heads/main'
+    && true || false}}
 jobs:
   build-base:
     runs-on: ubuntu-latest
@@ -40,7 +39,7 @@ jobs:
         uses: docker/build-push-action@v5.1.0
         with:
           context: .
-          push: "$PULL_REQUEST"
+          push: ${{ env.PUSH_IMAGE }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
@@ -68,7 +67,7 @@ jobs:
         uses: docker/build-push-action@v5.1.0
         with:
           context: dev
-          push: "$PULL_REQUEST"
+          push: ${{ env.PUSH_IMAGE }}
           tags: ghcr.io/mardi4nfdi/docker-wikibase:dev
   build-jobrunner:
     runs-on: ubuntu-latest
@@ -93,7 +92,7 @@ jobs:
         uses: docker/build-push-action@v5.1.0
         with:
           context: jobrunner
-          push: "$PULL_REQUEST"
+          push: ${{ env.PUSH_IMAGE }}
           tags: ghcr.io/mardi4nfdi/docker-redis-jobrunner
           
   build-backup:
@@ -119,5 +118,5 @@ jobs:
           uses: docker/build-push-action@v5.1.0
           with:
             context: backup
-            push: "$PULL_REQUEST"
+            push: ${{ env.PUSH_IMAGE }}
             tags: ghcr.io/mardi4nfdi/docker-backup
