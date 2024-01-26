@@ -40,7 +40,6 @@ bash clone-extension.sh ExternalData ${REL_BRANCH};\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh Graph ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
-bash clone-extension.sh LinkedWiki master;\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
 bash clone-extension.sh MathSearch master;\
@@ -52,17 +51,13 @@ bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
-bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
-bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
 bash clone-extension.sh WikiEditor ${WMF_BRANCH};\
-bash clone-extension.sh YouTube ${REL_BRANCH};\
-bash clone-extension.sh DeleteBatch ${REL_BRANCH};\
 echo 'finished cloning'
 
 # clone extensions not officially distributed by mediawiki
@@ -123,7 +118,6 @@ COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
-COPY --from=fetcher /DeleteBatch /var/www/html/extensions/DeleteBatch
 COPY --from=fetcher /DisplayTitle /var/www/html/extensions/DisplayTitle
 COPY --from=fetcher /Echo /var/www/html/extensions/Echo
 COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
@@ -133,7 +127,6 @@ COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
 COPY --from=fetcher /Flow /var/www/html/extensions/Flow
 COPY --from=fetcher /Graph /var/www/html/extensions/Graph
 COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
-COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Math /var/www/html/extensions/Math
 COPY --from=fetcher /MathSearch /var/www/html/extensions/MathSearch
@@ -147,9 +140,7 @@ COPY --from=fetcher /SemanticMediaWiki /var/www/html/extensions/SemanticMediaWik
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
 COPY --from=fetcher /SPARQL /var/www/html/extensions/SPARQL
 COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
-COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
-COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
 COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
@@ -158,7 +149,6 @@ COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
 COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
 COPY --from=fetcher /WikiEditor /var/www/html/extensions/WikiEditor
-COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 
 
 # extensions used in wmflabs
@@ -262,8 +252,6 @@ RUN chown www-data:www-data /var/www/html/images
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
 
-# Install node modules for LinkedWiki
-RUN cd /var/www/html/extensions/LinkedWiki && npm install
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
