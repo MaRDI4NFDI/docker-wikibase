@@ -10,7 +10,6 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   PUSH_IMAGE: ${{ github.event_name != 'pull_request'
-    && github.ref == 'refs/heads/main'
     && true || false}}
 jobs:
   build-base:
