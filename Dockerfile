@@ -39,6 +39,7 @@ bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
 bash clone-extension.sh ExternalData ${REL_BRANCH};\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh Graph ${WMF_BRANCH};\
+bash clone-extension.sh InputBox ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh LinkedWiki master;\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
@@ -48,9 +49,11 @@ bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
 bash clone-extension.sh PageForms ${REL_BRANCH};\
+bash clone-extension.sh ParserFunctions ${WMF_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
+bash clone-extension.sh SyntaxHighlight_GeSHi ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
 bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
@@ -130,6 +133,7 @@ COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
 COPY --from=fetcher /Flow /var/www/html/extensions/Flow
 COPY --from=fetcher /Graph /var/www/html/extensions/Graph
+COPY --from=fetcher /InputBox /var/www/html/extensions/InputBox
 COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
 COPY --from=fetcher /LinkedWiki /var/www/html/extensions/LinkedWiki
 COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
@@ -140,9 +144,11 @@ COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /PageForms /var/www/html/extensions/PageForms
+COPY --from=fetcher /ParserFunctions /var/www/html/extensions/ParserFunctions
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
 COPY --from=fetcher /SemanticMediaWiki /var/www/html/extensions/SemanticMediaWiki
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
+COPY --from=fetcher /SyntaxHighlight_GeSHi /var/www/html/extensions/SyntaxHighlight_GeSHi
 COPY --from=fetcher /SPARQL /var/www/html/extensions/SPARQL
 COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
@@ -174,14 +180,10 @@ COPY --from=fetcher /chameleon /var/www/html/skins/chameleon
 COPY --from=fetcher /MardiSkin /var/www/html/skins/MardiSkin
 
 
-
 ################
 #   Composer   #
 ################
 FROM mediawiki:${MEDIAWIKI_VERSION} as build
-COPY --from=collector /var/www/html /var/www/html
-WORKDIR /var/www/html/
-COPY composer.local.json /var/www/html/composer.local.json
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
@@ -196,7 +198,13 @@ RUN set -xe \
     && docker-php-ext-enable gd \
     && docker-php-ext-install zip
 
+RUN rm -rf /var/www/html/*
+COPY --from=collector /var/www/html /var/www/html
+WORKDIR /var/www/html/
+COPY composer.local.json /var/www/html/composer.local.json
+
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev
 
 
