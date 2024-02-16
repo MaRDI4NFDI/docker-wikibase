@@ -45,12 +45,13 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
     # Run update.php to install Wikibase
     php /var/www/html/maintenance/update.php --quick
 
+    php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
+
     # Run extrascripts on first run
     if [ -f /extra-install.sh ]; then
         source /extra-install.sh
     fi
 
-    php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
 fi
 
 # Copy LocalSettings to shared location
