@@ -28,6 +28,7 @@ bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH};\
 bash clone-extension.sh Babel ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
 bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
+bash clone-extension.sh Cite ${WMF_BRANCH};\
 bash clone-extension.sh CodeEditor ${WMF_BRANCH};\
 bash clone-extension.sh CodeMirror ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
@@ -122,6 +123,7 @@ COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlacehol
 COPY --from=fetcher /Babel /var/www/html/extensions/Babel
 COPY --from=fetcher /cldr /var/www/html/extensions/cldr
 COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
+COPY --from=fetcher /Cite /var/www/html/extensions/Cite
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
