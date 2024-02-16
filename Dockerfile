@@ -29,6 +29,7 @@ bash clone-extension.sh Babel ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
 bash clone-extension.sh CirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh Cite ${WMF_BRANCH};\
+bash clone-extension.sh CiteThisPage ${WMF_BRANCH};\
 bash clone-extension.sh CodeEditor ${WMF_BRANCH};\
 bash clone-extension.sh CodeMirror ${WMF_BRANCH};\
 bash clone-extension.sh ConfirmEdit ${WMF_BRANCH};\
@@ -39,6 +40,7 @@ bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
 bash clone-extension.sh ExternalData ${REL_BRANCH};\
 bash clone-extension.sh Flow ${WMF_BRANCH};\
+bash clone-extension.sh Gadgets ${WMF_BRANCH};\
 bash clone-extension.sh Graph ${WMF_BRANCH};\
 bash clone-extension.sh InputBox ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
@@ -46,13 +48,16 @@ bash clone-extension.sh LinkedWiki master;\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
 bash clone-extension.sh Math ${WMF_BRANCH};\
 bash clone-extension.sh MathSearch master;\
+bash clone-extension.sh MultimediaViewer ${WMF_BRANCH};\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
 bash clone-extension.sh PageForms ${REL_BRANCH};\
 bash clone-extension.sh ParserFunctions ${WMF_BRANCH};\
+bash clone-extension.sh PdfHandler ${WMF_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
+bash clone-extension.sh ReplaceText ${WMF_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh SyntaxHighlight_GeSHi ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
@@ -124,6 +129,7 @@ COPY --from=fetcher /Babel /var/www/html/extensions/Babel
 COPY --from=fetcher /cldr /var/www/html/extensions/cldr
 COPY --from=fetcher /CirrusSearch /var/www/html/extensions/CirrusSearch
 COPY --from=fetcher /Cite /var/www/html/extensions/Cite
+COPY --from=fetcher /CiteThisPage /var/www/html/extensions/CiteThisPage
 COPY --from=fetcher /CodeEditor /var/www/html/extensions/CodeEditor
 COPY --from=fetcher /CodeMirror /var/www/html/extensions/CodeMirror
 COPY --from=fetcher /ConfirmEdit /var/www/html/extensions/ConfirmEdit
@@ -134,6 +140,7 @@ COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
 COPY --from=fetcher /Flow /var/www/html/extensions/Flow
+COPY --from=fetcher /Gadgets /var/www/html/extensions/Gadgets
 COPY --from=fetcher /Graph /var/www/html/extensions/Graph
 COPY --from=fetcher /InputBox /var/www/html/extensions/InputBox
 COPY --from=fetcher /JsonConfig /var/www/html/extensions/JsonConfig
@@ -142,12 +149,15 @@ COPY --from=fetcher /Lockdown /var/www/html/extensions/Lockdown
 COPY --from=fetcher /Math /var/www/html/extensions/Math
 COPY --from=fetcher /MathSearch /var/www/html/extensions/MathSearch
 COPY --from=fetcher /MatomoAnalytics /var/www/html/extensions/MatomoAnalytics
+COPY --from=fetcher /MultimediaViewer /var/www/html/extensions/MultimediaViewer
 COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /PageForms /var/www/html/extensions/PageForms
 COPY --from=fetcher /ParserFunctions /var/www/html/extensions/ParserFunctions
+COPY --from=fetcher /PdfHandler /var/www/html/extensions/PdfHandler
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
+COPY --from=fetcher /ReplaceText /var/www/html/extensions/ReplaceText
 COPY --from=fetcher /SemanticMediaWiki /var/www/html/extensions/SemanticMediaWiki
 COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
 COPY --from=fetcher /SyntaxHighlight_GeSHi /var/www/html/extensions/SyntaxHighlight_GeSHi
