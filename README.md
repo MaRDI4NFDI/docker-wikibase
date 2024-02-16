@@ -48,3 +48,11 @@ and the final image that will be tagged as "https://github.com/MaRDI4NFDI/docker
 > Note that "$" should be replaced by "${DOLLAR}" for some [exotic reason](https://phabricator.wikimedia.org/T264007).
 
 To add a "custom" extension, you can always mount it in the docker-compose file of the portal.
+
+## Creating a stable tag
+
+Open a terminal and run the following commands
+```
+docker pull ghcr.io/mardi4nfdi/docker-wikibase:main
+docker tag ghcr.io/mardi4nfdi/docker-wikibase:main ghcr.io/mardi4nfdi/docker-wikibase:stable
+docker push ghcr.io/mardi4nfdi/docker-wikibase:stable
