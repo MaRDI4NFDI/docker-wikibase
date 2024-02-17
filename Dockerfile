@@ -53,6 +53,7 @@ bash clone-extension.sh Nuke ${WMF_BRANCH};\
 bash clone-extension.sh OAuth ${WMF_BRANCH};\
 bash clone-extension.sh OpenIDConnect ${REL_BRANCH};\
 bash clone-extension.sh PageForms ${REL_BRANCH};\
+bash clone-extension.sh PageImages ${WMF_BRANCH};\
 bash clone-extension.sh ParserFunctions ${WMF_BRANCH};\
 bash clone-extension.sh PdfHandler ${WMF_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
@@ -155,6 +156,7 @@ COPY --from=fetcher /Nuke /var/www/html/extensions/Nuke
 COPY --from=fetcher /OAuth /var/www/html/extensions/OAuth
 COPY --from=fetcher /OpenIDConnect /var/www/html/extensions/OpenIDConnect
 COPY --from=fetcher /PageForms /var/www/html/extensions/PageForms
+COPY --from=fetcher /PageImages /var/www/html/extensions/PageImages
 COPY --from=fetcher /ParserFunctions /var/www/html/extensions/ParserFunctions
 COPY --from=fetcher /PdfHandler /var/www/html/extensions/PdfHandler
 COPY --from=fetcher /PluggableAuth /var/www/html/extensions/PluggableAuth
