@@ -61,6 +61,7 @@ bash clone-extension.sh ReplaceText ${REL_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh SyntaxHighlight_GeSHi ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
+bash clone-extension.sh TextExtracts ${WMF_BRANCH};\
 bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
 bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
@@ -163,6 +164,7 @@ COPY --from=fetcher /Scribunto /var/www/html/extensions/Scribunto
 COPY --from=fetcher /SyntaxHighlight_GeSHi /var/www/html/extensions/SyntaxHighlight_GeSHi
 COPY --from=fetcher /SPARQL /var/www/html/extensions/SPARQL
 COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
+COPY --from=fetcher /TextExtracts /var/www/html/extensions/TextExtracts
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
