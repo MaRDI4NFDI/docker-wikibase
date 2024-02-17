@@ -57,7 +57,7 @@ bash clone-extension.sh ParserFunctions ${WMF_BRANCH};\
 bash clone-extension.sh PdfHandler ${WMF_BRANCH};\
 bash clone-extension.sh PluggableAuth ${REL_BRANCH};\
 bash clone-extension.sh Popups ${WMF_BRANCH};\
-bash clone-extension.sh ReplaceText ${WMF_BRANCH};\
+bash clone-extension.sh ReplaceText ${REL_BRANCH};\
 bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh SyntaxHighlight_GeSHi ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
