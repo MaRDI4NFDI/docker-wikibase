@@ -36,7 +36,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.1.0
       - name: Build and push Docker image
         uses: docker/build-push-action@v5.1.0
         with:
@@ -62,7 +62,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.1.0
       - name: Build and push Docker dev image
         uses: docker/build-push-action@v5.1.0
         with:
@@ -87,7 +87,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v3.1.0
       - name: Build and push Docker jobrunner image
         uses: docker/build-push-action@v5.1.0
         with:
@@ -112,7 +112,7 @@ jobs:
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
         - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3
+          uses: docker/setup-buildx-action@v3.1.0
         - name: Build and push Docker jobrunner image
           uses: docker/build-push-action@v5.1.0
           with:
