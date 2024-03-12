@@ -293,3 +293,4 @@ RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.
 ##
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
+HEALTHCHECK CMD curl -f http://localhost/ || exit 1
