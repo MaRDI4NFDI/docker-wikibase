@@ -24,6 +24,7 @@ ARG REL_BRANCH
 COPY clone-extension.sh .
 
 RUN \
+bash clone-extension.sh AdvancedSearch ${WMF_BRANCH};\
 bash clone-extension.sh ArticlePlaceholder ${WMF_BRANCH};\
 bash clone-extension.sh Babel ${WMF_BRANCH};\
 bash clone-extension.sh cldr ${WMF_BRANCH};\
@@ -126,6 +127,8 @@ RUN rm -rf /var/www/html/*
 
 COPY --from=fetcher /mediawiki /var/www/html
 
+
+COPY --from=fetcher /AdvancedSearch /var/www/html/extensions/AdvancedSearch
 COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
 COPY --from=fetcher /Babel /var/www/html/extensions/Babel
 COPY --from=fetcher /cldr /var/www/html/extensions/cldr
