@@ -1,6 +1,6 @@
 FROM ghcr.io/mardi4nfdi/docker-wikibase:main
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git zip libzip-dev
+    apt-get install -y --no-install-recommends git zip libzip-dev zlib1g-dev 
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install gd
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
