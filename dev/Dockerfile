@@ -2,6 +2,7 @@ FROM ghcr.io/mardi4nfdi/docker-wikibase:main
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git zip libzip-dev
 RUN docker-php-ext-install zip
+RUN docker-php-ext-install gd
 COPY --from=composer /usr/bin/composer /usr/local/bin/composer
 RUN pecl install xdebug-3.1.3
 RUN docker-php-ext-enable xdebug
