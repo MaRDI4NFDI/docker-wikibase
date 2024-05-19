@@ -19,9 +19,9 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.6
       - name: Log in to the Container registry
-        uses: docker/login-action@v3.0.0
+        uses: docker/login-action@v3.1.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -36,9 +36,9 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.1.0
+        uses: docker/setup-buildx-action@v3.3.0
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5.2.0
+        uses: docker/build-push-action@v5.3.0
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
@@ -54,17 +54,17 @@ jobs:
     needs: build-base
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.6
       - name: Log in to the Container registry
-        uses: docker/login-action@v3.0.0
+        uses: docker/login-action@v3.1.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.1.0
+        uses: docker/setup-buildx-action@v3.3.0
       - name: Build and push Docker dev image
-        uses: docker/build-push-action@v5.2.0
+        uses: docker/build-push-action@v5.3.0
         with:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
@@ -79,17 +79,17 @@ jobs:
     needs: build-base
     steps:
       - name: Checkout
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.6
       - name: Log in to the Container registry
-        uses: docker/login-action@v3.0.0
+        uses: docker/login-action@v3.1.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.1.0
+        uses: docker/setup-buildx-action@v3.3.0
       - name: Build and push Docker jobrunner image
-        uses: docker/build-push-action@v5.2.0
+        uses: docker/build-push-action@v5.3.0
         with:
           context: jobrunner
           push: ${{ env.PUSH_IMAGE }}
@@ -104,17 +104,17 @@ jobs:
       needs: build-base
       steps:
         - name: Checkout
-          uses: actions/checkout@v4.1.1
+          uses: actions/checkout@v4.1.6
         - name: Log in to the Container registry
-          uses: docker/login-action@v3.0.0
+          uses: docker/login-action@v3.1.0
           with:
             registry: ${{ env.REGISTRY }}
             username: ${{ github.actor }}
             password: ${{ secrets.GITHUB_TOKEN }}
         - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3.1.0
+          uses: docker/setup-buildx-action@v3.3.0
         - name: Build and push Docker jobrunner image
-          uses: docker/build-push-action@v5.2.0
+          uses: docker/build-push-action@v5.3.0
           with:
             context: backup
             push: ${{ env.PUSH_IMAGE }}
