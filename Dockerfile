@@ -47,7 +47,7 @@ bash clone-extension.sh InputBox ${WMF_BRANCH};\
 bash clone-extension.sh JsonConfig ${WMF_BRANCH};\
 bash clone-extension.sh LinkedWiki master;\
 bash clone-extension.sh Lockdown ${REL_BRANCH};\
-bash clone-extension.sh Math ${WMF_BRANCH};\
+bash clone-extension.sh Math master;\ #do not change
 bash clone-extension.sh MathSearch master;\
 bash clone-extension.sh MultimediaViewer ${WMF_BRANCH};\
 bash clone-extension.sh Nuke ${WMF_BRANCH};\
