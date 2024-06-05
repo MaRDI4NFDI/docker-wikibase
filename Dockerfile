@@ -68,6 +68,7 @@ bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
 bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
+bash clone-extension.sh Widgets master;\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
@@ -174,6 +175,7 @@ COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
+COPY --from=fetcher /Wikibase /var/www/html/extensions/Widgets
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
 COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
 COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
