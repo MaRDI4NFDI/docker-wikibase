@@ -240,13 +240,14 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
-    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libpq-dev  && \
+    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libpq-dev libyaml-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
 
 RUN install -d /var/log/mediawiki -o www-data
 RUN pecl install redis && docker-php-ext-enable redis
+RUN pecl install yaml && docker-php-ext-enable yaml
 RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 RUN rm -rf /var/www/html/*
