@@ -2,7 +2,7 @@
 #   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=lts
-ARG WMF_BRANCH=wmf/1.43.0-wmf.9
+ARG WMF_BRANCH=wmf/1.43.0-wmf.21
 ARG REL_BRANCH=REL1_42
 
 ################
@@ -40,7 +40,6 @@ bash clone-extension.sh Echo ${WMF_BRANCH};\
 bash clone-extension.sh Elastica ${WMF_BRANCH};\
 bash clone-extension.sh EntitySchema ${WMF_BRANCH};\
 bash clone-extension.sh ExternalData ${REL_BRANCH};\
-bash clone-extension.sh Flow ${WMF_BRANCH};\
 bash clone-extension.sh Gadgets ${WMF_BRANCH};\
 bash clone-extension.sh Graph ${WMF_BRANCH};\
 bash clone-extension.sh InputBox ${WMF_BRANCH};\
@@ -145,7 +144,6 @@ COPY --from=fetcher /Elastica /var/www/html/extensions/Elastica
 COPY --from=fetcher /EntitySchema /var/www/html/extensions/EntitySchema
 COPY --from=fetcher /ExternalContent /var/www/html/extensions/ExternalContent
 COPY --from=fetcher /ExternalData /var/www/html/extensions/ExternalData
-COPY --from=fetcher /Flow /var/www/html/extensions/Flow
 COPY --from=fetcher /Gadgets /var/www/html/extensions/Gadgets
 COPY --from=fetcher /Graph /var/www/html/extensions/Graph
 COPY --from=fetcher /InputBox /var/www/html/extensions/InputBox
