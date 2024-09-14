@@ -276,6 +276,9 @@ RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/ww
 # Set ownership of the uploaded images directory
 RUN chown www-data:www-data /var/www/html/images
 
+# Fix permissions for cache https://github.com/MaRDI4NFDI/portal-compose/pull/563
+RUN chmod 777 /var/www/html/cache
+
 # Copy shibboleth apache config
 # COPY shib_mod.conf /etc/apache2/conf-available
 # COPY shibboleth2.xml /etc/shibboleth/shibboleth2.xml
