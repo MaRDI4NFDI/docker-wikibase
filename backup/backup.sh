@@ -71,7 +71,7 @@ files_dump() {
     echo "Uploaded files backup"
     IMAGES_FILE=images_${DATE_STRING}.tar.gz
     if \
-        tar -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
+        tar --exclude='images/cache' --exclude='images/temp' -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then
