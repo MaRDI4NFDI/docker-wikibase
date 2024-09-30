@@ -67,7 +67,7 @@ bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
 bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
-bash clone-extension.sh Widgets master;\
+bash clone-extension.sh Widgets ${REL_BRANCH};\
 bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
