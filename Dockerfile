@@ -72,6 +72,7 @@ bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
+bash clone-extension.sh WikibaseQualityConstraints ${WMF_BRANCH};\
 bash clone-extension.sh WikiEditor ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 echo 'finished cloning'
@@ -180,6 +181,7 @@ COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
 COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
 COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
+COPY --from=fetcher /WikibaseQualityConstraints /var/www/html/extensions/WikibaseQualityConstraints
 COPY --from=fetcher /WikiEditor /var/www/html/extensions/WikiEditor
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 
