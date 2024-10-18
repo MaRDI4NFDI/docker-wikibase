@@ -46,9 +46,12 @@ xml_dump() {
     echo
     echo "XML backup"
     XML_DUMP_FILE=portal_xml_backup_${DATE_STRING}.gz
+    # Relevant namespaces: https://portal.mardi4nfdi.de/wiki/Special:NamespaceInfo
+    NAMESPACES=(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 120 121 122 123 274 275 640 641 828 829 3000)
+    NAMESPACE_STR=$(IFS=,; echo "${NAMESPACES[*]}")
     # parsoid requires script to be executed from mw root
     cd /var/www/html/ || return 255
-    if /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --conf /shared/LocalSettings.php
+    if /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --filter=namespace:$NAMESPACE_STR --conf /shared/LocalSettings.php
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
