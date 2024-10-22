@@ -195,8 +195,8 @@ START="$(date +%s)"
 mysql_dump 
 EXIT_CODE_MYSQL=$?
 
-xml_dump
-EXIT_CODE_XML=$?
+# xml_dump
+# EXIT_CODE_XML=$?
 
 files_dump
 EXIT_CODE_FILES=$?
