@@ -240,7 +240,8 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
-    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libpq-dev libyaml-dev && \
+    nano jq=1.* libbz2-dev=1.* gettext-base npm grunt cron vim librsvg2-bin libpq-dev libyaml-dev \
+    lua5.1 liblua5.1-0-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
