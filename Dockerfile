@@ -2,7 +2,7 @@
 #   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=lts
-ARG WMF_BRANCH=wmf/1.43.0-wmf.21
+ARG WMF_BRANCH=wmf/1.43.0-wmf.27
 ARG REL_BRANCH=REL1_42
 
 ################
