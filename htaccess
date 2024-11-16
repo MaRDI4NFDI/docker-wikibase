@@ -4,6 +4,9 @@
 # Enable the rewrite engine
 RewriteEngine On
 
+# Redirect robots.txt
+RewriteRule ^/robots.txt$ %{DOCUMENT_ROOT}/w/robots.txt [L]
+
 # Short url for wiki pages
 RewriteRule ^/?wiki(/.*)?$ %{DOCUMENT_ROOT}/w/index.php [L]
 
