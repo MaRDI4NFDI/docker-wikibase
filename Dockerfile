@@ -8,7 +8,7 @@ ARG REL_BRANCH=REL1_43
 ################
 #   Fetcher    #
 ################
-FROM ubuntu:xenial as fetcher
+FROM ubuntu:xenial AS fetcher
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends git=1:2.* ssh unzip=6.* jq=1.* curl=7.* ca-certificates=201* && \
@@ -122,7 +122,7 @@ rm -rf MardiSkin/.git
 ################
 #  Collector   #
 ################
-FROM mediawiki:${MEDIAWIKI_VERSION} as collector
+FROM mediawiki:${MEDIAWIKI_VERSION} AS collector
 
 RUN rm -rf /var/www/html/*
 
@@ -204,7 +204,7 @@ COPY --from=fetcher /MardiSkin /var/www/html/skins/MardiSkin
 ################
 #   Composer   #
 ################
-FROM mediawiki:${MEDIAWIKI_VERSION} as build
+FROM mediawiki:${MEDIAWIKI_VERSION} AS build
 
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
