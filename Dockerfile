@@ -2,8 +2,8 @@
 #   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=lts
-ARG WMF_BRANCH=wmf/1.43.0-wmf.28
-ARG REL_BRANCH=REL1_42
+ARG WMF_BRANCH=wmf/1.44.0-wmf.5
+ARG REL_BRANCH=REL1_43
 
 ################
 #   Fetcher    #
