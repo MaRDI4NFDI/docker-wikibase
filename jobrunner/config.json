@@ -1,18 +1,46 @@
 {
-        "groups": {
-                "basic": {
-                        "runners": 0
-                }
-        },
-        "limits": {
-        },
-        "redis": {
-                "aggregators": [
-                        "redis:6379"
-                ],
-                "queues": [
-                        "redis:6379"
-                ]
-        },
-        "dispatcher": "nothing"
+  "groups": {
+    "basic": {
+      "runners": 8,
+      "include": [
+        "*"
+      ],
+      "exclude": [
+        "DispatchChanges",
+        "CreateProfilePages",
+        "cirrusSearchElasticaWrite",
+        "SetProfileType"
+      ],
+      "low-priority": [
+        "htmlCacheUpdate"
+      ]
+    },
+    "dispChanges": {
+      "runners": 32,
+      "include": [
+        "DispatchChanges"
+      ],
+      "low-priority": [
+        "cirrusSearchElasticaWrite"
+      ]
+    },
+    "profiles": {
+      "runners": 16,
+      "include": [
+        "CreateProfilePages",
+        "SetProfileType",
+        "OpenAlex"
+      ]
+    }
+  },
+  "limits": {},
+  "redis": {
+    "aggregators": [
+      "redis:6379"
+    ],
+    "queues": [
+      "redis:6379"
+    ]
+  },
+  "dispatcher": "/var/www/html/maintenance/run runJobs --type=%(type)x --maxtime=%(maxtime)x --memory-limit=%(maxmem)x --result=json --conf=/shared/LocalSettings.php"
 }

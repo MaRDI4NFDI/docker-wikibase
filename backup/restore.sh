@@ -46,7 +46,7 @@ restore_db_backup() {
     echo "Restoring SQL database backup from $BACKUP_FILE"
     # unzip the backup file and restore the database
     if \
-        gzip -d -c "$BACKUP_FILE"|mysql -u"$DB_USER" -p"$DB_PASS" -h"$DB_HOST" --database "$DB_NAME" 
+        gzip -d -c "$BACKUP_FILE"|mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" -h"$DB_HOST" --database "$MYSQL_DATABASE" 
     then
     # if [[ $? -eq 0 ]]; then
         echo "Done"

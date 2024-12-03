@@ -10,10 +10,10 @@
 
 ## Database settings
 ## Environment variables will be substituted in here.
-${DOLLAR}wgDBserver = "${DB_SERVER}";
-${DOLLAR}wgDBname = "${DB_NAME}";
-${DOLLAR}wgDBuser = "${DB_USER}";
-${DOLLAR}wgDBpassword = "${DB_PASS}";
+${DOLLAR}wgDBserver = "${MYSQL_SERVER}";
+${DOLLAR}wgDBname = "${MYSQL_DATABASE}";
+${DOLLAR}wgDBuser = "${MYSQL_USER}";
+${DOLLAR}wgDBpassword = "${MYSQL_PASSWORD}";
 
 ## Logs
 ## Save these logs inside the container
@@ -43,4 +43,11 @@ ${DOLLAR}wgSecretKey = "${MW_WG_SECRET_KEY}";
 ${DOLLAR}productionComparator = 'prod';
 if (${DOLLAR}productionComparator == '${DEPLOYMENT_ENV}') {
     ${DOLLAR}wgDeprecationReleaseLimit = '1.20';
+}
+
+# Load additional settings from LocalSettings.d alphabetically
+
+foreach (glob("/var/www/html/LocalSettings.d/*.php") as ${DOLLAR}filename)
+{
+    include ${DOLLAR}filename;
 }

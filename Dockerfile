@@ -5,6 +5,7 @@ ARG MEDIAWIKI_VERSION=lts
 ARG WMF_BRANCH=wmf/1.43.0-wmf.28
 ARG REL_BRANCH=REL1_42
 
+
 ################
 #   Fetcher    #
 ################
@@ -15,12 +16,11 @@ RUN apt-get update && \
     apt-get install --reinstall ca-certificates && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# make global settings known in this build stage
+# Make global settings known in this build stage
 ARG WMF_BRANCH
 ARG REL_BRANCH
 
-# clone extensions from github, using specific branch
-
+# Clone extensions from github, using specific branch
 COPY clone-extension.sh .
 
 RUN \
@@ -99,7 +99,7 @@ rm -rf SemanticMediaWiki.git
 RUN git clone --depth=1 https://github.com/MaRDI4NFDI/SemanticDrilldown.git SemanticDrilldown &&\
 rm -rf SemanticDrilldown/.git
 
-# clone core
+# Clone core
 RUN git clone --depth=1 https://github.com/wikimedia/mediawiki -b ${WMF_BRANCH} &&\
 rm -rf mediawiki/.git
 
@@ -107,16 +107,12 @@ rm -rf mediawiki/.git
 RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} Vector &&\
 rm -rf Vector/.git
 
-# other skins
+# ProfessionalWiki Skin
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/chameleon chameleon &&\
 rm -rf chameleon/.git
 
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin MardiSkin &&\
 rm -rf MardiSkin/.git
-
-
-
-
 
 
 ################
@@ -127,7 +123,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION} as collector
 RUN rm -rf /var/www/html/*
 
 COPY --from=fetcher /mediawiki /var/www/html
-
 
 COPY --from=fetcher /AdvancedSearch /var/www/html/extensions/AdvancedSearch
 COPY --from=fetcher /ArticlePlaceholder /var/www/html/extensions/ArticlePlaceholder
@@ -185,18 +180,17 @@ COPY --from=fetcher /WikibaseQualityConstraints /var/www/html/extensions/Wikibas
 COPY --from=fetcher /WikiEditor /var/www/html/extensions/WikiEditor
 COPY --from=fetcher /YouTube /var/www/html/extensions/YouTube
 
-
-# extensions used in wmflabs
-# lct.wmflabs.org
+# Extensions used in wmflabs
+## lct.wmflabs.org
 COPY --from=fetcher /Popups /var/www/html/extensions/Popups
-# drmf-beta.wmflabs.org
+## drmf-beta.wmflabs.org
 COPY --from=fetcher /DataTransfer /var/www/html/extensions/DataTransfer
-# wiki.physikerwelt.de
+## wiki.physikerwelt.de
 COPY --from=fetcher /SemanticDrilldown /var/www/html/extensions/SemanticDrilldown
 
-# collect Vector Skin
+# Collect Vector Skin
 COPY --from=fetcher /Vector /var/www/html/skins/Vector
-# other Skins
+# ProfessionalWiki Skins
 COPY --from=fetcher /chameleon /var/www/html/skins/chameleon
 COPY --from=fetcher /MardiSkin /var/www/html/skins/MardiSkin
 
@@ -235,8 +229,6 @@ RUN composer install --no-dev
 #######################################
 FROM mediawiki:${MEDIAWIKI_VERSION}
 
-# PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
-# NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
@@ -253,20 +245,16 @@ RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 RUN rm -rf /var/www/html/*
 COPY --from=build /var/www/html /var/www/html
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY LocalSettings.php.template /LocalSettings.php.template
+COPY ./LocalSettings.d /var/www/html/LocalSettings.d
 COPY htaccess /var/www/html/.htaccess
 COPY images /var/www/html/images_repo/
 RUN ln -s /var/www/html/ /var/www/html/w
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
 
-COPY LocalSettings.php.mardi.template /LocalSettings.php.mardi.template
 COPY extra-install.sh /
-COPY extra-entrypoint-run-first.sh /
-RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
 RUN mkdir /shared
 
@@ -282,14 +270,6 @@ RUN chown www-data:www-data /var/www/html/images
 # Fix permissions for cache https://github.com/MaRDI4NFDI/portal-compose/pull/563
 RUN chmod 777 /var/www/html/cache
 
-# Copy shibboleth apache config
-# COPY shib_mod.conf /etc/apache2/conf-available
-# COPY shibboleth2.xml /etc/shibboleth/shibboleth2.xml
-#Test creating default location for shibboleth socket file
-# RUN mkdir /var/run/shibboleth
-# Enable mod shibboleth and generate self signed keys 
-# RUN shib-keygen && a2enconf shib_mod
-
 # Set up vecollabpad
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
 RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
@@ -300,7 +280,7 @@ ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
-##
+# Entrypoint
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
 HEALTHCHECK CMD curl -f http://localhost/ || exit 1

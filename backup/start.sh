@@ -40,7 +40,7 @@ echo "" > "$CRONTAB"
 
 if [ "$BACKUP_CRON_ENABLE" = true ]; then
     echo "Setting up backup cronjob"
-    echo "${BACKUP_SCHEDULE} DB_HOST=${DB_HOST} DB_NAME=${DB_NAME} DB_USER=${DB_USER} DB_PASS=${DB_PASS} KEEP_DAYS=${KEEP_DAYS} BACKUP_DIR=${BACKUP_DIR} /bin/bash /app/backup.sh" >> "$CRONTAB"
+    echo "${BACKUP_SCHEDULE} DB_HOST=${DB_HOST} DB_NAME=${MYSQL_DATABASE} DB_USER=${MYSQL_USER} DB_PASS=${MYSQL_PASSWORD} KEEP_DAYS=${KEEP_DAYS} BACKUP_DIR=${BACKUP_DIR} /bin/bash /app/backup.sh" >> "$CRONTAB"
 else
     echo "Setting up do-nothing cronjob: automatic backups are disabled"
 fi

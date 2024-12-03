@@ -1,4 +1,4 @@
-FROM ghcr.io/mardi4nfdi/docker-wikibase:main
+FROM docker-wikibase:main
 # cf https://github.com/mlocati/docker-php-extension-installer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 RUN install-php-extensions pcntl sockets gd zip redis
@@ -7,5 +7,6 @@ RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-services-jobrunne
 WORKDIR /jobrunner
 RUN composer install --no-dev
 COPY ./config.json /jobrunner/config.json
+COPY ./jobrunner-entrypoint.sh jobrunner-entrypoint.sh
 ENTRYPOINT php /jobrunner/redisJobChronService --config-file=/jobrunner/config.json
 HEALTHCHECK NONE
