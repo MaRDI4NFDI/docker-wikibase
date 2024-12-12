@@ -122,7 +122,7 @@ jobs:
           push: ${{ env.PUSH_IMAGE }}
           tags: ghcr.io/mardi4nfdi/docker-redis-jobrunner
           build-args: |
-            BASE_IMAGE_TAG=${{ needs.build-base.outputs.image-tag }}
+            BASE_IMAGE=${{ needs.build-base.outputs.image-tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

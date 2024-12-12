@@ -1,5 +1,5 @@
-ARG BASE_IMAGE_TAG=main
-FROM ghcr.io/mardi4nfdi/docker-wikibase:${BASE_IMAGE_TAG}
+ARG BASE_IMAGE=ghcr.io/mardi4nfdi/docker-wikibase:main
+FROM ${BASE_IMAGE}
 # cf https://github.com/mlocati/docker-php-extension-installer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 RUN install-php-extensions pcntl sockets gd zip redis
