@@ -17,6 +17,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
     steps:
       - name: Start Measurement
         uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
@@ -55,6 +57,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Set output for jobrunner
+        run: echo "image-tag=${{ steps.meta.outputs.tags }}" >> $GITHUB_OUTPUT
       - name: Tests measurement
         uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
         with:
@@ -117,6 +121,8 @@ jobs:
           context: jobrunner
           push: ${{ env.PUSH_IMAGE }}
           tags: ghcr.io/mardi4nfdi/docker-redis-jobrunner
+          build-args: |
+            BASE_IMAGE_TAG=${{ needs.build-base.outputs.image-tag }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
