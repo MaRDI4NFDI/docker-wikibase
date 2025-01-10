@@ -1,0 +1,1 @@
+docker run --rm --env-file dev.env  -v "./entrypoint-standalone.sh:/entrypoint-standalone.sh"  --entrypoint /entrypoint-standalone.sh -p 8888:80 ghcr.io/mardi4nfdi/docker-wikibase:main 
