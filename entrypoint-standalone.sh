@@ -15,6 +15,8 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
       "$MW_SITENAME" "$MW_USER"
     # Run update.php to install Wikibase
     php /var/www/html/maintenance/update.php --quick
+    cd "$MW_DBPATH"
+    chown -R www-data . 
 fi
 
 # Run the actual entry point
