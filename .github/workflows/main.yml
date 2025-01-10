@@ -58,7 +58,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Set output for jobrunner
-        run: echo "image-tag=${{ steps.meta.outputs.tags }}" >> $GITHUB_OUTPUT
+        run: echo "image-tag=${{ steps.meta.outputs.tags[1] }}" >> $GITHUB_OUTPUT
       - name: Tests measurement
         uses: green-coding-solutions/eco-ci-energy-estimation@v3 # use hash or @vX here (See note below)
         with:
