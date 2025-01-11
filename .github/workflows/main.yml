@@ -119,7 +119,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.5.1
         with:
-          images: ${{ env.REGISTRY }}/docker-redis-jobrunner
+          images: ghcr.io/mardi4nfdi/docker-redis-jobrunner
           tags: |
             type=ref,event=branch
             type=semver,pattern={{version}}
@@ -158,7 +158,7 @@ jobs:
           id: meta
           uses: docker/metadata-action@v5.5.1
           with:
-            images: ${{ env.REGISTRY }}/docker-backup
+            images: ghcr.io/mardi4nfdi/docker-backup
             tags: |
               type=ref,event=branch
               type=semver,pattern={{version}}
