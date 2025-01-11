@@ -50,8 +50,8 @@ xml_dump() {
     NAMESPACES=(0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 120 121 122 123 274 275 640 641 828 829 3000)
     NAMESPACE_STR=$(IFS=,; echo "${NAMESPACES[*]}")
     # parsoid requires script to be executed from mw root
-    cd /var/www/html/ || return 255
-    if /usr/local/bin/php /var/www/html/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --filter=namespace:$NAMESPACE_STR --conf /shared/LocalSettings.php
+    cd /var/www/html/w || return 255
+    if /usr/local/bin/php /var/www/html/w/maintenance/dumpBackup.php --current --output=gzip:"${BACKUP_DIR}/${XML_DUMP_FILE}" --quiet --filter=namespace:$NAMESPACE_STR --conf /shared/LocalSettings.php
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${XML_DUMP_FILE} ]]; then
@@ -74,7 +74,7 @@ files_dump() {
     echo "Uploaded files backup"
     IMAGES_FILE=images_${DATE_STRING}.tar.gz
     if \
-        tar --exclude='images/cache' --exclude='images/temp' -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/ images
+        tar --exclude='images/cache' --exclude='images/temp' -czf "${BACKUP_DIR}/${IMAGES_FILE}" -C /var/www/html/w/ images
     then
         STATUS=$?
         if [[ -f ${BACKUP_DIR}/${IMAGES_FILE} ]]; then

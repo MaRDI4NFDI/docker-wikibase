@@ -18,11 +18,11 @@ fi
 
 # Copy LocalSettings from share if exists
 if [ -e "/shared/LocalSettings.php" ]; then
-  cp /shared/LocalSettings.php /var/www/html/LocalSettings.php
+  cp /shared/LocalSettings.php /var/www/html/w/LocalSettings.php
 fi
 
 # Do the mediawiki install (only if LocalSettings doesn't already exist)
-if [ ! -e "/var/www/html/LocalSettings.php" ]; then
+if [ ! -e "/var/www/html/w/LocalSettings.php" ]; then
     # Test if required environment variables have been set
     REQUIRED_VARIABLES=(MW_ADMIN_NAME MW_ADMIN_PASS MW_ADMIN_EMAIL MW_WG_SECRET_KEY DB_SERVER DB_USER DB_PASS DB_NAME)
     for i in ${REQUIRED_VARIABLES[@]}; do
@@ -33,19 +33,19 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
         fi
     done
     set -eu
-    php /var/www/html/maintenance/install.php --dbuser "$DB_USER" --dbpass "$DB_PASS" --dbname "$DB_NAME" --dbserver "$DB_SERVER" --lang "$MW_SITE_LANG" --pass "$MW_ADMIN_PASS" "$MW_SITE_NAME" "$MW_ADMIN_NAME"
+    php /var/www/html/w/maintenance/install.php --dbuser "$DB_USER" --dbpass "$DB_PASS" --dbname "$DB_NAME" --dbserver "$DB_SERVER" --lang "$MW_SITE_LANG" --pass "$MW_ADMIN_PASS" "$MW_SITE_NAME" "$MW_ADMIN_NAME"
 
     # Copy our LocalSettings into place after install from the template
     # https://stackoverflow.com/a/24964089/4746236
     export DOLLAR='$'
-    envsubst < /LocalSettings.php.template > /var/www/html/LocalSettings.php
+    envsubst < /LocalSettings.php.template > /var/www/html/w/LocalSettings.php
     # Copy LocalSettings to shared location
-    cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
+    cp /var/www/html/w/LocalSettings.php /shared/LocalSettings.php
 
     # Run update.php to install Wikibase
-    php /var/www/html/maintenance/update.php --quick
+    php /var/www/html/w/maintenance/update.php --quick
 
-    php /var/www/html/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
+    php /var/www/html/w/maintenance/resetUserEmail.php --no-reset-password "$MW_ADMIN_NAME" "$MW_ADMIN_EMAIL"
 
     # Run extrascripts on first run
     if [ -f /extra-install.sh ]; then
@@ -56,11 +56,11 @@ fi
 
 # Copy LocalSettings to shared location
 if [ ! -e "/shared/LocalSettings.php" ]; then
-  cp /var/www/html/LocalSettings.php /shared/LocalSettings.php
+  cp /var/www/html/w/LocalSettings.php /shared/LocalSettings.php
 fi
 
 if [[ "${BOTUSER_NAME:-}" ]]; then
-  php /var/www/html/maintenance/createAndPromote.php $BOTUSER_NAME $BOTUSER_PW --bot
+  php /var/www/html/w/maintenance/createAndPromote.php $BOTUSER_NAME $BOTUSER_PW --bot
 fi
 
 
@@ -68,5 +68,5 @@ fi
 /etc/init.d/cron start
 
 # Run the actual entry point
-(cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser;npm start) &
+(cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser;npm start) &
 docker-php-entrypoint apache2-foreground
