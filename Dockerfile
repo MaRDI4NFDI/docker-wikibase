@@ -235,6 +235,8 @@ RUN composer install --no-dev
 #######################################
 FROM mediawiki:${MEDIAWIKI_VERSION}
 
+WORKDIR /var/www/html/w/
+
 # PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
 # NAME="Debian GNU/Linux"
 RUN apt-get update && \
@@ -252,14 +254,13 @@ RUN pecl install yaml && docker-php-ext-enable yaml
 RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 RUN rm -rf /var/www/html/*
-COPY --from=build /var/www/html /var/www/html
+COPY --from=build /var/www/html /var/www/html/w
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY LocalSettings.php.template /LocalSettings.php.template
 COPY htaccess /var/www/html/.htaccess
 COPY images /var/www/html/images_repo/
-RUN ln -s /var/www/html/ /var/www/html/w
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
 
@@ -277,10 +278,10 @@ RUN echo "* */1 * * *      root   /var/www/html/regular_maintenance.sh > /var/ww
     >> /etc/cron.d/Regular_maintenance
 
 # Set ownership of the uploaded images directory
-RUN chown www-data:www-data /var/www/html/images
+RUN chown www-data:www-data /var/www/html/w/images
 
 # Fix permissions for cache https://github.com/MaRDI4NFDI/portal-compose/pull/563
-RUN chmod 777 /var/www/html/cache
+RUN chmod 777 /var/www/html/w/cache
 
 # Copy shibboleth apache config
 # COPY shib_mod.conf /etc/apache2/conf-available
@@ -291,11 +292,11 @@ RUN chmod 777 /var/www/html/cache
 # RUN shib-keygen && a2enconf shib_mod
 
 # Set up vecollabpad
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve && npm install && grunt build
-RUN cd /var/www/html/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
+RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve && npm install && grunt build
+RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
 
 # Install node modules for LinkedWiki
-RUN cd /var/www/html/extensions/LinkedWiki && npm install
+RUN cd /var/www/html/w/extensions/LinkedWiki && npm install
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
