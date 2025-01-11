@@ -115,12 +115,22 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.3.0
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5.5.1
+        with:
+          images: ghcr.io/mardi4nfdi/docker-redis-jobrunner
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
       - name: Build and push Docker jobrunner image
         uses: docker/build-push-action@v5.3.0
         with:
           context: jobrunner
           push: ${{ env.PUSH_IMAGE }}
-          tags: ghcr.io/mardi4nfdi/docker-redis-jobrunner
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             BASE_IMAGE=${{ needs.build-base.outputs.image-tag }}
           cache-from: type=gha
@@ -144,11 +154,21 @@ jobs:
             password: ${{ secrets.GITHUB_TOKEN }}
         - name: Set up Docker Buildx
           uses: docker/setup-buildx-action@v3.3.0
+        - name: Extract metadata (tags, labels) for Docker
+          id: meta
+          uses: docker/metadata-action@v5.5.1
+          with:
+            images: ghcr.io/mardi4nfdi/docker-backup
+            tags: |
+              type=ref,event=branch
+              type=semver,pattern={{version}}
+              type=semver,pattern={{major}}.{{minor}}
         - name: Build and push Docker jobrunner image
           uses: docker/build-push-action@v5.3.0
           with:
             context: backup
             push: ${{ env.PUSH_IMAGE }}
-            tags: ghcr.io/mardi4nfdi/docker-backup
+            tags: ${{ steps.meta.outputs.tags }}
+            labels: ${{ steps.meta.outputs.labels }}
             cache-from: type=gha
             cache-to: type=gha,mode=max
