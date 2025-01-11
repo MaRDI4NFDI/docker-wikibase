@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Do the mediawiki install (only if LocalSettings doesn't already exist)
-if [ ! -e "/var/www/html/LocalSettings.php" ]; then
+if [ ! -e "/var/www/html/w/LocalSettings.php" ]; then
     set -euxo pipefail
     php maintenance/install.php \
       --server "$MW_SERVER" \
@@ -14,7 +14,7 @@ if [ ! -e "/var/www/html/LocalSettings.php" ]; then
       --skins Vector \
       "$MW_SITENAME" "$MW_USER"
     # Run update.php to install Wikibase
-    php /var/www/html/maintenance/update.php --quick
+    php /var/www/html/w/maintenance/update.php --quick
     cd "$MW_DBPATH"
     chown -R www-data . 
 fi

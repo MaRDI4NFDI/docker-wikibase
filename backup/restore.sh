@@ -57,12 +57,12 @@ restore_db_backup() {
 }
 
 
-# restore images by copying backup of /var/www/html/images folder
+# restore images by copying backup of /var/www/html/w/images folder
 restore_images_backup() {
     _det_file
     echo "Restoring images directory backup from $BACKUP_FILE"
     if \
-        tar --overwrite --owner www-data --group www-data -xzv -f "$BACKUP_FILE" -C /var/www/html/ images
+        tar --overwrite --owner www-data --group www-data -xzv -f "$BACKUP_FILE" -C /var/www/html/w/ images
     then
          echo "Done"
     else
@@ -88,7 +88,7 @@ restore_images_backup_import() {
     done
     # import images as apache user, in order to get the correct permissions
     if \
-        su -l www-data -s /bin/bash -c 'php /var/www/html/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images' &&\
+        su -l www-data -s /bin/bash -c 'php /var/www/html/w/maintenance/importImages.php --search-recursively --conf /shared/LocalSettings.php --comment "Importing images backup" '"$IMAGE_BACKUP_DIR"'/images' &&\
         rm -rf "$IMAGE_BACKUP_DIR"
     then
          echo "Done"
@@ -105,7 +105,7 @@ restore_xml_backup() {
     _det_file
     echo "Attempting to restore XML backup from $BACKUP_FILE"
     if \
-        cd /var/www/html/ && php maintenance/importDump.php --conf /shared/LocalSettings.php "$BACKUP_FILE" --username-prefix=""
+        cd /var/www/html/W/ && php maintenance/importDump.php --conf /shared/LocalSettings.php "$BACKUP_FILE" --username-prefix=""
     then
         echo "Done"
     else
