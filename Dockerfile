@@ -2,7 +2,7 @@
 #   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=lts
-ARG WMF_BRANCH=wmf/1.44.0-wmf.8
+ARG WMF_BRANCH=wmf/1.44.0-wmf.15
 ARG REL_BRANCH=REL1_43
 
 ################
@@ -63,6 +63,7 @@ bash clone-extension.sh Scribunto ${WMF_BRANCH};\
 bash clone-extension.sh SyntaxHighlight_GeSHi ${WMF_BRANCH};\
 bash clone-extension.sh TemplateStyles ${WMF_BRANCH};\
 bash clone-extension.sh TextExtracts ${WMF_BRANCH};\
+bash clone-extension.sh TimedMediaHandler ${WMF_BRANCH};\
 bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
 bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
@@ -170,6 +171,7 @@ COPY --from=fetcher /SyntaxHighlight_GeSHi /var/www/html/extensions/SyntaxHighli
 COPY --from=fetcher /SPARQL /var/www/html/extensions/SPARQL
 COPY --from=fetcher /TemplateStyles /var/www/html/extensions/TemplateStyles
 COPY --from=fetcher /TextExtracts /var/www/html/extensions/TextExtracts
+COPY --from=fetcher /TimedMediaHandler /var/www/html/extensions/TimedMediaHandler
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
