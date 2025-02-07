@@ -212,6 +212,7 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install --yes --no-install-recommends \
     zlib1g-dev libjpeg-dev libpng-dev libfreetype6-dev libzip-dev zip && \
+    patch && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -226,6 +227,15 @@ COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
 
+# cf. https://github.com/wmde/wikibase-release-pipeline/pull/753/files
+# WORKAROUND for https://phabricator.wikimedia.org/T372458
+# Take wikibase submodules from github as phabricator rate limits us
+COPY --chown=nobody:nogroup --chmod=755 \
+  wikibase-submodules-from-github-instead-of-phabricator.patch \
+  /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
+RUN patch -d /var/www/html/extensions/Wikibase -Np1 </tmp/wikibase-submodules-from-github-instead-of-phabricator.patch && \
+    rm /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
+  
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install --no-dev
