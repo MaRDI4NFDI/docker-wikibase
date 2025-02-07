@@ -233,7 +233,7 @@ COPY --chown=nobody:nogroup --chmod=755 \
   wikibase-submodules-from-github-instead-of-phabricator.patch \
   /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
 RUN patch -d /var/www/html/extensions/Wikibase -Np1 </tmp/wikibase-submodules-from-github-instead-of-phabricator.patch && \
-    rm /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch &&
+    rm /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
   
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
