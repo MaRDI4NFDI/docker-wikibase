@@ -11,7 +11,7 @@ ARG REL_BRANCH=REL1_43
 FROM ubuntu:xenial AS fetcher
 
 RUN apt-get update && \
-    apt-get install --yes --no-install-recommends git=1:2.* ssh unzip=6.* jq=1.* curl=7.* ca-certificates=201* && \
+    apt-get install --yes --no-install-recommends git=1:2.* ssh unzip=6.* jq=1.* curl=7.* ca-certificates=201* patch && \
     apt-get install --reinstall ca-certificates && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -20,7 +20,6 @@ ARG WMF_BRANCH
 ARG REL_BRANCH
 
 # clone extensions from github, using specific branch
-
 COPY clone-extension.sh .
 
 RUN \
@@ -69,7 +68,7 @@ bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
 bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Widgets ${REL_BRANCH};\
-bash clone-extension.sh Wikibase ${WMF_BRANCH};\
+# bash clone-extension.sh Wikibase ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseCirrusSearch ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseLexeme ${WMF_BRANCH};\
 bash clone-extension.sh WikibaseManifest ${REL_BRANCH};\
@@ -77,6 +76,18 @@ bash clone-extension.sh WikibaseQualityConstraints ${WMF_BRANCH};\
 bash clone-extension.sh WikiEditor ${WMF_BRANCH};\
 bash clone-extension.sh YouTube ${REL_BRANCH};\
 echo 'finished cloning'
+
+##Patch Wikibase
+# cf. https://github.com/wmde/wikibase-release-pipeline/pull/753/files
+# WORKAROUND for https://phabricator.wikimedia.org/T372458
+# Take wikibase submodules from github as phabricator rate limits us
+COPY --chown=nobody:nogroup --chmod=755 \
+  wikibase-submodules-from-github-instead-of-phabricator.patch \
+  /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
+RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} Wikibase && \
+    patch -d Wikibase -Np1 </tmp/wikibase-submodules-from-github-instead-of-phabricator.patch && \
+    rm /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch && \
+    git -C Wikibase submodule update --init --recursive    
 
 # clone extensions not officially distributed by mediawiki
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseLocalMedia.git WikibaseLocalMedia &&\
@@ -212,7 +223,6 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive \
     apt-get install --yes --no-install-recommends \
     zlib1g-dev libjpeg-dev libpng-dev libfreetype6-dev libzip-dev zip && \
-    patch && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -226,15 +236,6 @@ RUN rm -rf /var/www/html/*
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
 COPY composer.local.json /var/www/html/composer.local.json
-
-# cf. https://github.com/wmde/wikibase-release-pipeline/pull/753/files
-# WORKAROUND for https://phabricator.wikimedia.org/T372458
-# Take wikibase submodules from github as phabricator rate limits us
-COPY --chown=nobody:nogroup --chmod=755 \
-  wikibase-submodules-from-github-instead-of-phabricator.patch \
-  /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
-RUN patch -d /var/www/html/extensions/Wikibase -Np1 </tmp/wikibase-submodules-from-github-instead-of-phabricator.patch && \
-    rm /tmp/wikibase-submodules-from-github-instead-of-phabricator.patch
   
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
