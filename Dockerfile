@@ -225,6 +225,7 @@ RUN set -xe \
 RUN rm -rf /var/www/html/*
 COPY --from=collector /var/www/html /var/www/html
 WORKDIR /var/www/html/
+COPY composer.local.json /var/www/html/composer.local.json
 
 # cf. https://github.com/wmde/wikibase-release-pipeline/pull/753/files
 # WORKAROUND for https://phabricator.wikimedia.org/T372458
