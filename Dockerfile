@@ -65,6 +65,7 @@ bash clone-extension.sh TextExtracts ${WMF_BRANCH};\
 bash clone-extension.sh TimedMediaHandler ${WMF_BRANCH};\
 bash clone-extension.sh Thanks ${WMF_BRANCH};\
 bash clone-extension.sh UniversalLanguageSelector ${WMF_BRANCH};\
+bash clone-extension.sh UserMerge ${REL_BRANCH};\
 bash clone-extension.sh UrlGetParameters ${REL_BRANCH};\
 bash clone-extension.sh VisualEditor ${WMF_BRANCH};\
 bash clone-extension.sh Widgets ${REL_BRANCH};\
@@ -185,6 +186,9 @@ COPY --from=fetcher /TextExtracts /var/www/html/extensions/TextExtracts
 COPY --from=fetcher /TimedMediaHandler /var/www/html/extensions/TimedMediaHandler
 COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
+COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
+COPY --from=fetcher /UserMerge /var/www/html/extensions/UserMerge
+COPY --from=fetcher /COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
 COPY --from=fetcher /Widgets /var/www/html/extensions/Widgets
