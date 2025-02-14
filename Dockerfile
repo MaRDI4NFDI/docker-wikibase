@@ -188,8 +188,6 @@ COPY --from=fetcher /Thanks /var/www/html/extensions/Thanks
 COPY --from=fetcher /UniversalLanguageSelector /var/www/html/extensions/UniversalLanguageSelector
 COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 COPY --from=fetcher /UserMerge /var/www/html/extensions/UserMerge
-COPY --from=fetcher /COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
-COPY --from=fetcher /UrlGetParameters /var/www/html/extensions/UrlGetParameters
 COPY --from=fetcher /VisualEditor /var/www/html/extensions/VisualEditor
 COPY --from=fetcher /Widgets /var/www/html/extensions/Widgets
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
