@@ -297,6 +297,7 @@ RUN chown www-data:www-data /var/www/html/w/images
 
 # Fix permissions for cache https://github.com/MaRDI4NFDI/portal-compose/pull/563
 RUN chmod 777 /var/www/html/w/cache
+COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini 
 
 # Copy shibboleth apache config
 # COPY shib_mod.conf /etc/apache2/conf-available
