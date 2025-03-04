@@ -276,6 +276,7 @@ COPY entrypoint.sh /entrypoint.sh
 COPY LocalSettings.php.template /LocalSettings.php.template
 COPY htaccess /var/www/html/.htaccess
 COPY images /var/www/html/w/images_repo/
+COPY ./LocalSettings.d /var/www/html/w/LocalSettings.d
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
 
