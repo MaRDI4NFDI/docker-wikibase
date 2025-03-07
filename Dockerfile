@@ -103,7 +103,7 @@ rm -rf ExternalContent/.git
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/SPARQL.git SPARQL &&\
 rm -rf SPARQL/.git
 
-RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git SPARQL &&\
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git WikibaseFacetedSearch &&\
 rm -rf WikibaseFacetedSearch/.git
 
 RUN git clone --depth=1 https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
