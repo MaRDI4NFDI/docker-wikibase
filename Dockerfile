@@ -97,14 +97,17 @@ rm -rf WikibaseLocalMedia/.git
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseExport.git WikibaseExport &&\
 rm -rf WikibaseExport/.git
 
-RUN git clone --depth=1 https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
-rm -rf MatomoAnalytics/.git
-
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/ExternalContent.git ExternalContent &&\
 rm -rf ExternalContent/.git
 
 RUN git clone --depth=1 https://github.com/ProfessionalWiki/SPARQL.git SPARQL &&\
 rm -rf SPARQL/.git
+
+RUN git clone --depth=1 https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git SPARQL &&\
+rm -rf WikibaseFacetedSearch/.git
+
+RUN git clone --depth=1 https://github.com/MaRDI4NFDI/MatomoAnalytics.git MatomoAnalytics &&\
+rm -rf MatomoAnalytics/.git
 
 RUN git clone --depth=1 https://github.com/SemanticMediaWiki/SemanticMediaWiki.git SemanticMediaWiki &&\
 rm -rf SemanticMediaWiki.git
@@ -193,6 +196,7 @@ COPY --from=fetcher /Widgets /var/www/html/extensions/Widgets
 COPY --from=fetcher /Wikibase /var/www/html/extensions/Wikibase
 COPY --from=fetcher /WikibaseCirrusSearch /var/www/html/extensions/WikibaseCirrusSearch
 COPY --from=fetcher /WikibaseExport /var/www/html/extensions/WikibaseExport
+COPY --from=fetcher /WikibaseFacetedSearch /var/www/html/extensions/WikibaseFacetedSearch
 COPY --from=fetcher /WikibaseLexeme /var/www/html/extensions/WikibaseLexeme
 COPY --from=fetcher /WikibaseLocalMedia /var/www/html/extensions/WikibaseLocalMedia
 COPY --from=fetcher /WikibaseManifest /var/www/html/extensions/WikibaseManifest
