@@ -17,7 +17,7 @@ RUN apt-get update && \
 WORKDIR /
 
 # clone extensions from github, using specific branch
-COPY clone_all.sh .
+COPY wikibase-submodules-from-github-instead-of-phabricator.patch clone_all.sh .
 
 RUN bash clone_all.sh
 
