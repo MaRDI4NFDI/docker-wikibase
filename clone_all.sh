@@ -38,7 +38,8 @@ EXTENSIONS=(
   "PageImages ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageImages.git"
   "ParserFunctions ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ParserFunctions.git"
   "PdfHandler ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PdfHandler.git"
-  "PluggableAuth ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PluggableAuth.git"
+  # Workaround for https://phabricator.wikimedia.org/T388624
+  "PluggableAuth master https://github.com/wikimedia/mediawiki-extensions-PluggableAuth.git"
   "Popups ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Popups.git"
   "ReplaceText ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ReplaceText.git"
   "Scribunto ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Scribunto.git"
@@ -91,11 +92,11 @@ git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.g
     patch -d mediawiki/extensions/Wikibase -Np1 <./wikibase-submodules-from-github-instead-of-phabricator.patch && \
     git -C mediawiki/extensions/Wikibase submodule update --init --recursive    
 
-# Woraround for https://phabricator.wikimedia.org/T388624
-cd mediawiki/extensions/PluggableAuth
-git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/PluggableAuth refs/changes/11/1126711/2 && git checkout -b change-1126711 FETCH_HEAD
-cd ../DisplayTitle
+# Workaround for https://phabricator.wikimedia.org/T388624
+cd mediawiki/extensions/DisplayTitle
 git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
+cd ../LinkedWiki
+git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/LinkedWiki refs/changes/39/1131939/1 && git checkout -b change-1131939 FETCH_HEAD
 cd ../../..
 
 # Clone core and other skins
