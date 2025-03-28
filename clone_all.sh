@@ -90,8 +90,16 @@ git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.g
     patch -d mediawiki/extensions/Wikibase -Np1 <./wikibase-submodules-from-github-instead-of-phabricator.patch && \
     git -C mediawiki/extensions/Wikibase submodule update --init --recursive    
 
+# Woraround for https://phabricator.wikimedia.org/T388624
+cd mediawiki/extensions/PluggableAuth
+git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/PluggableAuth refs/changes/11/1126711/2 && git checkout -b change-1126711 FETCH_HEAD
+cd ../DisplayTitle
+git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
+cd ../../..
+
 # Clone core and other skins
 git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} mediawiki/skins/Vector
   # Other skins
-git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git mediawiki/skins/chameleon 
+# see https://github.com/ProfessionalWiki/chameleon/pull/462  
+git clone --depth=1 https://github.com/physikerwelt/chameleon.git -b patch-1 mediawiki/skins/chameleon 
 git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin.git mediawiki/skins/MardiSkin
