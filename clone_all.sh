@@ -20,7 +20,8 @@ EXTENSIONS=(
   "Echo ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Echo.git"
   "Elastica ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Elastica.git"
   "EntitySchema ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EntitySchema.git"
-  "ExternalData ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ExternalData.git"
+  # Wokraround for https://phabricator.wikimedia.org/T388624
+  "ExternalData master https://github.com/wikimedia/mediawiki-extensions-ExternalData.git"
   "Gadgets ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Gadgets.git"
   "Graph ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Graph.git"
   "InputBox ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-InputBox.git"
