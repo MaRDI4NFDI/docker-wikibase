@@ -64,7 +64,7 @@ EXTENSIONS=(
   "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
   "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
   "SPARQL master https://github.com/ProfessionalWiki/SPARQL.git"
-  "WikibaseFacetedSearch master https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
+  "WikibaseFacetedSearch master https://github.com/MaRDI4NFDI/WikibaseFacetedSearch.git"
   "MatomoAnalytics master https://github.com/MaRDI4NFDI/MatomoAnalytics.git"
   "SemanticMediaWiki master https://github.com/SemanticMediaWiki/SemanticMediaWiki.git"
   "SemanticDrilldown master https://github.com/MaRDI4NFDI/SemanticDrilldown.git"
