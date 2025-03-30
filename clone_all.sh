@@ -60,7 +60,7 @@ EXTENSIONS=(
   "WikiEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikiEditor.git"
   "YouTube ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-YouTube.git"
   # Additional repositories (integrated into the main loop)
-  "WikibaseLocalMedia master https://github.com/ProfessionalWiki/WikibaseLocalMedia.git"
+  "WikibaseLocalMedia master https://github.com/MaRDI4NFDI/WikibaseLocalMedia.git"
   "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
   "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
   "SPARQL master https://github.com/ProfessionalWiki/SPARQL.git"
