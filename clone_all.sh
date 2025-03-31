@@ -61,7 +61,7 @@ EXTENSIONS=(
   "WikibaseCirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseCirrusSearch.git"
   "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
   "WikibaseFacetedSearch master https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
-  "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
+ # "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
   "WikibaseLocalMedia master https://github.com/ProfessionalWiki/WikibaseLocalMedia.git"
   "WikibaseManifest ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseManifest.git"
   "WikibaseQualityConstraints ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseQualityConstraints.git"
