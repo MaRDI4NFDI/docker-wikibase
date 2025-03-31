@@ -102,8 +102,8 @@ do
     
     jobs+=($!)
 
-    # Limit the number of background jobs to 10
-    if [[ ${#jobs[@]} -ge 10 ]]; then
+    # Limit the number of background jobs to 2
+    if [[ ${#jobs[@]} -ge 2 ]]; then
         # Wait for the first background job to finish before continuing
         wait "${jobs[0]}"
         # Remove the completed job from the jobs array
