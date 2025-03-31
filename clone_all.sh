@@ -98,17 +98,17 @@ do
     REPO_URL=$(echo "$ext" | awk '{print $3}')
 
     # Run each add_submodule function in the background
-    add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL" &
+    add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL"
     
-    jobs+=($!)
+    #jobs+=($!)
 
     # Limit the number of background jobs to 1
-    if [[ ${#jobs[@]} -ge 1 ]]; then
+    # if [[ ${#jobs[@]} -ge 1 ]]; then
         # Wait for the first background job to finish before continuing
-        wait "${jobs[0]}"
+    #    wait "${jobs[0]}"
         # Remove the completed job from the jobs array
-        jobs=("${jobs[@]:1}")
-    fi
+    #    jobs=("${jobs[@]:1}")
+    #fi
 done
 
 # Wait for any remaining background jobs to finish
