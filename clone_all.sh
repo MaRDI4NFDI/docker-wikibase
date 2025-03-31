@@ -1,4 +1,6 @@
 #!/bin/bash 
+set -euxo pipefail
+
 WMF_BRANCH=wmf/1.44.0-wmf.21
 REL_BRANCH=REL1_43
 
