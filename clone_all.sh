@@ -69,19 +69,52 @@ EXTENSIONS=(
   "YouTube ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-YouTube.git"
 )
 
-for ext in "${EXTENSIONS[@]}"
-do
-    # Split the extension name, branch, and URL using space as delimiter
-    EXTENSION=$(echo "$ext" | awk '{print $1}')
-    BRANCH=$(echo "$ext" | awk '{print $2}')
-    REPO_URL=$(echo "$ext" | awk '{print $3}')
+add_submodule() {
+    EXTENSION=$1
+    BRANCH=$2
+    REPO_URL=$3
     
     # Execute the script with the extension and branch as arguments
     echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
 
     # Clone the repository using the provided URL
     git clone --depth=1 --recurse-submodules "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
+}
+
+export -f add_submodule
+
+# Run the submodule addition in parallel (degree 10)
+# would require installation of additional package parallel
+# parallel -j 10 add_submodule {1} {2} {3} ::: "${EXTENSIONS[@]}" | awk '{print $1, $2, $3}'
+
+# Track background jobs
+jobs=()
+
+for ext in "${EXTENSIONS[@]}"
+do
+    # Split the extension name, branch, and URL using space as delimiter
+    EXTENSION=$(echo "$ext" | awk '{print $1}')
+    BRANCH=$(echo "$ext" | awk '{print $2}')
+    REPO_URL=$(echo "$ext" | awk '{print $3}')
+
+    # Run each add_submodule function in the background
+    add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL" &
+    
+    jobs+=($!)
+
+    # Limit the number of background jobs to 10
+    if [[ ${#jobs[@]} -ge 10 ]]; then
+        # Wait for the first background job to finish before continuing
+        wait "${jobs[0]}"
+        # Remove the completed job from the jobs array
+        jobs=("${jobs[@]:1}")
+    fi
 done
+
+# Wait for any remaining background jobs to finish
+wait
+
+
 
 ## Patch Wikibase
 # cf. https://github.com/wmde/wikibase-release-pipeline/pull/753/files
@@ -101,5 +134,5 @@ cd ../../..
 # Clone core and other skins
 git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} mediawiki/skins/Vector
   # Other skins
-git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git -b patch-1 mediawiki/skins/chameleon 
+git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git mediawiki/skins/chameleon 
 git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin.git mediawiki/skins/MardiSkin
