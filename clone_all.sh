@@ -1,4 +1,6 @@
 #!/bin/bash 
+set -euxo pipefail
+
 WMF_BRANCH=wmf/1.44.0-wmf.21
 REL_BRANCH=REL1_43
 
@@ -20,7 +22,7 @@ EXTENSIONS=(
   "Echo ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Echo.git"
   "Elastica ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Elastica.git"
   "EntitySchema ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EntitySchema.git"
-  # Wokraround for https://phabricator.wikimedia.org/T388624
+  "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
   "ExternalData master https://github.com/wikimedia/mediawiki-extensions-ExternalData.git"
   "Gadgets ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Gadgets.git"
   "Graph ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Graph.git"
@@ -30,6 +32,7 @@ EXTENSIONS=(
   "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
   "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
   "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
+  "MatomoAnalytics master https://github.com/MaRDI4NFDI/MatomoAnalytics.git"
   "MultimediaViewer ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer.git"
   "Nuke ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Nuke.git"
   "OAuth ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
@@ -38,11 +41,13 @@ EXTENSIONS=(
   "PageImages ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageImages.git"
   "ParserFunctions ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ParserFunctions.git"
   "PdfHandler ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PdfHandler.git"
-  # Workaround for https://phabricator.wikimedia.org/T388624
   "PluggableAuth master https://github.com/wikimedia/mediawiki-extensions-PluggableAuth.git"
   "Popups ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Popups.git"
   "ReplaceText ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ReplaceText.git"
   "Scribunto ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Scribunto.git"
+  "SemanticDrilldown master https://github.com/MaRDI4NFDI/SemanticDrilldown.git"
+  "SemanticMediaWiki master https://github.com/SemanticMediaWiki/SemanticMediaWiki.git"
+  "SPARQL master https://github.com/ProfessionalWiki/SPARQL.git"
   "SyntaxHighlight_GeSHi ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-SyntaxHighlight_GeSHi.git"
   "TemplateStyles ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-TemplateStyles.git"
   "TextExtracts ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-TextExtracts.git"
@@ -54,21 +59,36 @@ EXTENSIONS=(
   "VisualEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git"
   "Widgets ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Widgets.git"
   "WikibaseCirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseCirrusSearch.git"
-  "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
+  "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
+  "WikibaseFacetedSearch master https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
+ # "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
+  "WikibaseLocalMedia master https://github.com/ProfessionalWiki/WikibaseLocalMedia.git"
   "WikibaseManifest ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseManifest.git"
   "WikibaseQualityConstraints ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseQualityConstraints.git"
   "WikiEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikiEditor.git"
   "YouTube ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-YouTube.git"
-  # Additional repositories (integrated into the main loop)
-  "WikibaseLocalMedia master https://github.com/MaRDI4NFDI/WikibaseLocalMedia.git"
-  "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
-  "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
-  "SPARQL master https://github.com/ProfessionalWiki/SPARQL.git"
-  "WikibaseFacetedSearch master https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
-  "MatomoAnalytics master https://github.com/MaRDI4NFDI/MatomoAnalytics.git"
-  "SemanticMediaWiki master https://github.com/SemanticMediaWiki/SemanticMediaWiki.git"
-  "SemanticDrilldown master https://github.com/MaRDI4NFDI/SemanticDrilldown.git"
 )
+
+add_submodule() {
+    EXTENSION=$1
+    BRANCH=$2
+    REPO_URL=$3
+    
+    # Execute the script with the extension and branch as arguments
+    echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
+
+    # Clone the repository using the provided URL
+    git clone --depth=1 --recurse-submodules "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
+}
+
+export -f add_submodule
+
+# Run the submodule addition in parallel (degree 10)
+# would require installation of additional package parallel
+# parallel -j 10 add_submodule {1} {2} {3} ::: "${EXTENSIONS[@]}" | awk '{print $1, $2, $3}'
+
+# Track background jobs
+jobs=()
 
 for ext in "${EXTENSIONS[@]}"
 do
@@ -76,13 +96,25 @@ do
     EXTENSION=$(echo "$ext" | awk '{print $1}')
     BRANCH=$(echo "$ext" | awk '{print $2}')
     REPO_URL=$(echo "$ext" | awk '{print $3}')
-    
-    # Execute the script with the extension and branch as arguments
-    echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
 
-    # Clone the repository using the provided URL
-    git clone --depth=1 --recurse-submodules "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
+    # Run each add_submodule function in the background
+    add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL"
+    
+    #jobs+=($!)
+
+    # Limit the number of background jobs to 1
+    # if [[ ${#jobs[@]} -ge 1 ]]; then
+        # Wait for the first background job to finish before continuing
+    #    wait "${jobs[0]}"
+        # Remove the completed job from the jobs array
+    #    jobs=("${jobs[@]:1}")
+    #fi
 done
+
+# Wait for any remaining background jobs to finish
+wait
+
+
 
 ## Patch Wikibase
 # cf. https://github.com/wmde/wikibase-release-pipeline/pull/753/files
@@ -102,6 +134,5 @@ cd ../../..
 # Clone core and other skins
 git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} mediawiki/skins/Vector
   # Other skins
-# see https://github.com/ProfessionalWiki/chameleon/pull/462  
-git clone --depth=1 https://github.com/physikerwelt/chameleon.git -b patch-1 mediawiki/skins/chameleon 
+git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git mediawiki/skins/chameleon 
 git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin.git mediawiki/skins/MardiSkin
