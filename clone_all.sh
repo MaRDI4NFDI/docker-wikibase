@@ -43,6 +43,7 @@ EXTENSIONS=(
   "PdfHandler ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PdfHandler.git"
   "PluggableAuth master https://github.com/wikimedia/mediawiki-extensions-PluggableAuth.git"
   "Popups ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Popups.git"
+  "ProofreadPage ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ProofreadPage.git"
   "ReplaceText ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ReplaceText.git"
   "Scribunto ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Scribunto.git"
   "SemanticDrilldown master https://github.com/MaRDI4NFDI/SemanticDrilldown.git"
