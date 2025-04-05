@@ -65,6 +65,7 @@ EXTENSIONS=(
  # "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
   "WikibaseLocalMedia master https://github.com/ProfessionalWiki/WikibaseLocalMedia.git"
   "WikibaseManifest ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseManifest.git"
+  "WikibaseMediaInfo ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseMediaInfo.git"
   "WikibaseQualityConstraints ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseQualityConstraints.git"
   "WikiEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikiEditor.git"
   "YouTube ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-YouTube.git"
