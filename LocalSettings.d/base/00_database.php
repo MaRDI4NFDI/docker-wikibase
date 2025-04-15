@@ -62,28 +62,27 @@ if ( false && getenv( 'CI' ) !== 'true' ) {
 if ( getenv('DB_PRIMARY_IP') && getenv('DB_REPLICA_IP') ) {
 	$wgLBFactoryConf = array(
 
-			'class' => 'LBFactoryMulti',
+		'class' => 'LBFactoryMulti',
 
-			'sectionsByDB' => array(
-					'my_wiki' => 's1', 
-					'wiki_swmath' => 's1',
+		'sectionsByDB' => array(
+			'my_wiki' => 's1', 
+			'wiki_swmath' => 's1',
+		),
+
+		'sectionLoads' => array(
+			's1' => array(
+				getenv('DB_PRIMARY_IP') => 0,
+				getenv('DB_REPLICA_IP') => 100,
 			),
+		),
 
-			'sectionLoads' => array(
-					's1' => array(
-							getenv('DB_PRIMARY_IP') => 0,
-							getenv('DB_REPLICA_IP') => 100,
-					),
-			),
-
-
-			'serverTemplate' => array(
-					'dbname'     => $wgDBname,
-					'user'       => $wgDBuser,
-					'password'   => $wgDBpassword,
-					'type'       => 'mysql',
-					'flags'      => DBO_DEFAULT,
-					'max lag'    => 30,
-			),
+		'serverTemplate' => array(
+			'dbname'     => $wgDBname,
+			'user'       => $wgDBuser,
+			'password'   => $wgDBpassword,
+			'type'       => 'mysql',
+			'flags'      => DBO_DEFAULT,
+			'max lag'    => 30,
+		),
 	);
 }
