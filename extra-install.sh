@@ -19,3 +19,7 @@ if [[ -f /quickstatements/data/qs-oauth.json ]]; then
     export OAUTH_CONSUMER_SECRET=$(jq -r '.secret' /quickstatements/data/qs-oauth.json);
 	envsubst < /templates/oauth.ini > /quickstatements/data/oauth.ini
 fi
+
+if [[ "${BOTUSER_NAME:-}" && "${BOTUSER_PW:-}" ]]; then
+	php /var/www/html/w/maintenance/createAndPromote.php $BOTUSER_NAME $BOTUSER_PW --bot
+fi

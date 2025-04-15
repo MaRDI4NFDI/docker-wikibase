@@ -44,3 +44,9 @@ ${DOLLAR}productionComparator = 'prod';
 if (${DOLLAR}productionComparator == '${DEPLOYMENT_ENV}') {
     ${DOLLAR}wgDeprecationReleaseLimit = '1.20';
 }
+
+# Load additional settings from LocalSettings.d alphabetically
+foreach (glob("/var/www/html/w/LocalSettings.d/*.php") as ${DOLLAR}filename)
+{
+    include ${DOLLAR}filename;
+}
