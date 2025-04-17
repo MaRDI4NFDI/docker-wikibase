@@ -1,7 +1,7 @@
 #!/bin/bash 
 set -euxo pipefail
 
-WMF_BRANCH=wmf/1.44.0-wmf.21
+WMF_BRANCH=wmf/1.44.0-wmf.23
 REL_BRANCH=REL1_43
 
 git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikimedia/mediawiki.git mediawiki
@@ -32,7 +32,7 @@ EXTENSIONS=(
   "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
   "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
   "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
-  "MatomoAnalytics master https://github.com/MaRDI4NFDI/MatomoAnalytics.git"
+  "MatomoAnalytics main https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer.git"
   "Nuke ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Nuke.git"
   "OAuth ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
