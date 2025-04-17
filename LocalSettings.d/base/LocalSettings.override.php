@@ -155,10 +155,10 @@ if ( MW_ENTRY_POINT !== 'cli') {
 # https://github.com/MaRDI4NFDI/portal-compose/issues/419
 $wgJobTypeConf['default'] = [
     'class'          => 'JobQueueRedis',
-    'redisServer'    => 'redis:6379', // this is the host ip from the default network
+    'redisServer'    => getenv('MW_REDIS_HOST') . ':' . getenv('MW_REDIS_PORT'), // this is the host ip from the default network
     'redisConfig'    => [],
     'daemonized'     => true
- ];
+];
 # The wdqs-updater would trigger a lot of jobs if the jun rate was not 0
 $wgJobRunRate=0;
 # Allow to display how many profie pages exist https://www.mediawiki.org/wiki/Help:Magic_words#Statistics
