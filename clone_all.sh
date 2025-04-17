@@ -32,7 +32,7 @@ EXTENSIONS=(
   "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
   "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
   "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
-  "MatomoAnalytics master "https://github.com/miraheze/MatomoAnalytics.git"
+  "MatomoAnalytics master https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer.git"
   "Nuke ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Nuke.git"
   "OAuth ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
