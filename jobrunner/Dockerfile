@@ -8,5 +8,4 @@ RUN git clone --depth=1 https://github.com/wikimedia/mediawiki-services-jobrunne
 WORKDIR /jobrunner
 RUN composer install --no-dev
 COPY ./config.json /jobrunner/config.json
-ENTRYPOINT php /jobrunner/redisJobChronService --config-file=/jobrunner/config.json
 HEALTHCHECK NONE
