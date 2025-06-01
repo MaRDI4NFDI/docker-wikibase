@@ -49,7 +49,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.10.0
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6.17.0
+        uses: docker/build-push-action@v6.18.0
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
@@ -89,7 +89,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.10.0
       - name: Build and push Docker dev image
-        uses: docker/build-push-action@v6.17.0
+        uses: docker/build-push-action@v6.18.0
         with:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
@@ -125,7 +125,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
       - name: Build and push Docker jobrunner image
-        uses: docker/build-push-action@v6.17.0
+        uses: docker/build-push-action@v6.18.0
         with:
           context: jobrunner
           push: ${{ env.PUSH_IMAGE }}
@@ -164,7 +164,7 @@ jobs:
               type=semver,pattern={{version}}
               type=semver,pattern={{major}}.{{minor}}
         - name: Build and push Docker jobrunner image
-          uses: docker/build-push-action@v6.17.0
+          uses: docker/build-push-action@v6.18.0
           with:
             context: backup
             push: ${{ env.PUSH_IMAGE }}
