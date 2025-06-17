@@ -59,7 +59,7 @@ if ( false && getenv( 'CI' ) !== 'true' ) {
 	];
 }
 
-if ( getenv('DB_PRIMARY_IP') && getenv('DB_REPLICA_IP') ) {
+if ( getenv('DB_PRIMARY_IP') && getenv('DB_SECONDARY_IP') ) {
 	$wgLBFactoryConf = array(
 
 		'class' => 'LBFactoryMulti',
@@ -72,7 +72,7 @@ if ( getenv('DB_PRIMARY_IP') && getenv('DB_REPLICA_IP') ) {
 		'sectionLoads' => array(
 			's1' => array(
 				getenv('DB_PRIMARY_IP') => 0,
-				getenv('DB_REPLICA_IP') => 100,
+				getenv('DB_SECONDARY_IP') => 100,
 			),
 		),
 
