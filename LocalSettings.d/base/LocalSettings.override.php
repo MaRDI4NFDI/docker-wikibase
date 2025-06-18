@@ -77,7 +77,10 @@ wfLoadExtension( 'ExternalContent' );
 
 $wgMathDisableTexFilter = 'always';
 
-$wgMathLaTeXMLUrl = 'http://latexml:8080/convert/';
+$latexml_host = getenv('MW_LATEXML_HOST') ?: 'latexml';
+$latexml_port = getenv('MW_LATEXML_PORT') ?: '8080';
+$wgMathLaTeXMLUrl = "http://{$latexml_host}:{$latexml_port}/convert/";
+
 #overwrite settings
 $wgMathDefaultLaTeXMLSetting = array(
         'format' => 'xhtml',
@@ -128,7 +131,9 @@ $wgNamespacePermissionLockdown[NS_PRIVATE]['edit'] = [ 'private' ];
 $wgNamespacePermissionLockdown[NS_PRIVATE]['read'] = [ 'private' ];
 
 # Settings for MathSearch extension.
-$wgMathSearchBaseXBackendUrl="http://formulasearch:1985/basex/";
+$fs_host = getenv('MW_FORMULASEARCH_HOST') ?: 'formulasearch';
+$fs_port = getenv('MW_FORMULASEARCH_PORT') ?: '1985';
+$wgMathSearchBaseXBackendUrl = "http://{$fs_host}:{$fs_port}/basex/";
 
 # Settings for Math-Extension
 $wgMathFullRestbaseURL = 'https://wikimedia.org/api/rest_';
