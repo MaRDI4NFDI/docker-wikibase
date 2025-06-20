@@ -82,7 +82,7 @@ COPY images /var/www/html/w/images_repo/
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
     
-ARG ENVIRONMENT=production
+ARG ENVIRONMENT=staging
 COPY ./LocalSettings.d/base /var/www/html/w/LocalSettings.d    
 COPY ./LocalSettings.d/${ENVIRONMENT} /var/www/html/w/LocalSettings.d
 

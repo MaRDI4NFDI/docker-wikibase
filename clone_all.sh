@@ -8,6 +8,7 @@ git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikime
 
 EXTENSIONS=(
   "AdvancedSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-AdvancedSearch.git"
+  "AWS master https://github.com/edwardspec/mediawiki-aws-s3.git"
   "ArticlePlaceholder ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ArticlePlaceholder.git"
   "Babel ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Babel.git"
   "CirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-CirrusSearch.git"
