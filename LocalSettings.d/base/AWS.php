@@ -10,7 +10,10 @@ $wgAWSCredentials = [
 
 $s3endpoint = getenv('S3_ENDPOINT');
 $wgFileBackends['s3']['endpoint'] = 'https://' . $s3endpoint;
-$wgAWSBucketDomain = '$1.' . $s3endpoint;
+$wgFileBackends['s3']['use_path_style_endpoint'] = true; 
+
+// $wgAWSBucketDomain = '$1.' . $s3endpoint;
+$wgAWSBucketDomain = $s3endpoint;
 
 $wgAWSRegion = 'default';
 $wgAWSBucketName = 'mardi-portal';
