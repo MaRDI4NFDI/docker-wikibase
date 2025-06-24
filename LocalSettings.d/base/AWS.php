@@ -17,7 +17,10 @@ $wgFileBackends['s3']['use_path_style_endpoint'] = true;
 
 $wgAWSRegion = 'default';
 $wgAWSBucketName = 'mardi-portal';
-$wgAWSBucketDomain = $s3endpoint . '/$1';
+
+//$wgAWSBucketDomain = $s3endpoint . '/$1';
+$wgAWSBucketDomain = 'images.' . getenv('WIKIBASE_HOST');
+
 $wgAWSBucketTopSubdirectory = "/" . getenv('S3_ENVIRONMENT');
 $wgAWSRepoHashLevels = '2';
 $wgAWSRepoDeletedHashLevels = '3';
