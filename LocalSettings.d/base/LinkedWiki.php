@@ -5,7 +5,7 @@ wfLoadExtension( 'LinkedWiki' );
 $wgLinkedWikiConfigSPARQLServices["mardi"] = array(
     "debug" => false,
     "isReadOnly" => true,
-    "endpointRead" => "https://query.portal.mardi4nfdi.de/proxy/wdqs/bigdata/namespace/wdq/sparql",
+    "endpointRead" => "https://query." . $_ENV['WIKIBASE_HOST'] . "/sparql",
     "typeRDFDatabase" => "blazegraph",
     "HTTPMethodForRead" => "GET",
     "lang" => "en"

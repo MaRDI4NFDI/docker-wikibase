@@ -1,8 +1,10 @@
 <?php
+// doku https://www.mediawiki.org/wiki/Manual:$wgSMTP/Gmail
 $wgSMTP = [
     'host' => 'ssl://smtp.gmail.com',  // hostname of the email server
     'IDHost' => getenv('WIKIBASE_HOST'),
     'port' => 465,
-    'auth' => true
-    // username and password are missing here on purpose, they'll be added with private config overwrite
+    'auth' => true,
+    'username' => getenv( 'SMTP_EMAIL' ),
+    'password' => getenv( 'SMTP_PW' )
 ];
