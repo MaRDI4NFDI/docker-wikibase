@@ -2,9 +2,9 @@
 $wgExternalDataSources['AbstractDB'] = [
     'server' => getenv('DB_SERVER'),
     'type' => 'mysql',
-    'name' => 'paper_abstracts_db',
-    'user' => getenv('MSC_USER'),
-    'password' => getenv('MSC_PASS'),
+    'name' => 'paper-abstracts-db',
+    'user' => 'abstract-user',
+    'password' => getenv('ABSTRACT_PASS'),
     'prepared' => <<<'SQL'
 SELECT abstract, abstract_source, summary, summary_source
 FROM paper_abstracts
