@@ -1,4 +1,4 @@
 <?php
 
-$wgSPARQLEndpoint = 'http://wdqs.svc:9999/bigdata/namespace/wdq/sparql';
+$wgSPARQLEndpoint = 'http://wdqs:9999/sparql';
 wfLoadExtension( 'SPARQL' );
