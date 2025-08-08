@@ -130,7 +130,7 @@ if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'c
 		wfLoadExtension( 'WikibaseMediaInfo' );
 	}
 	if ( getenv( 'MW_ELASTIC_HOST' ) !== false ) {
-		$wgCirrusSearchServers = [ $_ENV['MW_ELASTIC_HOST'] . ':' . $_ENV['MW_ELASTIC_PORT'] ];
+		$wgCirrusSearchServers = [ $_ENV['MW_ELASTIC_HOST'] ];
 		$wgSearchType = 'CirrusSearch';
 		$wgCirrusSearchExtraIndexSettings['index.mapping.total_fields.limit'] = 5000;
 		$wgWBCSUseCirrus = true;
