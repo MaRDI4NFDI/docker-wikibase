@@ -843,7 +843,7 @@ if ( $wgDBname === 'my_wiki' ) {
 	}
 
 	wfLoadExtension( 'WikibaseQualityConstraints' );
-	$wgWBQualityConstraintsSparqlEndpoint = 'https://query.portal.mardi4nfdi.de/proxy/wdqs/bigdata/namespace/wdq/sparql';
+	$wgWBQualityConstraintsSparqlEndpoint = 'https://query.portal.mardi4nfdi.de/sparql';
 	$wgWBQualityConstraintsInstanceOfId = 'P31';                           // P31
 	$wgWBQualityConstraintsSubclassOfId = 'P36';                           // P279
 	$wgWBQualityConstraintsPropertyConstraintId = 'P1608';                 // P2302
