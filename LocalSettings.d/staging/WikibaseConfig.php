@@ -25,6 +25,7 @@ if ( $wgDBname === 'my_wiki' ) {
 			"P1", // Wikidata PID
 		];
 	}
+}
 
 if ( $wgDBname === 'my_wiki' ) {
   wfLoadExtension( 'WikibaseQualityConstraints' );
