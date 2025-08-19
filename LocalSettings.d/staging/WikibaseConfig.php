@@ -23,6 +23,7 @@ if ( $wgDBname === 'my_wiki' ) {
 	if ( getenv( 'MW_ELASTIC_HOST' ) !== false ) {
 		$wgWBRepoSettings['searchIndexProperties'] = [
 			"P1", // Wikidata PID
+      "P3", // instance of
 		];
 	}
 }
