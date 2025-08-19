@@ -20,6 +20,13 @@ $wgWBRepoSettings['statementSections'] = [
 ];
 
 if ( $wgDBname === 'my_wiki' ) {
+	if ( getenv( 'MW_ELASTIC_HOST' ) !== false ) {
+		$wgWBRepoSettings['searchIndexProperties'] = [
+			"P1", // Wikidata PID
+		];
+	}
+
+if ( $wgDBname === 'my_wiki' ) {
   wfLoadExtension( 'WikibaseQualityConstraints' );
   $wgWBQualityConstraintsSparqlEndpoint = 'https://query.staging.mardi4nfdi.org/proxy/wdqs/bigdata/namespace/wdq/sparql';
   $wgWBQualityConstraintsInstanceOfId = 'P3';                         // P31
