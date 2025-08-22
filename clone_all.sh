@@ -58,6 +58,7 @@ EXTENSIONS=(
   "UniversalLanguageSelector ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UniversalLanguageSelector.git"
   "UrlGetParameters ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UrlGetParameters.git"
   "UserMerge ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UserMerge.git"
+  "Variables ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Variables.git"
   "VisualEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git"
   "Widgets ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Widgets.git"
   "WikibaseCirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseCirrusSearch.git"
