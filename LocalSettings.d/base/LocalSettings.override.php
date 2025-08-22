@@ -71,6 +71,8 @@ $wgDebugLogGroups['MathSearch'] = array(
 	'level' => 'info',
 );
 wfLoadExtension( 'MathSearch' );
+$wgWBRepoSettings['sparqlEndpoint']='https://query.portal.mardi4nfdi.de/sparql';
+
 wfLoadExtension( 'Lockdown' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'ExternalContent' );
