@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ghcr.io/mardi4nfdi/docker-wikibase:main
+ARG BASE_IMAGE=ghcr.io/mardi4nfdi/wikibase-staging:latest
 FROM ${BASE_IMAGE}
 # cf https://github.com/mlocati/docker-php-extension-installer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/

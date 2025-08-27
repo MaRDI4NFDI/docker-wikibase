@@ -1,4 +1,5 @@
-FROM ghcr.io/mardi4nfdi/docker-wikibase:main
+ARG BASE_IMAGE=ghcr.io/mardi4nfdi/wikibase-staging:latest
+FROM ${BASE_IMAGE}
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git zip libzip-dev
 RUN docker-php-ext-install zip
