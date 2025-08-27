@@ -8,6 +8,7 @@ git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikime
 
 EXTENSIONS=(
   "AdvancedSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-AdvancedSearch.git"
+  "AWS master https://github.com/edwardspec/mediawiki-aws-s3.git"
   "ArticlePlaceholder ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ArticlePlaceholder.git"
   "Babel ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Babel.git"
   "CirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-CirrusSearch.git"
@@ -32,7 +33,7 @@ EXTENSIONS=(
   "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
   "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
   "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
-  "MatomoAnalytics master https://github.com/MaRDI4NFDI/MatomoAnalytics.git"
+  "MatomoAnalytics main https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer.git"
   "Nuke ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Nuke.git"
   "OAuth ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
@@ -57,6 +58,7 @@ EXTENSIONS=(
   "UniversalLanguageSelector ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UniversalLanguageSelector.git"
   "UrlGetParameters ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UrlGetParameters.git"
   "UserMerge ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UserMerge.git"
+  "Variables ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Variables.git"
   "VisualEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git"
   "Widgets ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Widgets.git"
   "WikibaseCirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseCirrusSearch.git"

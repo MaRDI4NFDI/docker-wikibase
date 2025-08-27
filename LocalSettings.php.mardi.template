@@ -1,6 +1,0 @@
-# Load additional settings from LocalSettings.d alphabetically
-
-foreach (glob("/shared/LocalSettings.d/*.php") as ${DOLLAR}filename)
-{
-    include ${DOLLAR}filename;
-}

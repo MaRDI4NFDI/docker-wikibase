@@ -57,8 +57,6 @@ FROM mediawiki:${MEDIAWIKI_VERSION}
 
 WORKDIR /var/www/html/w/
 
-# PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
-# NAME="Debian GNU/Linux"
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive\
     apt-get install --yes --no-install-recommends \
@@ -83,11 +81,12 @@ COPY htaccess /var/www/html/.htaccess
 COPY images /var/www/html/w/images_repo/
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
+    
+ARG ENVIRONMENT=staging
+COPY ./LocalSettings.d/base /var/www/html/w/LocalSettings.d    
+COPY ./LocalSettings.d/${ENVIRONMENT} /var/www/html/w/LocalSettings.d
 
-COPY LocalSettings.php.mardi.template /LocalSettings.php.mardi.template
 COPY extra-install.sh /
-COPY extra-entrypoint-run-first.sh /
-RUN cat /LocalSettings.php.mardi.template >> /LocalSettings.php.template && rm /LocalSettings.php.mardi.template
 COPY oauth.ini /templates/oauth.ini
 RUN mkdir /shared
 
@@ -104,17 +103,9 @@ RUN chown www-data:www-data /var/www/html/w/images
 RUN chmod 777 /var/www/html/w/cache
 COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini 
 
-# Copy shibboleth apache config
-# COPY shib_mod.conf /etc/apache2/conf-available
-# COPY shibboleth2.xml /etc/shibboleth/shibboleth2.xml
-#Test creating default location for shibboleth socket file
-# RUN mkdir /var/run/shibboleth
-# Enable mod shibboleth and generate self signed keys 
-# RUN shib-keygen && a2enconf shib_mod
-
 # Set up vecollabpad
-RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve && npm install && grunt build
-RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
+# RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve && npm install && grunt build
+# RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
 
 # Install node modules for LinkedWiki
 RUN cd /var/www/html/w/extensions/LinkedWiki && npm install

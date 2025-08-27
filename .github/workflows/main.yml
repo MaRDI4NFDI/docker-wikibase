@@ -2,6 +2,13 @@ name: docker-wikibase-actions-workflow
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
@@ -9,121 +16,92 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
-  PUSH_IMAGE: ${{ github.event_name != 'pull_request'
-    && true || false}}
+  PUSH_IMAGE: ${{ github.event_name != 'pull_request' }}
 jobs:
-  build-base:
+  build-staging:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
+      single-tag: ${{ steps.single-tag.outputs.single-tag }}
     steps:
-      - name: Start Measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5 # use hash or @vX here (See note below)
-        with:
-          task: start-measurement
       - name: Checkout
         uses: actions/checkout@v4.2.2
-      - name: Checkout Repo Measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5 # use hash or @vX here (See note below)
-        with:
-          task: get-measurement
-          label: 'repo checkout'
+
       - name: Log in to the Container registry
+        if: env.PUSH_IMAGE == 'true'
         uses: docker/login-action@v3.4.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract metadata (tags, labels) for Docker
+
+      - name: Extract metadata for staging
         id: meta
         uses: docker/metadata-action@v5.7.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-staging
           tags: |
-            type=ref,event=branch
+            type=ref,event=branch,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.11.1
-      - name: Build and push Docker image
+
+      - name: Build and push staging image
         uses: docker/build-push-action@v6.18.0
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-      - name: Set output for jobrunner
-        run: echo "image-tag=${{ steps.meta.outputs.tags[1] }}" >> $GITHUB_OUTPUT
-      - name: Tests measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5 # use hash or @vX here (See note below)
-        with:
-          task: get-measurement
-          label: 'build and push'
-      - name: Show Energy Results
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5 # use hash or @vX here (See note below)
-        with:
-          task: display-results
-        # continue-on-error: true # recommended setting for production. See notes below.
+          build-args: |
+            ENVIRONMENT=staging
+          cache-from: type=gha,scope=staging
+          cache-to: type=gha,mode=max,scope=staging
 
+      - name: Set single tag output
+        id: single-tag
+        run: |
+          echo "single-tag=ghcr.io/mardi4nfdi/wikibase-staging:latest" >> $GITHUB_OUTPUT
 
-  build-dev:
+  build-jobrunner-staging:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    needs: build-base
+    needs: build-staging
     steps:
       - name: Checkout
         uses: actions/checkout@v4.2.2
+
       - name: Log in to the Container registry
+        if: env.PUSH_IMAGE == 'true'
         uses: docker/login-action@v3.4.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
-      - name: Build and push Docker dev image
-        uses: docker/build-push-action@v6.18.0
-        with:
-          context: dev
-          push: ${{ env.PUSH_IMAGE }}
-          tags: ghcr.io/mardi4nfdi/docker-wikibase:dev
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
-          
-  build-jobrunner:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs: build-base
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.2.2
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3.4.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
-      - name: Extract metadata (tags, labels) for Docker
+      - name: Extract metadata for jobrunner staging
         id: meta
         uses: docker/metadata-action@v5.7.0
         with:
-          images: ghcr.io/mardi4nfdi/docker-redis-jobrunner
+          images: ${{ env.REGISTRY }}/mardi4nfdi/redis-jobrunner-staging
           tags: |
-            type=ref,event=branch
+            type=ref,event=branch,suffix=-{{date 'YYYYMMDD-HHmmss'}}
+            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.11.1
+
       - name: Build and push Docker jobrunner image
         uses: docker/build-push-action@v6.18.0
         with:
@@ -132,43 +110,153 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            BASE_IMAGE=${{ needs.build-base.outputs.image-tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+            BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
+          cache-from: type=gha,scope=jobrunner-staging
+          cache-to: type=gha,mode=max,scope=jobrunner-staging
 
+  build-production:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      single-tag: ${{ steps.single-tag.outputs.single-tag }}
+    steps:
+      - name: Start Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: start-measurement
 
-  build-backup:
-      runs-on: ubuntu-latest
-      permissions:
-        contents: read
-        packages: write
-      needs: build-base
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v4.2.2
-        - name: Log in to the Container registry
-          uses: docker/login-action@v3.4.0
-          with:
-            registry: ${{ env.REGISTRY }}
-            username: ${{ github.actor }}
-            password: ${{ secrets.GITHUB_TOKEN }}
-        - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v3.11.1
-        - name: Extract metadata (tags, labels) for Docker
-          id: meta
-          uses: docker/metadata-action@v5.7.0
-          with:
-            images: ghcr.io/mardi4nfdi/docker-backup
-            tags: |
-              type=ref,event=branch
-              type=semver,pattern={{version}}
-              type=semver,pattern={{major}}.{{minor}}
-        - name: Build and push Docker jobrunner image
-          uses: docker/build-push-action@v6.18.0
-          with:
-            context: backup
-            push: ${{ env.PUSH_IMAGE }}
-            tags: ${{ steps.meta.outputs.tags }}
-            labels: ${{ steps.meta.outputs.labels }}
-            cache-from: type=gha
-            cache-to: type=gha,mode=max
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Checkout Repo Measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+
+        with:
+          task: get-measurement
+          label: 'repo checkout'
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.4.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata for production
+        id: meta
+        uses: docker/metadata-action@v5.7.0
+        with:
+          images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-production
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.11.1
+
+      - name: Build and push production image
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            ENVIRONMENT=production
+          cache-from: type=gha,scope=production
+          cache-to: type=gha,mode=max,scope=production
+
+      - name: Set single tag output
+        id: single-tag
+        run: |
+          echo "single-tag=ghcr.io/mardi4nfdi/wikibase-production:latest" >> $GITHUB_OUTPUT
+
+      - name: Tests measurement
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: get-measurement
+          label: 'build and push'
+
+      - name: Show Energy Results
+        uses: green-coding-solutions/eco-ci-energy-estimation@v5
+        with:
+          task: display-results
+
+  build-jobrunner-production:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: read
+      packages: write
+    needs: build-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3.4.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for jobrunner production
+        id: meta
+        uses: docker/metadata-action@v5.7.0
+        with:
+          images: ${{ env.REGISTRY }}/mardi4nfdi/redis-jobrunner-production
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.11.1
+
+      - name: Build and push jobrunner production image
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: jobrunner
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BASE_IMAGE=${{ needs.build-production.outputs.single-tag }}
+          cache-from: type=gha,scope=jobrunner-production
+          cache-to: type=gha,mode=max,scope=jobrunner-production
+
+  build-dev:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: build-staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Log in to the Container registry
+        if: env.PUSH_IMAGE == 'true'
+        uses: docker/login-action@v3.4.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.11.1
+
+      - name: Build and push Docker dev image
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: dev
+          push: ${{ env.PUSH_IMAGE }}
+          tags: ghcr.io/mardi4nfdi/wikibase-dev:latest
+          build-args: |
+            BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
+          cache-from: type=gha,scope=dev
+          cache-to: type=gha,mode=max,scope=dev
