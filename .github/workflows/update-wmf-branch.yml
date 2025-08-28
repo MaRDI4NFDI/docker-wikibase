@@ -1,0 +1,122 @@
+name: Update WMF Branch
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  check-and-update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        pip install requests
+
+    - name: Check Group 2 version
+      id: check_version
+      run: |
+        python3 << 'EOF'
+        import requests
+        import json
+        import re
+        import sys
+
+        def get_github_file(path):
+            url = f"https://raw.githubusercontent.com/wikimedia/operations-mediawiki-config/master/{path}"
+            response = requests.get(url)
+            response.raise_for_status()
+            return response.text
+
+        def get_group2_version():
+            try:
+                # Get wiki versions from GitHub
+                wiki_versions = json.loads(get_github_file('wikiversions.json'))
+                
+                # Get first wiki from group2.dblist from GitHub
+                group2_content = get_github_file('dblists/group2.dblist')
+                lines = group2_content.strip().split('\n')
+                
+                first_wiki = None
+                for line in lines:
+                    line = line.split('#')[0].strip()
+                    if line:
+                        first_wiki = line
+                        break
+                
+                if not first_wiki or first_wiki not in wiki_versions:
+                    return None
+                
+                # Get version and remove 'php-' prefix
+                version = wiki_versions[first_wiki][4:]
+                return version
+                
+            except Exception as e:
+                print(f"Error: {e}")
+                return None
+
+        # Get current version from clone_all.sh
+        with open('clone_all.sh', 'r') as f:
+            content = f.read()
+        
+        current_match = re.search(r'WMF_BRANCH=wmf/(.+)', content)
+        if not current_match:
+            print("Could not find WMF_BRANCH in clone_all.sh")
+            sys.exit(1)
+        
+        current_version = current_match.group(1)
+        latest_version = get_group2_version()
+        
+        if not latest_version:
+            print("Could not retrieve latest version")
+            sys.exit(1)
+        
+        print(f"Current version: {current_version}")
+        print(f"Latest version: {latest_version}")
+        
+        # Set outputs for next steps
+        with open('$GITHUB_OUTPUT', 'a') as f:
+            f.write(f"current_version={current_version}\n")
+            f.write(f"latest_version={latest_version}\n")
+            f.write(f"needs_update={'true' if current_version != latest_version else 'false'}\n")
+        EOF
+
+    - name: Update clone_all.sh
+      if: steps.check_version.outputs.needs_update == 'true'
+      run: |
+        sed -i 's/WMF_BRANCH=wmf\/.*/WMF_BRANCH=wmf\/${{ steps.check_version.outputs.latest_version }}/' clone_all.sh
+
+    - name: Create Pull Request
+      if: steps.check_version.outputs.needs_update == 'true'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "Update WMF_BRANCH to ${{ steps.check_version.outputs.latest_version }}"
+        title: "Update MediaWiki branch to ${{ steps.check_version.outputs.latest_version }}"
+        body: |
+          This PR updates the WMF_BRANCH in `clone_all.sh` to the latest Group 2 MediaWiki version.
+          
+          **Changes:**
+          - Current version: `${{ steps.check_version.outputs.current_version }}`
+          - New version: `${{ steps.check_version.outputs.latest_version }}`
+          
+          This update was automatically generated based on the latest Group 2 configuration from Wikimedia.
+        branch: update-wmf-branch-${{ steps.check_version.outputs.latest_version }}
+        delete-branch: true
+        base: main
+
+    - name: No update needed
+      if: steps.check_version.outputs.needs_update == 'false'
+      run: |
+        echo "WMF_BRANCH is already up to date (${{ steps.check_version.outputs.current_version }})"
