@@ -45,7 +45,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
+          annotations: |
             org.opencontainers.image.description=Mediaiki/Wikibase image for the staging MaRDI portal
             org.opencontainers.image.title=Staging Wikibase image
 
@@ -97,7 +97,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
+          annotations: |
             org.opencontainers.image.description=Redis jobrunner for Mediawiki/Wikibase staging environment
             org.opencontainers.image.title=Redis Jobrunner (staging)
 
@@ -154,7 +154,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-          labels: |
+          annotations: |
             org.opencontainers.image.description=Mediawiki/Wikibase production-ready image for the MaRDI portal
             org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
 
@@ -215,7 +215,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-          labels: |
+          annotations: |
             org.opencontainers.image.description=Redis jobrunner for Mediawiki/Wikibase production environment
             org.opencontainers.image.title=Redis Jobrunner (production)
       
@@ -261,7 +261,7 @@ jobs:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
           tags: ghcr.io/mardi4nfdi/wikibase-dev:latest
-          labels: |
+          annotations: |
             org.opencontainers.image.description=Wikibase development environment with additional tools
             org.opencontainers.image.title=Wikibase Development
           build-args: |
