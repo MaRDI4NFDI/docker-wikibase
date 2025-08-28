@@ -1,4 +1,4 @@
-name: docker-wikibase-actions-workflow
+name: Build and push images to registry
 
 on:
   push:
