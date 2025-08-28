@@ -56,7 +56,7 @@ git push origin <tag_version>
 |entrypoint.sh|Entrypoint of the container, installs the wiki's maintenance/install scripts|
 |extra-install.sh|creates elastic search index and OAuth settings for Quickstatements|
 
-## Adding extensions
+# Adding extensions
 To install and activate a new extension you have to:
 * Add it to the `clone_all.sh` script in the `EXTENSIONS` array:
 
@@ -64,11 +64,11 @@ To install and activate a new extension you have to:
 
 * Activate and configure it as required with the corresponding `php` file under `base`, `staging` or `production` in the `LocalSettings.d` directory.
 
-## Build manually
+# Build manually
 
 `docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
 
-## Creating a stable tag
+# Creating a stable tag
 
 ```
 docker pull ghcr.io/mardi4nfdi/docker-wikibase:main
