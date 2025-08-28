@@ -3,8 +3,8 @@ MediaWiki/Wikibase Docker Image
 * Built from the official latest MediaWiki docker image
 * With standard and MaRDI extensions preinstalled
 
-* Staging image is built automatically on push to main or on merging a PR.
-* Production images is only built when pushing a tag.
+* Staging image is built automatically on push to main or on merging a PR
+* Production image is only built when pushing a tag
 
 # Description of the Dockerfile
 
