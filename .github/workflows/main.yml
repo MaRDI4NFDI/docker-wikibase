@@ -287,7 +287,7 @@ jobs:
         with:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev:latest
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.labels }}
           build-args: |
