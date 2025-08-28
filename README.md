@@ -32,14 +32,21 @@ MediaWiki/Wikibase Docker Image
   2. `staging`: Contains configuration files that are only installed in the staging image
   2. `production`: Contains configuration files that are only installed in the production image
 
-# Create a tag
+# Create tag and new release
 
-Create and push a new signed tag with the newer version to trigger a production release:
+## Option 1
+
+Manually trigger the **Create Release Tag** action.
+
+## Option 2
+
+* Create and push a new signed tag with the newer version to trigger a production release:
 ```
 git tag -s <tag_version>
 git push origin <tag_version>
 ```
 
+* Manually create the release through the Github UI from the corresponding tag
 # Overview of the Shell-scripts 
 
 |shellscript  | description                                      |
