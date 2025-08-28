@@ -45,6 +45,9 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.description=Mediaiki/Wikibase image for the staging MaRDI portal
+            org.opencontainers.image.title=Staging Wikibase image
           annotations: |
             org.opencontainers.image.description=Mediaiki/Wikibase image for the staging MaRDI portal
             org.opencontainers.image.title=Staging Wikibase image
@@ -98,6 +101,9 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.description=Redis jobrunner for Mediawiki/Wikibase staging environment
+            org.opencontainers.image.title=Redis Jobrunner (staging)
           annotations: |
             org.opencontainers.image.description=Redis jobrunner for Mediawiki/Wikibase staging environment
             org.opencontainers.image.title=Redis Jobrunner (staging)
@@ -156,6 +162,9 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            org.opencontainers.image.description=Mediawiki/Wikibase production-ready image for the MaRDI portal
+            org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
           annotations: |
             org.opencontainers.image.description=Mediawiki/Wikibase production-ready image for the MaRDI portal
             org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
@@ -218,6 +227,9 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+          labels: |
+            org.opencontainers.image.description=Redis jobrunner for Mediawiki/Wikibase production environment
+            org.opencontainers.image.title=Redis Jobrunner (production)
           annotations: |
             org.opencontainers.image.description=Redis jobrunner for Mediawiki/Wikibase production environment
             org.opencontainers.image.title=Redis Jobrunner (production)
@@ -263,6 +275,9 @@ jobs:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.description=Wikibase development environment with additional tools
+            org.opencontainers.image.title=Wikibase Development
           annotations: |
             org.opencontainers.image.description=Wikibase development environment with additional tools
             org.opencontainers.image.title=Wikibase Development
