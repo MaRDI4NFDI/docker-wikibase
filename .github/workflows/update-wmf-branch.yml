@@ -32,6 +32,7 @@ jobs:
         import json
         import re
         import sys
+        import os
 
         def get_github_file(path):
             url = f"https://raw.githubusercontent.com/wikimedia/operations-mediawiki-config/master/{path}"
@@ -85,17 +86,33 @@ jobs:
         print(f"Current version: {current_version}")
         print(f"Latest version: {latest_version}")
         
+        needs_update = current_version != latest_version
+        print(f"Needs update: {needs_update}")
+        
         # Set outputs for next steps
-        with open('$GITHUB_OUTPUT', 'a') as f:
-            f.write(f"current_version={current_version}\n")
-            f.write(f"latest_version={latest_version}\n")
-            f.write(f"needs_update={'true' if current_version != latest_version else 'false'}\n")
+        github_output = os.environ.get('GITHUB_OUTPUT')
+        if github_output:
+            with open(github_output, 'a') as f:
+                f.write(f"current_version={current_version}\n")
+                f.write(f"latest_version={latest_version}\n")
+                f.write(f"needs_update={'true' if needs_update else 'false'}\n")
+            print(f"Outputs written to {github_output}")
+        else:
+            print("GITHUB_OUTPUT environment variable not found")
         EOF
+
+    - name: Debug outputs
+      run: |
+        echo "Current version: ${{ steps.check_version.outputs.current_version }}"
+        echo "Latest version: ${{ steps.check_version.outputs.latest_version }}"
+        echo "Needs update: ${{ steps.check_version.outputs.needs_update }}"
 
     - name: Update clone_all.sh
       if: steps.check_version.outputs.needs_update == 'true'
       run: |
+        echo "Updating clone_all.sh..."
         sed -i 's/WMF_BRANCH=wmf\/.*/WMF_BRANCH=wmf\/${{ steps.check_version.outputs.latest_version }}/' clone_all.sh
+        echo "Updated clone_all.sh"
 
     - name: Create Pull Request
       if: steps.check_version.outputs.needs_update == 'true'
