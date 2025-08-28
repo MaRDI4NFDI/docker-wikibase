@@ -1,12 +1,5 @@
 ARG BASE_IMAGE=ghcr.io/mardi4nfdi/wikibase-staging:latest
-ARG IMAGE_DESCRIPTION="Wikibase development environment with additional tools"
-ARG IMAGE_TITLE="Wikibase Development"
-
 FROM ${BASE_IMAGE}
-
-LABEL org.opencontainers.image.description="${IMAGE_DESCRIPTION}" \
-      org.opencontainers.image.title="${IMAGE_TITLE}"
-      
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git zip libzip-dev
 RUN docker-php-ext-install zip
