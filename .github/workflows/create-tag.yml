@@ -24,7 +24,7 @@ on:
         default: false
 
 jobs:
-  create-tag:
+  create-tag-and-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -41,10 +41,8 @@ jobs:
           LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
           echo "Latest tag: $LATEST_TAG"
           
-          # Strip 'v' prefix
+          # Strip 'v' prefix and calculate new version
           VERSION=${LATEST_TAG#v}
-          
-          # Split into components
           MAJOR=$(echo $VERSION | cut -d. -f1)
           MINOR=$(echo $VERSION | cut -d. -f2)
           PATCH=$(echo $VERSION | cut -d. -f3)
@@ -66,26 +64,10 @@ jobs:
           esac
           
           NEW_TAG="v${MAJOR}.${MINOR}.${PATCH}"
-          echo "New tag: $NEW_TAG"
-          
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "previous_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
       
-      - name: Create and push tag
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          
-          # Create annotated tag with message
-          if [ -n "${{ github.event.inputs.tag_message }}" ]; then
-            git tag -a ${{ steps.version.outputs.new_tag }} -m "${{ github.event.inputs.tag_message }}"
-          else
-            git tag -a ${{ steps.version.outputs.new_tag }} -m "Release ${{ steps.version.outputs.new_tag }}"
-          fi
-          
-          git push origin ${{ steps.version.outputs.new_tag }}
-      
-            - name: Generate Release Notes
+      - name: Generate Release Notes
         id: release_notes
         run: |
           if [ -n "${{ github.event.inputs.release_notes }}" ]; then
@@ -112,4 +94,4 @@ jobs:
           body: ${{ steps.release_notes.outputs.body }}
           draft: false
           prerelease: ${{ github.event.inputs.prerelease }}
-          generate_release_notes: false
+          generate_release_notes: false 
