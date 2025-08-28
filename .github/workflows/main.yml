@@ -289,6 +289,7 @@ jobs:
           push: ${{ env.PUSH_IMAGE }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.labels }}
           build-args: |
             BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
           cache-from: type=gha,scope=dev
