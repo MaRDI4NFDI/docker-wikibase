@@ -26,7 +26,6 @@ EXTENSIONS=(
   "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
   "ExternalData master https://github.com/wikimedia/mediawiki-extensions-ExternalData.git"
   "Gadgets ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Gadgets.git"
-  "Graph ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Graph.git"
   "InputBox ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-InputBox.git"
   "JsonConfig ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-JsonConfig.git"
   "LinkedWiki master https://github.com/wikimedia/mediawiki-extensions-LinkedWiki.git"
