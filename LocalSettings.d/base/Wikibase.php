@@ -7,7 +7,7 @@ require_once "$IP/extensions/Wikibase/client/ExampleSettings.php";
 $wikibaseHost = getenv( 'WIKIBASE_SCHEME' ) . '://' . getenv( 'WIKIBASE_HOST' );
 $portalHost = $wikibaseHost;
 if ( getenv( 'WIKIBASE_HOST' ) === 'localhost' ) {
-		$wikibaseHost = getenv( 'WIKIBASE_SCHEME' ) . '://wikibase.svc';
+		$wikibaseHost = getenv( 'WIKIBASE_SCHEME' ) . '://mardi-wikibase';
 		$portalHost = getenv( 'WIKIBASE_SCHEME' ) . '://localhost:' . getenv( 'WIKIBASE_PORT' );
 }
 
