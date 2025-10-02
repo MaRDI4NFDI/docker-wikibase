@@ -23,7 +23,7 @@ $wgDebugLogGroups['DeferredUpdates'] = array(
 	'level' => 'error',
 );
 $GLOBALS['wgHooks']['MWStakeRunJobsTriggerRegisterHandlers'][] = static function ( &$handlers ) {
-	$handlers["my-own-handler"] = [
+	$handlers['auto-create-profile-pages'] = [
 		'class' => '\\MediaWiki\\Extension\\MathSearch\\Graph\\AutoCreateProfilePages',
 		'services' => [ 'MainConfig', 'JobQueueGroup' ]
 	];
