@@ -219,3 +219,11 @@ $wgExportFromNamespaces = true;
 $wgShellboxUrls = [
 	'default' => 'http://ffmpeg/shellbox'
 ];
+
+$GLOBALS['wgHooks']['MWStakeRunJobsTriggerRegisterHandlers'][] = static function ( &$handlers ) {
+	$handlers['auto-create-profile-pages'] = [
+		'class' => '\\MediaWiki\\Extension\\MathSearch\\Graph\\AutoCreateProfilePages',
+		'services' => [ 'MainConfig', 'JobQueueGroup' ]
+	];
+	return true;
+};
