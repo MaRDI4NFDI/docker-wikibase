@@ -175,7 +175,10 @@ $wgAllowSlowParserFunctions=true;
 # see https://www.mediawiki.org/wiki/Manual:$wgMultiShardSiteStats/en
 $wgMultiShardSiteStats = true;
 # https://www.mediawiki.org/wiki/Manual:$wgMainCacheType maybe we need to increase the size of the APC cache at some point in time
-$wgMainCacheType = CACHE_ACCEL;
+$wgMainCacheType = CACHE_MEMCACHED;
+$wgMemCachedServers = [ 
+    (getenv('MW_MEMCACHED_HOST') ?: 'memcached') . ':' . (getenv('MW_MEMCACHED_PORT') ?: '11211')
+];
 $wgSessionCacheType = CACHE_DB;
 // Speed up "On high-traffic wikis, this should be set to false, to avoid the need to check the file modification time, and to avoid the performance impact of unnecessary cache invalidations. " see https://www.mediawiki.org/wiki/Manual:$wgInvalidateCacheOnLocalSettingsChange
 $wgInvalidateCacheOnLocalSettingsChange=false;
@@ -183,7 +186,7 @@ $wgInvalidateCacheOnLocalSettingsChange=false;
 $wgCacheDirectory = "$IP/cache/$wgDBname";
 
 // speed up speed for anonymous users https://www.mediawiki.org/wiki/Manual:$wgUseFileCache
-$wgUseFileCache=true;
+$wgUseFileCache=false;
 
 // speed up article count, by reducing the number of queries to the (giant) pagelink tables
 $wgArticleCountMethod='any';
