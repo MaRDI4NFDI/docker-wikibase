@@ -28,7 +28,6 @@ EXTENSIONS=(
   "Gadgets ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Gadgets.git"
   "InputBox ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-InputBox.git"
   "JsonConfig ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-JsonConfig.git"
-  "LinkedWiki master https://github.com/wikimedia/mediawiki-extensions-LinkedWiki.git"
   "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
   "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
   "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
@@ -130,8 +129,6 @@ git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.g
 # Workaround for https://phabricator.wikimedia.org/T388624
 cd mediawiki/extensions/DisplayTitle
 git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
-cd ../LinkedWiki
-git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/LinkedWiki refs/changes/39/1131939/1 && git checkout -b change-1131939 FETCH_HEAD
 cd ../../..
 
 # Clone core and other skins

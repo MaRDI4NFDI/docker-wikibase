@@ -107,8 +107,6 @@ COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini
 # RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve && npm install && grunt build
 # RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
 
-# Install node modules for LinkedWiki
-RUN cd /var/www/html/w/extensions/LinkedWiki && npm install
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
