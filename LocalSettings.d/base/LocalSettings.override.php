@@ -36,6 +36,9 @@ $wgGroupPermissions['user']['renameuser'] = true;
 # Restrict anonymous editing
 $wgGroupPermissions['*']['edit'] = false;
 
+# Remove purge right from anonymous users
+$wgGroupPermissions['*']['purge'] = false;
+
 # Remove rate limits for bots
 $wgGroupPermissions['bot']['noratelimit'] = true;
 
