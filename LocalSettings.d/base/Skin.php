@@ -33,6 +33,22 @@ $wgHooks['SkinAddFooterLinks'][] = function ( Skin $skin, string $key, array &$f
     };
     return true;
 };
+
+# Add Purge button for logged-in users
+$wgHooks['SkinTemplateNavigation::Universal'][] = function ( $skinTemplate, &$links ) {
+    $user = $skinTemplate->getUser();
+    $title = $skinTemplate->getTitle();
+    
+    if ( $user->isRegistered() && $title->exists() ) {
+        $links['actions']['purge'] = [
+            'class' => false,
+            'text' => $skinTemplate->msg( 'purge' )->text(),
+            'href' => $title->getLocalURL( 'action=purge' ),
+            'icon' => 'reload',
+        ];
+    }
+};
+
 # https://github.com/ProfessionalWiki/MardiSkin
 wfLoadExtension( 'Bootstrap' );
 wfLoadSkin( 'chameleon' );
