@@ -189,7 +189,7 @@ $wgInvalidateCacheOnLocalSettingsChange=false;
 $wgCacheDirectory = "$IP/cache/$wgDBname";
 
 // speed up speed for anonymous users https://www.mediawiki.org/wiki/Manual:$wgUseFileCache
-$wgUseFileCache=true;
+$wgUseFileCache=false;
 
 // speed up article count, by reducing the number of queries to the (giant) pagelink tables
 $wgArticleCountMethod='any';
