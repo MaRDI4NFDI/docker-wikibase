@@ -68,11 +68,6 @@ wfLoadExtension( 'JsonConfig' );
 wfLoadExtension( 'InputBox' );
 wfLoadExtension( 'ParserFunctions' );
 wfLoadExtension( 'Math' );
-# collect information on errors during profile page creation
-$wgDebugLogGroups['MathSearch'] = array(
-	'destination' => '/dev/stdout',
-	'level' => 'info',
-);
 wfLoadExtension( 'MathSearch' );
 $wikibase_host = getenv( 'WIKIBASE_HOST' );
 $wgWBRepoSettings['sparqlEndpoint']='https://query.' . $wikibase_host . '/sparql';
