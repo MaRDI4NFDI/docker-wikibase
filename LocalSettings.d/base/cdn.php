@@ -8,3 +8,6 @@ if ($wgUseCdn) {
     $wgCdnMaxAge = 18000; // 5 hours (default)
     $wgCdnMaxageLagged = 18000; // MediaWiki incorrectly detects lagged database due to Galera cluster architecture.
 }
+
+# Trust proxy headers from Varnish
+$wgUsePrivateIPs = true;
