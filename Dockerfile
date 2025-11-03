@@ -66,6 +66,12 @@ RUN apt-get update && \
 
 RUN a2enmod rewrite
 
+# Enable mod_remoteip to log real client IPs from X-Forwarded-For header
+RUN a2enmod remoteip
+COPY apache/remoteip.conf /etc/apache2/conf-available/remoteip.conf
+RUN a2enconf remoteip
+RUN sed -i 's/%h/%a/g' /etc/apache2/apache2.conf
+
 RUN install -d /var/log/mediawiki -o www-data
 RUN pecl install redis && docker-php-ext-enable redis
 RUN pecl install yaml && docker-php-ext-enable yaml
