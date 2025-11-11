@@ -1,7 +1,7 @@
 #!/bin/bash 
 set -euxo pipefail
 
-WMF_BRANCH=wmf/1.45.0-wmf.25
+WMF_BRANCH=wmf/1.46.0-wmf.1
 REL_BRANCH=REL1_44
 
 git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikimedia/mediawiki.git mediawiki
