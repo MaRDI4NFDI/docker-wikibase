@@ -3,7 +3,7 @@
 $wgUseCdn = getenv('USE_CDN') === 'true' ? true : false;
 
 if ($wgUseCdn) {
-    $wgCdnServers = [ '10.217.0.0/16' ];
+    $wgCdnServers = [ '10.0.0.0/8' ];
     $wgInternalServer = 'http://' . getenv('CDN_BACKEND_HOST');
     $wgCdnMaxAge = 18000; // 5 hours (default)
     $wgCdnMaxageLagged = 18000; // MediaWiki incorrectly detects lagged database due to Galera cluster architecture.
