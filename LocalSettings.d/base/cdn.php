@@ -3,9 +3,9 @@
 $wgUseCdn = getenv('USE_CDN') === 'true' ? true : false;
 
 if ($wgUseCdn) {
-    $wgCdnServers = [ '10.0.0.0/8' ];
-    $wgInternalServer = 'http://' . getenv('CDN_BACKEND_HOST');
-    $wgCdnMaxAge = 18000; // 5 hours (default)
-    $wgCdnMaxageLagged = 18000; // MediaWiki incorrectly detects lagged database due to Galera cluster architecture.
+    $cdnServer = getenv('CDN_SERVER') ?: 'varnish'; 
+    $wgCdnServers = ['http://' . $cdnServer . ':80'];
+    $cdnBackendHost = getenv('CDN_BACKEND_HOST') ?: 'wikibase';
+    $wgInternalServer = 'http://' . $cdnBackendHost;
     $wgUsePrivateIPs = true; // Trust proxy headers from Varnish
 }
