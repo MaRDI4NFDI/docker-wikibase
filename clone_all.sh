@@ -34,7 +34,7 @@ EXTENSIONS=(
   "MatomoAnalytics main https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer.git"
   "Nuke ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Nuke.git"
-  "OAuth REL1_44 https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
+  "OAuth wmf/1.45.0-wmf.25 https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
   "OpenIDConnect ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OpenIDConnect.git"
   "PageForms ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageForms.git"
   "PageImages ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageImages.git"
