@@ -194,27 +194,16 @@ $wgCaptchaTriggers['addurl'] = false;
 
 # MaRDI profile types items
 $wgMathProfileQueries['dataset']='?item wdt:P1460 wd:Q5984635';
-$wgMathProfileQIdMap['dataset']='Q5984635';
 $wgMathProfileQueries['community']='?item wdt:P1460 wd:Q6205095';
-$wgMathProfileQIdMap['community']='Q6205095';
 $wgMathProfileQueries['algorithm']='?item wdt:P1460 wd:Q6503323';
-$wgMathProfileQIdMap['algorithm']='Q6503323';
 $wgMathProfileQueries['service']='?item wdt:P1460 wd:Q6503324';
-$wgMathProfileQIdMap['service']='Q6503324';
 $wgMathProfileQueries['theorem']='?item wdt:P1460 wd:Q6534201';
-$wgMathProfileQIdMap['theorem']='Q6534201';
 $wgMathProfileQueries['workflow']='?item wdt:P1460 wd:Q6534216';
-$wgMathProfileQIdMap['workflow']='Q6534216';
 $wgMathProfileQueries['academic_discipline']='?item wdt:P1460 wd:Q6534268';
-$wgMathProfileQIdMap['academic_discipline']='Q6534268';
 $wgMathProfileQueries['research_problem']='?item wdt:P1460 wd:Q6534269';
-$wgMathProfileQIdMap['research_problem']='Q6534269';
 $wgMathProfileQueries['model']='?item wdt:P1460 wd:Q6534270';
-$wgMathProfileQIdMap['model']='Q6534270';
 $wgMathProfileQueries['quantity']='?item wdt:P1460 wd:Q6534271';
-$wgMathProfileQIdMap['quantity']='Q6534271';
 $wgMathProfileQueries['task']='?item wdt:P1460 wd:Q6534272';
-$wgMathProfileQIdMap['task']='Q6534272';
 
 $wgExportFromNamespaces = true;
 
