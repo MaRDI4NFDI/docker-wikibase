@@ -46,6 +46,7 @@ COPY composer.local.json /var/www/html/composer.local.json
   
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN git config --global --add safe.directory /var/www/html
 RUN composer install --no-dev
 
 
