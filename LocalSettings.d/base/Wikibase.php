@@ -38,6 +38,9 @@ $wgLocalDatabases = [ 'wiki_swmath', 'my_wiki' ];
 // https://github.com/MaRDI4NFDI/portal-compose/issues/224
 $wgNamespacesToBeSearchedDefault[122] = true; // WB_PROPERTY_NAMESPACE===122
 
+// Add mul language support
+$wgWBRepoSettings['enableMulLanguageCode'] = true;
+
 if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'commonswiki' ) {
 
 	wfLoadExtension( 'WikibaseRepository', "$IP/extensions/Wikibase/extension-repo.json" );
