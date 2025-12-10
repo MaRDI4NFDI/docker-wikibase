@@ -10,6 +10,12 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      no_cache:
+        description: 'Force a rebuild of the Docker images without using cache.'
+        required: false
+        type: boolean
+        default: false
 
 env:
   REGISTRY: ghcr.io
@@ -63,6 +69,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             ENVIRONMENT=staging
           cache-from: type=gha,scope=staging
@@ -119,6 +126,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
           cache-from: type=gha,scope=jobrunner-staging
@@ -180,6 +188,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             ENVIRONMENT=production
           cache-from: type=gha,scope=production
@@ -245,6 +254,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             BASE_IMAGE=${{ needs.build-production.outputs.single-tag }}
           cache-from: type=gha,scope=jobrunner-production
@@ -290,6 +300,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev:latest
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.labels }}
+          no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
           cache-from: type=gha,scope=dev
