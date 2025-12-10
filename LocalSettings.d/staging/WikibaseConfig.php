@@ -28,6 +28,9 @@ if ( $wgDBname === 'my_wiki' ) {
 	}
 }
 
+$wgMathSearchImporterUrl = "http://staging-importer";
+
+
 if ( $wgDBname === 'my_wiki' ) {
   wfLoadExtension( 'WikibaseQualityConstraints' );
   $wgWBQualityConstraintsSparqlEndpoint = 'https://query.staging.mardi4nfdi.org/sparql';
