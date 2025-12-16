@@ -1,0 +1,15 @@
+ServerName localhost
+
+<FilesMatch \.php$>
+    SetHandler "proxy:fcgi://${WIKIBASE_HOST}:9000"
+</FilesMatch>
+
+DocumentRoot "/var/www/html"
+
+<Directory "/var/www/html">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>
+
+AllowEncodedSlashes NoDecode
