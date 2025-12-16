@@ -1,7 +1,7 @@
 ######################
 #   Global settings  #
 ######################
-ARG MEDIAWIKI_VERSION=lts
+ARG MEDIAWIKI_VERSION=stable-fpm
 
 ################
 #   Fetcher    #
@@ -65,14 +65,6 @@ RUN apt-get update && \
     lua5.1 liblua5.1-0-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN a2enmod rewrite
-
-# Enable mod_remoteip to log real client IPs from X-Forwarded-For header
-RUN a2enmod remoteip
-COPY apache/remoteip.conf /etc/apache2/conf-available/remoteip.conf
-RUN a2enconf remoteip
-RUN sed -i 's/%h/%a/g' /etc/apache2/apache2.conf
-
 RUN install -d /var/log/mediawiki -o www-data
 RUN pecl install redis && docker-php-ext-enable redis
 RUN pecl install yaml && docker-php-ext-enable yaml
@@ -84,7 +76,6 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY LocalSettings.php.template /LocalSettings.php.template
-COPY htaccess /var/www/html/.htaccess
 COPY images /var/www/html/w/images_repo/
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en
@@ -110,15 +101,9 @@ RUN chown www-data:www-data /var/www/html/w/images
 RUN chmod 777 /var/www/html/w/cache
 COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini 
 
-# Set up vecollabpad
-# RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve && npm install && grunt build
-# RUN cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser && npm install && cp config.dev.yaml config.yaml && sed -i 's/localhost/mongodb/g' config.yaml
-
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
-##
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
-HEALTHCHECK CMD curl -f http://localhost/ || exit 1

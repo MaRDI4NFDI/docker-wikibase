@@ -66,5 +66,4 @@ fi
 /etc/init.d/cron start
 
 # Run the actual entry point
-# (cd /var/www/html/w/extensions/VisualEditor/lib/ve/rebaser;npm start) &
-docker-php-entrypoint apache2-foreground
+exec php-fpm
