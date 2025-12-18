@@ -1,8 +1,17 @@
 ServerName localhost
 
-<FilesMatch \.php$>
-    SetHandler "proxy:fcgi://${WIKIBASE_HOST}:9000"
-</FilesMatch>
+ProxyTimeout 300
+ProxyBadHeader Ignore
+
+<Proxy "fcgi://${WIKIBASE_HOST}:9000">
+    ProxySet connectiontimeout=10
+    ProxySet timeout=300
+    ProxySet retry=0
+    ProxySet max=50
+    ProxySet flushpackets=on
+</Proxy>
+
+ProxyPassMatch "^/(.*\.php(/.*)?)$" "fcgi://${WIKIBASE_HOST}:9000/var/www/html/$1"
 
 DocumentRoot "/var/www/html"
 
@@ -25,7 +34,7 @@ DocumentRoot "/var/www/html"
     RewriteRule ^$ /w/index.php [L]
     RewriteRule ^view(/.*)?$ /w/index.php [L]
 
-    # Thumbnails - always go to thumb.php (images are in S3)
+    # Thumbnails
     RewriteRule ^images/thumb/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2 [L,QSA,B]
     RewriteRule ^images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
 
