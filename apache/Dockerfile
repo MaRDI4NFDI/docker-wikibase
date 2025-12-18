@@ -20,7 +20,6 @@ RUN echo "Include conf/extra/mediawiki.conf" >> /usr/local/apache2/conf/httpd.co
 
 COPY remoteip.conf /usr/local/apache2/conf/extra/remoteip.conf
 COPY mediawiki.conf.template /usr/local/apache2/conf/extra/mediawiki.conf.template
-COPY htaccess /var/www/html/.htaccess
 
 ENV WIKIBASE_HOST=wikibase
 
