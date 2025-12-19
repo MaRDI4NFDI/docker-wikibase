@@ -1,0 +1,46 @@
+ServerName localhost
+
+ProxyTimeout 300
+ProxyBadHeader StartBody
+
+<Proxy "fcgi://${WIKIBASE_HOST}:9000">
+    ProxySet connectiontimeout=10
+    ProxySet timeout=300
+    ProxySet retry=0
+    ProxySet max=50
+    ProxySet flushpackets=on
+</Proxy>
+
+ProxyPassMatch "^/(.*\.php(/.*)?)$" "fcgi://${WIKIBASE_HOST}:9000/var/www/html/w/$1"
+
+DocumentRoot "/var/www/html"
+
+<Directory "/var/www/html">
+    Options Indexes FollowSymLinks
+    AllowOverride None
+    Require all granted
+
+    RewriteEngine On
+
+    # robots.txt
+    RewriteRule ^robots\.txt$ /w/robots.txt [L]
+
+    # Wikibase entity URLs
+    RewriteRule ^entity/([QP]\d+)$ /wiki/Special:EntityData/$1 [R=303,QSA]
+    RewriteRule ^entity/statement/([QP]\d+)-([A-F0-9-]+)$ /wiki/Special:EntityData/$1#$1\$$2 [R=303,QSA,NE]
+
+    # Wiki URLs
+    RewriteRule ^wiki(/.*)?$ /w/index.php [L]
+    RewriteRule ^$ /w/index.php [L]
+    RewriteRule ^view(/.*)?$ /w/index.php [L]
+
+    # Thumbnails
+    RewriteRule ^images/thumb/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2 [L,QSA,B]
+    RewriteRule ^images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
+
+    # Pass Authorization header
+    RewriteCond %{HTTP:Authorization} ^(.*)
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+</Directory>
+
+AllowEncodedSlashes NoDecode

@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends git zip libzip-dev
 RUN docker-php-ext-install zip
 COPY --from=composer:1.9.3 /usr/bin/composer /usr/local/bin/composer
-RUN pecl install xdebug-3.1.3
+RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
 # Obsolete lines can be removed if all testing successful.
 # RUN pecl install xhprof-2.2.0 && docker-php-ext-enable xhprof
