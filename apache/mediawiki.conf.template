@@ -11,7 +11,7 @@ ProxyBadHeader StartBody
     ProxySet flushpackets=on
 </Proxy>
 
-ProxyPassMatch "^/(.*\.php(/.*)?)$" "fcgi://${WIKIBASE_HOST}:9000/var/www/html/w/$1"
+ProxyPassMatch "^/(.*\.php(/.*)?)$" "fcgi://${WIKIBASE_HOST}:9000/var/www/html/$1"
 
 DocumentRoot "/var/www/html"
 
