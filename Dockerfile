@@ -101,8 +101,9 @@ RUN chown www-data:www-data /var/www/html/w/images
 RUN chmod 777 /var/www/html/w/cache
 COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini
 
-# Disable access logs in mediawiki container
-COPY php-fpm-logging.conf /usr/local/etc/php-fpm.d/zz-logging.conf
+# PHP-FPM configuration
+COPY ./php-fpm/logging.conf /usr/local/etc/php-fpm.d/zz-logging.conf
+COPY ./php-fpm/${ENVIRONMENT}/performance.conf /usr/local/etc/php-fpm.d/zz-performance.conf
 
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
