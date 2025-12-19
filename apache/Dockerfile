@@ -26,5 +26,3 @@ COPY mediawiki.conf.template /usr/local/apache2/conf/extra/mediawiki.conf.templa
 ENV WIKIBASE_HOST=wikibase
 
 CMD ["sh", "-c", "envsubst '${WIKIBASE_HOST}' < /usr/local/apache2/conf/extra/mediawiki.conf.template > /usr/local/apache2/conf/extra/mediawiki.conf && httpd-foreground"]
-
-HEALTHCHECK CMD curl -f http://localhost/ || exit 1
