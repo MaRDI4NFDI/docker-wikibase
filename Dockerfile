@@ -99,7 +99,10 @@ RUN chown www-data:www-data /var/www/html/w/images
 
 # Fix permissions for cache https://github.com/MaRDI4NFDI/portal-compose/pull/563
 RUN chmod 777 /var/www/html/w/cache
-COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini 
+COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini
+
+# Disable access logs in mediawiki container
+COPY php-fpm-logging.conf /usr/local/etc/php-fpm.d/zz-logging.conf
 
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
