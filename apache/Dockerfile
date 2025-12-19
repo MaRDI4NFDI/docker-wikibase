@@ -17,8 +17,10 @@ RUN sed -i \
 # Use real client IP in logs (from X-Forwarded-For)
 RUN sed -i 's/%h/%a/g' /usr/local/apache2/conf/httpd.conf
 
-# Switch logging to combined (Adds User-Agent and Referer)
-RUN sed -i 's/CustomLog \/proc\/self\/fd\/1 common/CustomLog \/proc\/self\/fd\/1 combined/' /usr/local/apache2/conf/httpd.conf
+RUN echo 'SetEnvIf User-Agent "kube-probe" dontlog' >> /usr/local/apache2/conf/httpd.conf
+
+# Switch logging to combined (Adds User-Agent, Referer and hides kube-probe logs)
+RUN sed -i 's/CustomLog \/proc\/self\/fd\/1 common/CustomLog \/proc\/self\/fd\/1 combined env=!dontlog/' /usr/local/apache2/conf/httpd.conf
 
 RUN echo "Include conf/extra/remoteip.conf" >> /usr/local/apache2/conf/httpd.conf
 RUN echo "Include conf/extra/mediawiki.conf" >> /usr/local/apache2/conf/httpd.conf
