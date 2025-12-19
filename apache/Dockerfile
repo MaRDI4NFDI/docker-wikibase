@@ -4,6 +4,8 @@ RUN apt-get update && \
     apt-get install --yes --no-install-recommends curl gettext-base && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /var/www/html/w
+
 # Enable required modules
 RUN sed -i \
     -e 's/^#LoadModule proxy_module/LoadModule proxy_module/' \
