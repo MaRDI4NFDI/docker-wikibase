@@ -3,6 +3,9 @@ ServerName localhost
 ProxyTimeout 300
 ProxyBadHeader StartBody
 
+# Pass Authorization header to PHP-FPM
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
 <Proxy "fcgi://${WIKIBASE_HOST}:9000">
     ProxySet connectiontimeout=10
     ProxySet timeout=300
@@ -37,10 +40,6 @@ DocumentRoot "/var/www/html"
     # Thumbnails
     RewriteRule ^images/thumb/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2 [L,QSA,B]
     RewriteRule ^images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
-
-    # Pass Authorization header
-    RewriteCond %{HTTP:Authorization} ^(.*)
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
 </Directory>
 
 AllowEncodedSlashes NoDecode
