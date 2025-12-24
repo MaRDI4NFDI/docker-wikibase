@@ -1,4 +1,7 @@
 <?php
+// bypass traefik router and use internal sparql endpoint
+// see https://github.com/MaRDI4NFDI/portal-k8s/issues/43
+$wgWBRepoSettings['sparqlEndpoint']='http://wdqs:9999/bigdata/namespace/wdq/sparql';
 
 $wgWBRepoSettings['formatterUrlProperty']='P10';
 
