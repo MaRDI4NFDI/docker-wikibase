@@ -60,7 +60,7 @@ jobs:
             org.opencontainers.image.title=Staging Wikibase image
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push staging image
         uses: docker/build-push-action@v6.18.0
@@ -117,7 +117,7 @@ jobs:
             org.opencontainers.image.title=Redis Jobrunner (staging)
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Docker jobrunner image
         uses: docker/build-push-action@v6.18.0
@@ -179,7 +179,7 @@ jobs:
             org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push production image
         uses: docker/build-push-action@v6.18.0
@@ -245,7 +245,7 @@ jobs:
             org.opencontainers.image.title=Redis Jobrunner (production)
       
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@v3.12.0
       
       - name: Build and push jobrunner production image
         uses: docker/build-push-action@v6.18.0
@@ -296,7 +296,7 @@ jobs:
             org.opencontainers.image.title=Apache Proxy
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Apache image
         uses: docker/build-push-action@v6.18.0
@@ -340,7 +340,7 @@ jobs:
             org.opencontainers.image.description=Wikibase development environment with additional tools
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3.11.1
+        uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Docker dev image
         uses: docker/build-push-action@v6.18.0
