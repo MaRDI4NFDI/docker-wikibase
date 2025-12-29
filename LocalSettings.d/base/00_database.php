@@ -31,34 +31,6 @@ if ( preg_match( '/^([a-z_]+)(wik.*?)$/', $wgDBname, $match ) === 1 ) {
 	// fall back to english otherwise
 }
 
-if ( false && getenv( 'CI' ) !== 'true' ) {
-	$wgLBFactoryConf = [
-
-	'class' => 'LBFactoryMulti',
-
-	'sectionsByDB' => [
-		'my_wiki' => 's1',
-		'wiki_swmath' => 's1',
-	],
-
-	'sectionLoads' => [
-		's1' => [
-			'mysql.svc'  => 0,
-			'mysql-repl.svc'  => 50, /* the 50 is the weight (of replica servers). Would matter if you had multiple */
-		],
-	],
-
-	'serverTemplate' => [
-		'dbname'       => $wgDBname,
-		'user'         => $wgDBuser,
-		'password'     => $wgDBpassword,
-		'type'         => 'mysql',
-		'flags'        => DBO_DEFAULT,
-		'max lag'      => 30,
-	],
-	];
-}
-
 if ( getenv('DB_PRIMARY_IP') && getenv('DB_SECONDARY_IP') ) {
 	$wgLBFactoryConf = array(
 
