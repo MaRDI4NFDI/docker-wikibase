@@ -76,6 +76,7 @@ COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY LocalSettings.php.template /LocalSettings.php.template
+COPY robots.txt /var/www/html/w/robots.txt
 COPY images /var/www/html/w/images_repo/
 ENV MW_SITE_NAME=wikibase-docker\
     MW_SITE_LANG=en

@@ -1,0 +1,19 @@
+User-agent: *
+Disallow: /w/index.php?title=Special:
+Disallow: /wiki/Special:
+Disallow: /w/api.php
+Disallow: /w/rest.php
+Disallow: /w/load.php
+
+Disallow: /*?action=edit
+Disallow: /*?action=history
+Disallow: /*?diff=
+Disallow: /*?oldid=
+Disallow: /*?printable=
+Disallow: /*&action=edit
+Disallow: /*&action=history
+Disallow: /*&diff=
+Disallow: /*&oldid=
+
+Disallow: /wiki/Special:EntityData/
+Disallow: /w/index.php?title=Special:EntityData
