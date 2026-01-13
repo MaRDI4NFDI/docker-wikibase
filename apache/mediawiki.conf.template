@@ -32,6 +32,7 @@ DocumentRoot "/var/www/html"
     RewriteRule ^entity/([QP]\d+)$ /wiki/Special:EntityData/$1 [R=303,QSA]
     RewriteRule ^entity/statement/([QP]\d+)-([A-F0-9-]+)$ /wiki/Special:EntityData/$1#$1\$$2 [R=303,QSA,NE]
     RewriteRule ^prop/direct/(P\d+)$ /wiki/Special:EntityData/$1 [R=303,QSA,NE]
+    RewriteRule ^prop/(P\d+)$ /wiki/Special:EntityData/$1 [R=303,QSA,NE]
 
     # Wiki URLs
     RewriteRule ^wiki(/.*)?$ /w/index.php [L]
