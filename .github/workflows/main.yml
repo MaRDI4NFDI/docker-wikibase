@@ -320,6 +320,9 @@ jobs:
     permissions:
       contents: read
       packages: write
+    needs:
+     - build-apache
+     - build-production
     steps:
       - name: Checkout
         uses: actions/checkout@v6
