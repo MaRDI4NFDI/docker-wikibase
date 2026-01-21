@@ -315,7 +315,7 @@ jobs:
           cache-from: type=gha,scope=apache
           cache-to: type=gha,mode=max,scope=apache
 
-  build-apache-assets:
+  build-apache-assets-production:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -339,18 +339,18 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.10.0
         with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/apache_assets
+          images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets-production
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=raw,value=latest,enable={{is_default_branch}}
           labels: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
-            org.opencontainers.image.title=Apache Proxy (assets)
+            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets for production
+            org.opencontainers.image.title=Apache Proxy (assets, production)
           annotations: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
-            org.opencontainers.image.title=Apache Proxy (assets)
+            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets for production
+            org.opencontainers.image.title=Apache Proxy (assets, production)
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.12.0
