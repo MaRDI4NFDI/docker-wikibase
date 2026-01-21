@@ -295,6 +295,11 @@ jobs:
             org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
             org.opencontainers.image.title=Apache Proxy
 
+      - name: Set single tag output
+        id: single-tag
+        run: |
+          echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3.12.0
 
@@ -309,7 +314,59 @@ jobs:
           no-cache: ${{ github.event.inputs.no_cache || false }}
           cache-from: type=gha,scope=apache
           cache-to: type=gha,mode=max,scope=apache
-          
+
+  build-apache-assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs:
+     - build-apache
+     - build-production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Log in to the Container registry
+        if: env.PUSH_IMAGE == 'true'
+        uses: docker/login-action@v3.6.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5.10.0
+        with:
+          images: ${{ env.REGISTRY }}/mardi4nfdi/apache_assets
+          tags: |
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
+            org.opencontainers.image.title=Apache Proxy (assets)
+          annotations: |
+            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
+            org.opencontainers.image.title=Apache Proxy (assets)
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3.12.0
+
+      - name: Build and push Apache assets image
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: apache_assets
+          push: ${{ env.PUSH_IMAGE }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          build-args: |
+            APACHE_IMAGE=${{ needs.build-apache.outputs.single-tag }}
+            WB_IMAGE=${{ needs.build-production.outputs.single-tag }}
+
   build-dev:
     runs-on: ubuntu-latest
     permissions:
