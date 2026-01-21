@@ -266,6 +266,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      single-tag: ${{ steps.single-tag.outputs.single-tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
