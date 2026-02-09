@@ -1,19 +1,23 @@
 <?php
 # See https://www.mediawiki.org/wiki/Manual:$wgSMTP/Gmail
-if ( getenv( 'SMTP_username' ) && getenv( 'SMTP_password' ) ) { 
+if ( getenv( 'SMTP_EMAIL' ) && getenv( 'SMTP_PW' ) ) { 
   $wgSMTP = [
     'host' => 'ssl://smtp.gmail.com',
-    // IDHost is a MediaWiki-specific setting used to build the Message-ID email header 
-    // (see RFC 2822, sec 3.6.4 for more information on a properly formatted Message-ID). 
-    // If not provided, will default to $wgServer. 
-    'IDHost' => getenv( 'WIKIBASE_HOST' ), 
     'port' => 465,
-    'username' => getenv( 'SMTP_username' ) ,
-    'password' => getenv( 'SMTP_password' ),
+    'username' => getenv( 'SMTP_EMAIL' ) ,
+    'password' => getenv( 'SMTP_PW' ),
     'auth' => true
   ];
-  $wgEmergencyContact='contact@mardi4nfdi.de';
-  $wgPasswordSender='contact@mardi4nfdi.de';
+  // If not provided, will default to $wgServer. 
+  if ( getenv( 'WIKIBASE_HOST' ) ) {
+    // IDHost is a MediaWiki-specific setting used to build the Message-ID email header 
+    // (see RFC 2822, sec 3.6.4 for more information on a properly formatted Message-ID). 
+    $wgSMTP['IDHost'] = getenv( 'WIKIBASE_HOST' );    
+  }
+  $wgEmergencyContact = 'contact@mardi4nfdi.de';
+  if ( getenv( 'MW_ADMIN_EMAIL' ) ) {
+    $wgPasswordSender = getenv( 'MW_ADMIN_EMAIL' );
+  }
 } else {
   $wgEnableEmail=false;
 }
