@@ -14,6 +14,12 @@ $wgEventServices = [
 ];
 
 $wgEnableEventBus = "TYPE_ALL";
+$wgEventServiceDefault = 'eventbus';
+
+$wgEventBusStreamNamesMap = [
+    'mediawiki.page_change' => 'mediawiki.page_change.v1',
+    'mediawiki.revision_create' => 'mediawiki.revision-create.v1'
+];
 
 $wgRCFeeds['eventbus'] = [
     'class'            => EventBusRCFeedEngine::class,
