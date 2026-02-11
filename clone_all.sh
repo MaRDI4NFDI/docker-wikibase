@@ -24,6 +24,7 @@ EXTENSIONS=(
   "Elastica ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Elastica.git"
   "EntitySchema ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EntitySchema.git"
   "EventBus ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EventBus.git"
+  "EventStreamConfig ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EventStreamConfig.git"
   "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
   "ExternalData master https://github.com/wikimedia/mediawiki-extensions-ExternalData.git"
   "Gadgets ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Gadgets.git"
