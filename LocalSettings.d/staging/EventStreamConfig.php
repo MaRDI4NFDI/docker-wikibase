@@ -14,8 +14,8 @@ $wgEventStreams = [
         'topics' => [ 'mediawiki.page_change.v1' ],
     ],
     'rdf-streaming-updater.mutation.v2' => [
-      'stream' => 'rdf-streaming-updater.mutation',
-      'schema_title' => 'mediawiki/wikibase/entity/rdf_change',
-      'topics' => [ 'rdf-streaming-updater.mutation.v2' ],
+        'stream' => 'rdf-streaming-updater.mutation',
+        'schema_title' => 'mediawiki/wikibase/entity/rdf_change',
+        'topics' => [ 'rdf-streaming-updater.mutation.v2' ],
   ],
 ];
