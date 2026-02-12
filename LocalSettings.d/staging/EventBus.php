@@ -2,7 +2,6 @@
 
 wfLoadExtension( 'EventBus' );
 
-use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\Extension\EventBus\Adapters\RCFeed\EventBusRCFeedEngine;
 use MediaWiki\Extension\EventBus\Adapters\RCFeed\EventBusRCFeedFormatter;
 
@@ -20,4 +19,8 @@ $wgRCFeeds['eventbus'] = [
     'class'            => EventBusRCFeedEngine::class,
     'formatter'        => EventBusRCFeedFormatter::class,
     'eventServiceName' => 'eventbus',
+];
+
+$wgEventBusStreamNamesMap = [
+    'page-change' => 'mediawiki.page_change.v1',
 ];
