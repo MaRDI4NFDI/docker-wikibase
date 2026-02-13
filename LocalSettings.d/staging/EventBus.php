@@ -24,3 +24,14 @@ $wgRCFeeds['eventbus'] = [
 $wgEventBusStreamNamesMap = [
     'page-change' => 'mediawiki.page_change.v1',
 ];
+
+$wgConf->suffixes = [ '' ];
+$wgConf->wikis = $wgLocalDatabases;
+$wgConf->settings = [
+    'wgCanonicalServer' => [
+        'my_wiki' => 'https://staging.mardi4nfdi.org',
+    ],
+    'wgArticlePath' => [
+        'my_wiki' => $wgArticlePath,
+    ],
+];
