@@ -63,7 +63,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push staging image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
@@ -120,7 +120,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Docker jobrunner image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: jobrunner
           push: ${{ env.PUSH_IMAGE }}
@@ -182,7 +182,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push production image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: .
           push: true
@@ -248,7 +248,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
       
       - name: Build and push jobrunner production image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: jobrunner
           push: true
@@ -306,7 +306,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Apache image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: apache
           push: ${{ env.PUSH_IMAGE }}
@@ -358,7 +358,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Apache assets image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: apache_assets
           push: ${{ env.PUSH_IMAGE }}
@@ -402,7 +402,7 @@ jobs:
         uses: docker/setup-buildx-action@v3.12.0
 
       - name: Build and push Docker dev image
-        uses: docker/build-push-action@v6.18.0
+        uses: docker/build-push-action@v6.19.2
         with:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
