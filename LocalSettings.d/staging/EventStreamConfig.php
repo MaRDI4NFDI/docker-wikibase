@@ -38,4 +38,7 @@ $wgEventStreams = [
         'schema_title' => 'rdf_streaming_updater/reconcile',
         'topics' => [ 'rdf-streaming-updater.reconcile' ],
     ],
+    '/^mediawiki\\.job\\..+/' => [
+        'schema_title' => 'mediawiki/job',
+    ],
 ];
