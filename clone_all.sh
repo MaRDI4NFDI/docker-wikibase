@@ -1,7 +1,7 @@
 #!/bin/bash 
 set -euxo pipefail
 
-WMF_BRANCH=wmf/1.46.0-wmf.15
+WMF_BRANCH=wmf/1.46.0-wmf.16
 REL_BRANCH=REL1_45
 
 git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikimedia/mediawiki.git mediawiki
@@ -138,3 +138,8 @@ git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF
   # Other skins
 git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git mediawiki/skins/chameleon 
 git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin.git mediawiki/skins/MardiSkin
+
+# Temporary dependency fix
+rm -f mediawiki/extensions/OAuth/composer.json
+rm -f mediawiki/extensions/DataTransfer/composer.json
+sed -i 's/"psr\/http-message": "\^1"/"psr\/http-message": "^1 || ^2"/' mediawiki/skins/chameleon/composer.json
