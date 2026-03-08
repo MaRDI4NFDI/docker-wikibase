@@ -44,7 +44,7 @@ jobs:
 
       - name: Extract metadata for staging
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-staging
           tags: |
@@ -101,7 +101,7 @@ jobs:
 
       - name: Extract metadata for jobrunner staging
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/redis-jobrunner-staging
           tags: |
@@ -165,7 +165,7 @@ jobs:
 
       - name: Extract metadata for production
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-production
           tags: |
@@ -231,7 +231,7 @@ jobs:
       
       - name: Extract metadata for jobrunner production
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/redis-jobrunner-production
           tags: |
@@ -282,7 +282,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache
           tags: |
@@ -339,7 +339,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets-production
           tags: |
@@ -389,7 +389,7 @@ jobs:
 
       - name: Extract metadata for dev
         id: meta
-        uses: docker/metadata-action@v5.10.0
+        uses: docker/metadata-action@v6.0.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
           tags: |
