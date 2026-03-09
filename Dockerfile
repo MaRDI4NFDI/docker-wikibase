@@ -72,6 +72,19 @@ RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
 RUN rm -rf /var/www/html/*
 COPY --from=build /var/www/html /var/www/html/w
+
+# Temporarily patch EventBus
+RUN php -r " \
+    \$f = '/var/www/html/w/extensions/EventBus/includes/Rest/EventBodyValidator.php'; \
+    \$code = file_get_contents(\$f); \
+    \$code = str_replace( \
+        \"unset( \\\$event['mediawiki_signature'] );\", \
+        \"unset( \\\$event['mediawiki_signature'] );\\n\\t\\tunset( \\\$event['meta']['dt'] );\", \
+        \$code \
+    ); \
+    file_put_contents(\$f, \$code); \
+"
+
 COPY wait-for-it.sh /wait-for-it.sh
 RUN chmod +x /wait-for-it.sh
 COPY entrypoint.sh /entrypoint.sh
