@@ -31,7 +31,7 @@ $wgConf->suffixes = [ '' ];
 $wgConf->wikis = $wgLocalDatabases;
 $wgConf->settings = [
     'wgCanonicalServer' => [
-        'my_wiki' => 'https://staging.mardi4nfdi.org',
+        'my_wiki' => 'https://' . getenv( 'WIKIBASE_HOST' ),
     ],
     'wgArticlePath' => [
         'my_wiki' => $wgArticlePath,
