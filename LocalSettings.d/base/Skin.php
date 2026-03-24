@@ -49,20 +49,19 @@ $wgHooks['SkinTemplateNavigation::Universal'][] = function ( $skinTemplate, &$li
     }
 };
 
-# Hide SearchBar and New Item button for anonymous users
-/*
+# Hide Buttons after new-item for anonymous users
 $wgHooks['BeforePageDisplay'][] = function( $out, $skin ) {
     if ( !$out->getUser()->isRegistered() ) {
         $out->addInlineStyle( '
-            #p-search,
-            .p-search,
-            #n-New-item {
+            /*#p-search,
+            .p-search,*/
+            #n-New-item,
+            #n-New-item ~ * {
                 display: none !important;
             }
         ' );
     }
 };
-*/
 
 # https://github.com/ProfessionalWiki/MardiSkin
 wfLoadExtension( 'Bootstrap' );
