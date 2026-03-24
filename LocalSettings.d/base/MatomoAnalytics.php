@@ -1,6 +1,7 @@
 <?php
 if (getenv('MATOMO_TOKEN')) {
   wfLoadExtension( 'MatomoAnalytics' );
-  $wgMatomoAnalyticsServerURL='https://matomo.' . getenv('WIKIBASE_HOST') .'/';
-  $wgMatomoAnalyticsTokenAuth=$_ENV['MATOMO_TOKEN'];
+  $wgMatomoAnalyticsServerURL = 'https://matomo.' . getenv('WIKIBASE_HOST') .'/';
+  $wgMatomoAnalyticsTokenAuth = getenv('MATOMO_TOKEN');
+  $wgMatomoAnalyticsDisableCookie = true;
 }
