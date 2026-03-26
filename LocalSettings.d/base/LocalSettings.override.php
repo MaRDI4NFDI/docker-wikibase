@@ -1,5 +1,7 @@
 <?php
 
+use MediaWiki\Extension\EventBus\Adapters\JobQueue\JobQueueEventBus;
+
 /*******************************/
 /* Enable Federated properties */
 /*******************************/
@@ -158,12 +160,10 @@ ini_set('memory_limit', '2G');
 if ( MW_ENTRY_POINT !== 'cli') {
 	$wgUseInstantCommons = true; 
 }
-# https://github.com/MaRDI4NFDI/portal-compose/issues/419
+# Jobrunner configuration with Eventgate/EventBus
 $wgJobTypeConf['default'] = [
-    'class'          => 'JobQueueRedis',
-    'redisServer'    => getenv('MW_REDIS_HOST') . ':' . getenv('MW_REDIS_PORT'), // this is the host ip from the default network
-    'redisConfig'    => [],
-    'daemonized'     => true
+    'class' => JobQueueEventBus::class,
+    'readOnlyReason' => false,
 ];
 # The wdqs-updater would trigger a lot of jobs if the jun rate was not 0
 $wgJobRunRate=0;
