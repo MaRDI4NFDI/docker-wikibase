@@ -117,7 +117,16 @@ COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini
 
 # PHP-FPM configuration
 COPY ./php-fpm/logging.conf /usr/local/etc/php-fpm.d/zz-logging.conf
-COPY ./php-fpm/${ENVIRONMENT}/performance.conf /usr/local/etc/php-fpm.d/zz-performance.conf
+
+# PHP-FPM tuning via environment variables (production defaults)
+ENV PHP_FPM_MAX_CHILDREN=75 \
+    PHP_FPM_START_SERVERS=25 \
+    PHP_FPM_MIN_SPARE_SERVERS=10 \
+    PHP_FPM_MAX_SPARE_SERVERS=40 \
+    PHP_FPM_MAX_REQUESTS=1000 \
+    PHP_FPM_REQUEST_TIMEOUT=60s
+
+COPY ./php-fpm/performance.conf.template /templates/performance.conf.template
 
 ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
