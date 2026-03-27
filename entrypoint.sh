@@ -65,5 +65,8 @@ fi
 # Starting the cron-service for regular_maintenance
 /etc/init.d/cron start
 
+envsubst < /templates/performance.conf.template \
+  > /usr/local/etc/php-fpm.d/zz-performance.conf
+  
 # Run the actual entry point
 exec php-fpm

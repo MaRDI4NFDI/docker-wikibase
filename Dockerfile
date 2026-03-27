@@ -119,7 +119,8 @@ COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini
 COPY ./php-fpm/logging.conf /usr/local/etc/php-fpm.d/zz-logging.conf
 
 # PHP-FPM tuning via environment variables (production defaults)
-ENV PHP_FPM_MAX_CHILDREN=75 \
+ENV PHP_FPM_PM=dynamic \
+    PHP_FPM_MAX_CHILDREN=75 \
     PHP_FPM_START_SERVERS=25 \
     PHP_FPM_MIN_SPARE_SERVERS=10 \
     PHP_FPM_MAX_SPARE_SERVERS=40 \
