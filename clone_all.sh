@@ -31,6 +31,7 @@ EXTENSIONS=(
   "InputBox ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-InputBox.git"
   "JsonConfig ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-JsonConfig.git"
   "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
+  "MardiImport main https://github.com/MaRDI4NFDI/mediawiki-extension-MardiImport.git"
   "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
   "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
   "MatomoAnalytics main https://github.com/miraheze/MatomoAnalytics.git"
