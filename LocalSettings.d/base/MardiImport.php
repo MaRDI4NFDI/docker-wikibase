@@ -1,3 +1,3 @@
 <?php
   wfLoadExtension( 'MardiImport' );
-  $wgMardiImportBaseUrl = 'http://importer';
+  $wgMardiImportBaseUrl = 'http://' . getenv( 'IMPORTER_ENDPOINT' );
