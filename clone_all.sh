@@ -2,7 +2,7 @@
 # cache-bust: 2026-03-31b
 set -euxo pipefail
 
-WMF_BRANCH=wmf/1.46.0-wmf.21
+WMF_BRANCH=wmf/1.46.0-wmf.22
 REL_BRANCH=REL1_45
 
 git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikimedia/mediawiki.git mediawiki
