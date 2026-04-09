@@ -130,6 +130,8 @@ $wgExtraNamespaces[NS_PRIVATE] = "Private";
 
 ## Adding new user group private which is blocking reading and editing pages in private namespace.
 $wgGroupPermissions['private'] = [];
+// Allow trusted parties to import things, see https://github.com/MaRDI4NFDI/MaRDIRoadmap/issues/191
+$wgGroupPermissions['private']['import'] = true;
 $wgNamespacePermissionLockdown[NS_PRIVATE]['edit'] = [ 'private' ];
 $wgNamespacePermissionLockdown[NS_PRIVATE]['read'] = [ 'private' ];
 
@@ -167,7 +169,7 @@ $wgJobTypeConf['default'] = [
 ];
 # The wdqs-updater would trigger a lot of jobs if the jun rate was not 0
 $wgJobRunRate=0;
-# Allow to display how many profie pages exist https://www.mediawiki.org/wiki/Help:Magic_words#Statistics
+# Allow to display how many profile pages exist https://www.mediawiki.org/wiki/Help:Magic_words#Statistics
 $wgAllowSlowParserFunctions=true;
 # more than 50% of the active processes in the db are updates to the site_stat table 
 # see https://www.mediawiki.org/wiki/Manual:$wgMultiShardSiteStats/en
