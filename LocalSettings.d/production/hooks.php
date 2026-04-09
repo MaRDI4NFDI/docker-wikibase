@@ -4,7 +4,10 @@ use MediaWiki\MediaWikiServices;
 
 $wgHooks['ArticleViewHeader'][] = function ( Article &$article ) {
 		$content = $article->getPage()->getContent();
-		if ( $content === null || $content->getSize() === 0 ) {
+		if ( $content === null ) {
+			return true;
+		}
+		if ( $content->getSize() === 0 ) {
 			$article->getContext()->getOutput()->addWikiTextAsContent( '{{global}}' );
 			return true;
 		}
