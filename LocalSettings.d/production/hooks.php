@@ -3,6 +3,10 @@ use MediaWiki\Title\Title;
 use MediaWiki\MediaWikiServices;
 
 $wgHooks['ArticleViewHeader'][] = function ( Article &$article ) {
+		if ( $article->getPage()->getContent()->getSize() === 0 ) {
+			$article->getContext()->getOutput()->addWikiTextAsContent( '{{global}}' );
+			return true;
+		}
         $title = $article->getTitle();
         if ( $title->getNamespace() != 120 ) {
                 return true;
