@@ -43,6 +43,7 @@ $wgGroupPermissions['*']['purge'] = false;
 
 # Remove rate limits for bots
 $wgGroupPermissions['bot']['noratelimit'] = true;
+$wgGroupPermissions['user']['noratelimit'] = true;
 
 # Deactivate captchas for URLs
 $wgCaptchaTriggers['addurl'] = false;
@@ -130,6 +131,8 @@ $wgExtraNamespaces[NS_PRIVATE] = "Private";
 
 ## Adding new user group private which is blocking reading and editing pages in private namespace.
 $wgGroupPermissions['private'] = [];
+// Allow trusted parties to import things, see https://github.com/MaRDI4NFDI/MaRDIRoadmap/issues/191
+$wgGroupPermissions['private']['import'] = true;
 $wgNamespacePermissionLockdown[NS_PRIVATE]['edit'] = [ 'private' ];
 $wgNamespacePermissionLockdown[NS_PRIVATE]['read'] = [ 'private' ];
 
