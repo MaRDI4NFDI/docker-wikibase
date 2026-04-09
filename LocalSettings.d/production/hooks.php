@@ -1,16 +1,16 @@
 <?php
 use MediaWiki\Title\Title; 
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Parser\Parser;
+
+$wgHooks['ParserBeforeInternalParse'][] =
+	static function ( Parser &$parser, &$text ) {
+		if ( $text === '' ) {
+			$text = '{{global}}';
+		}
+	};
 
 $wgHooks['ArticleViewHeader'][] = function ( Article &$article ) {
-		$content = $article->getPage()->getContent();
-		if ( $content === null ) {
-			return true;
-		}
-		if ( $content->getSize() === 0 ) {
-			$article->getContext()->getOutput()->addWikiTextAsContent( '{{global}}' );
-			return true;
-		}
         $title = $article->getTitle();
         if ( $title->getNamespace() != 120 ) {
                 return true;
