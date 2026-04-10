@@ -3,12 +3,17 @@ use MediaWiki\Title\Title;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Parser\Parser;
 
-$wgHooks['ParserBeforeInternalParse'][] =
-	static function ( Parser &$parser, &$text ) {
-		if ( $text === '' ) {
-			$text = '{{global}}';
-		}
-	};
+$wgHooks['ParserBeforeInternalParse'][] = static function ( Parser &$parser, &$text ) {
+	if ( $text !== '' ) {
+		return;
+	}
+	$page = $parser->getPage();
+	$title = Title::newFromPageReference( $page );
+	if ( $title->getContentModel() !== CONTENT_MODEL_WIKITEXT || !$title->exists() ) {
+		return;
+	}
+	$text = '{{global}}';
+};
 
 $wgHooks['ArticleViewHeader'][] = function ( Article &$article ) {
         $title = $article->getTitle();
