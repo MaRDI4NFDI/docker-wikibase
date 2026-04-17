@@ -134,6 +134,7 @@ if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'c
 	}
 	if ( getenv( 'MW_ELASTIC_HOST' ) !== false ) {
 		$wgCirrusSearchServers = [ $_ENV['MW_ELASTIC_HOST'] ];
+		$wgCirrusSearchReplicas = '0-0';
 		$wgSearchType = 'CirrusSearch';
 		$wgCirrusSearchExtraIndexSettings['index.mapping.total_fields.limit'] = 5000;
 		$wgWBCSUseCirrus = true;
