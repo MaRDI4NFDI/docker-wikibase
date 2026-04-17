@@ -6,7 +6,7 @@ ARG MEDIAWIKI_VERSION=stable-fpm
 ################
 #   Fetcher    #
 ################
-FROM ubuntu:xenial AS fetcher
+FROM ubuntu:jammy AS fetcher
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends git=1:2.* ssh unzip=6.* jq=1.* curl=7.* ca-certificates=201* patch && \
