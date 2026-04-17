@@ -66,7 +66,6 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN install -d /var/log/mediawiki -o www-data
-RUN pecl install redis && docker-php-ext-enable redis
 RUN pecl install yaml && docker-php-ext-enable yaml
 RUN docker-php-ext-install calendar bz2 pdo pgsql pdo_pgsql
 
