@@ -65,7 +65,7 @@ EXTENSIONS=(
   "Widgets ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Widgets.git"
   "WikibaseCirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseCirrusSearch.git"
   "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
-  "WikibaseFacetedSearch fix/276-external-id-and-edtf-support https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
+  "WikibaseFacetedSearch master https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
  # "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
   "WikibaseLocalMedia master https://github.com/ProfessionalWiki/WikibaseLocalMedia.git"
   "WikibaseManifest ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseManifest.git"
