@@ -135,10 +135,11 @@ $wgGroupPermissions['private']['import'] = true;
 $wgNamespacePermissionLockdown[NS_PRIVATE]['edit'] = [ 'private' ];
 $wgNamespacePermissionLockdown[NS_PRIVATE]['read'] = [ 'private' ];
 # See https://www.mediawiki.org/wiki/Manual:Handling_web_crawlers
-$wgSpecialPageLockdown['Listusers'] = ['user'];
-$wgSpecialPageLockdown['Log'] = ['user'];
-$wgSpecialPageLockdown['Recentchangeslinked'] = ['user'];
-$wgSpecialPageLockdown['Whatlinkshere'] = ['user'];
+$wgSpecialPageLockdown['Listusers'] = [ 'user' ];
+$wgSpecialPageLockdown['Log'] = [ 'user' ];
+$wgSpecialPageLockdown['Recentchangeslinked'] = [ 'user' ];
+$wgSpecialPageLockdown['Whatlinkshere'] = [ 'user' ];
+$wgSpecialPageLockdown['EntityData'] = [ 'user' ];
 $wgActionLockdown['history'] = [ 'user' ];
 
 # Settings for MathSearch extension.
