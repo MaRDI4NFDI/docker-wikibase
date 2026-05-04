@@ -128,13 +128,13 @@ ENV PHP_FPM_PM=dynamic \
 
 COPY ./php-fpm/performance.conf.template /templates/performance.conf.template
 
-ENV OPCACHE_MEMORY_CONSUMPTION=512 \                                                                                                                                    
-    OPCACHE_MAX_ACCELERATED_FILES=50000 \                                                                                                                               
+ENV OPCACHE_MEMORY_CONSUMPTION=512 \
+    OPCACHE_MAX_ACCELERATED_FILES=50000 \
     OPCACHE_INTERNED_STRINGS_BUFFER=32 \
-    OPCACHE_VALIDATE_TIMESTAMPS=0 \                                                                                                                                     
+    OPCACHE_VALIDATE_TIMESTAMPS=0 \
     OPCACHE_REVALIDATE_FREQ=0 \
-    OPCACHE_JIT_BUFFER_SIZE=128M                                                                                                                                        
-                
+    OPCACHE_JIT_BUFFER_SIZE=128M
+
 COPY ./php-fpm/opcache.conf.template /templates/opcache.conf.template
 
 ENV TZ=Europe/Berlin
