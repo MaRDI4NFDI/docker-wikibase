@@ -67,6 +67,9 @@ fi
 
 envsubst < /templates/performance.conf.template \
   > /usr/local/etc/php-fpm.d/zz-performance.conf
+
+envsubst < /templates/opcache.conf.template \                                                                                                                           
+  > /usr/local/etc/php/conf.d/zz-opcache.ini
   
 # Run the actual entry point
 exec php-fpm
