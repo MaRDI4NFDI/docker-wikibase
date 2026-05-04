@@ -44,4 +44,10 @@ DocumentRoot "/var/www/html"
     RewriteRule ^images/thumb/archive/[0-9a-f]/[0-9a-f][0-9a-f]/([^/]+)/([0-9]+)px-.*$ /w/thumb.php?f=$1&width=$2&archived=1 [L,QSA,B]
 </Directory>
 
+<IfModule mpm_event_module>
+#Increase number of connections
+    ThreadsPerChild      50
+    MaxRequestWorkers    1000
+</IfModule>
+
 AllowEncodedSlashes NoDecode
