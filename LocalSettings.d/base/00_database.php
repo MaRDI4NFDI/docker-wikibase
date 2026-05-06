@@ -28,33 +28,7 @@ if ( preg_match( '/^([a-z_]+)(wik.*?)$/', $wgDBname, $match ) === 1 ) {
 	if ( LanguageCode::isWellFormedLanguageTag( $lang ) ) {
 		$wgLanguageCode = $lang;
 	}
-	// fall back to english otherwise
+	// fall back to English otherwise
 }
 
-if ( getenv('DB_PRIMARY_IP') && getenv('DB_SECONDARY_IP') ) {
-	$wgLBFactoryConf = array(
-
-		'class' => 'LBFactoryMulti',
-
-		'sectionsByDB' => array(
-			'my_wiki' => 's1', 
-			'wiki_swmath' => 's1',
-		),
-
-		'sectionLoads' => array(
-			's1' => array(
-				getenv('DB_PRIMARY_IP') => 0,
-				getenv('DB_SECONDARY_IP') => 100,
-			),
-		),
-
-		'serverTemplate' => array(
-			'dbname'     => $wgDBname,
-			'user'       => $wgDBuser,
-			'password'   => $wgDBpassword,
-			'type'       => 'mysql',
-			'flags'      => DBO_DEFAULT,
-			'max lag'    => 30,
-		),
-	);
-}
+// Basic db configuration in Localsettings.php https://github.com/MaRDI4NFDI/docker-wikibase/blob/7146f8b2fdbba680d11ffffb32b51d3961f50a9c/LocalSettings.php.template#L12-L16
