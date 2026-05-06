@@ -31,4 +31,4 @@ if ( preg_match( '/^([a-z_]+)(wik.*?)$/', $wgDBname, $match ) === 1 ) {
 	// fall back to English otherwise
 }
 
-// Basic db configuration in Localsettings.php https://github.com/MaRDI4NFDI/docker-wikibase/blob/7146f8b2fdbba680d11ffffb32b51d3961f50a9c/LocalSettings.php.template#L12-L16
+// Basic DB configuration ($wgDBserver, $wgDBname, $wgDBuser, $wgDBpassword) is set in LocalSettings.php.template
