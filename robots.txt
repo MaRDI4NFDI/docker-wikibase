@@ -4,6 +4,7 @@ Disallow: /wiki/Special:
 Disallow: /w/api.php
 Disallow: /w/rest.php
 Disallow: /w/load.php
+Disallow: /w/index.php?go=Go&search
 
 Disallow: /*?action=edit
 Disallow: /*?action=history
