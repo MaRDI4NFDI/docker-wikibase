@@ -139,7 +139,8 @@ $wgSpecialPageLockdown['Listusers'] = [ 'user' ];
 $wgSpecialPageLockdown['Log'] = [ 'user' ];
 $wgSpecialPageLockdown['Recentchangeslinked'] = [ 'user' ];
 $wgSpecialPageLockdown['Whatlinkshere'] = [ 'user' ];
-$wgSpecialPageLockdown['EntityData'] = [ 'user' ];
+// With this activated, the internal updater does not work (see https://github.com/MaRDI4NFDI/docker-wikibase/issues/299)
+// $wgSpecialPageLockdown['EntityData'] = [ 'user' ];
 $wgActionLockdown['history'] = [ 'user' ];
 
 # Settings for MathSearch extension.
