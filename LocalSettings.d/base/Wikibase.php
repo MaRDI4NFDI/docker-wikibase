@@ -127,6 +127,7 @@ if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'c
 	// https://www.mediawiki.org/wiki/Extension:EntitySchema
 	## EntitySchema Configuration
 	wfLoadExtension( 'EntitySchema' );
+	$wgEntitySchemaShExSimpleUrl = 'https://shex-simple.toolforge.org/wikidata/packages/shex-webapp/doc/shex-simple.html?data=Endpoint: https://query.' . getenv('WIKIBASE_HOST') .'/sparql&hideData&manifest=[]&textMapIsSparqlQuery';
 	// https://www.mediawiki.org/wiki/Extension:WikibaseCirrusSearch
 	wfLoadExtension( 'WikibaseCirrusSearch' );
 	if ( $wgDBname === 'commonswiki' ) {
