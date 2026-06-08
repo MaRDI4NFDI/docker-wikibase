@@ -36,7 +36,7 @@ jobs:
 
       - name: Log in to the Container registry
         if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -44,7 +44,7 @@ jobs:
 
       - name: Extract metadata for staging
         id: meta
-        uses: docker/metadata-action@v6.0.0
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-staging
           tags: |
@@ -60,10 +60,10 @@ jobs:
             org.opencontainers.image.title=Staging Wikibase image
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.0.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push staging image
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
@@ -105,7 +105,7 @@ jobs:
           label: 'repo checkout'
 
       - name: Log in to the Container registry
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -113,7 +113,7 @@ jobs:
 
       - name: Extract metadata for production
         id: meta
-        uses: docker/metadata-action@v6.0.0
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-production
           tags: |
@@ -127,10 +127,10 @@ jobs:
             org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.0.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push production image
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: .
           push: true
@@ -172,7 +172,7 @@ jobs:
 
       - name: Log in to the Container registry
         if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -180,7 +180,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v6.0.0
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache
           tags: |
@@ -201,10 +201,10 @@ jobs:
           echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.0.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push Apache image
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: apache
           push: ${{ env.PUSH_IMAGE }}
@@ -229,7 +229,7 @@ jobs:
 
       - name: Log in to the Container registry
         if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -237,7 +237,7 @@ jobs:
 
       - name: Extract metadata
         id: meta
-        uses: docker/metadata-action@v6.0.0
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets-production
           tags: |
@@ -253,10 +253,10 @@ jobs:
             org.opencontainers.image.title=Apache Proxy (assets, production)
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.0.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push Apache assets image
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: apache_assets
           push: ${{ env.PUSH_IMAGE }}
@@ -279,7 +279,7 @@ jobs:
 
       - name: Log in to the Container registry
         if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.1.0
+        uses: docker/login-action@v4.2.0
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -287,7 +287,7 @@ jobs:
 
       - name: Extract metadata for dev
         id: meta
-        uses: docker/metadata-action@v6.0.0
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
           tags: |
@@ -297,10 +297,10 @@ jobs:
             org.opencontainers.image.description=Wikibase development environment with additional tools
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.0.0
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push Docker dev image
-        uses: docker/build-push-action@v7.1.0
+        uses: docker/build-push-action@v7.2.0
         with:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
