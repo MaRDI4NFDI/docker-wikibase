@@ -228,3 +228,8 @@ $GLOBALS['wgHooks']['MWStakeRunJobsTriggerRegisterHandlers'][] = static function
 	];
 	return true;
 };
+
+$wgSitemapApiConfig['enabled'] = true;
+$wgSitemapNamespaces = [
+    0
+];
