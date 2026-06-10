@@ -73,8 +73,8 @@ jobs:
           no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             ENVIRONMENT=staging
-          cache-from: type=gha,scope=staging
-          cache-to: type=gha,mode=max,scope=staging
+          cache-from: type=gha,scope=wikibase-shared
+          cache-to: type=gha,mode=max,scope=wikibase-shared
 
       - name: Set single tag output
         id: single-tag
@@ -140,8 +140,8 @@ jobs:
           no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             ENVIRONMENT=production
-          cache-from: type=gha,scope=production
-          cache-to: type=gha,mode=max,scope=production
+          cache-from: type=gha,scope=wikibase-shared
+          cache-to: type=gha,mode=max,scope=wikibase-shared
 
       - name: Set single tag output
         id: single-tag
@@ -212,8 +212,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: type=gha,scope=apache
-          cache-to: type=gha,mode=max,scope=apache
+          cache-from: type=gha,scope=wikibase-shared
+          cache-to: type=gha,mode=max,scope=wikibase-shared
 
   build-apache-assets-production:
     runs-on: ubuntu-latest
@@ -263,6 +263,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          cache-from: type=gha,scope=wikibase-shared
+          cache-to: type=gha,mode=max,scope=wikibase-shared
           build-args: |
             APACHE_IMAGE=${{ needs.build-apache.outputs.single-tag }}
             WB_IMAGE=${{ needs.build-production.outputs.single-tag }}
@@ -310,5 +312,5 @@ jobs:
           no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
             BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
-          cache-from: type=gha,scope=dev
-          cache-to: type=gha,mode=max,scope=dev
+          cache-from: type=gha,scope=wikibase-shared
+          cache-to: type=gha,mode=max,scope=wikibase-shared
