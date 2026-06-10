@@ -263,6 +263,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
+          no-cache: ${{ github.event.inputs.no_cache || false }}
           cache-from: type=gha,scope=wikibase-shared
           cache-to: type=gha,mode=max,scope=wikibase-shared
           build-args: |
