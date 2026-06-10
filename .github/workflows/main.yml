@@ -118,6 +118,7 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
           labels: |
             org.opencontainers.image.description=Mediawiki/Wikibase production-ready image for the MaRDI portal
             org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
@@ -145,7 +146,7 @@ jobs:
       - name: Set single tag output
         id: single-tag
         run: |
-          echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
+          echo "single-tag=ghcr.io/mardi4nfdi/wikibase-production:latest" >> $GITHUB_OUTPUT
 
       - name: Tests measurement
         uses: green-coding-solutions/eco-ci-energy-estimation@v5
