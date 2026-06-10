@@ -32,7 +32,7 @@ COPY remoteip.conf /usr/local/apache2/conf/extra/remoteip.conf
 COPY mediawiki.conf.template /usr/local/apache2/conf/extra/mediawiki.conf.template
 COPY --from=wb_stage /var/www/html/w /var/www/html/w
 COPY googlef56dee9892c586e7.html /var/www/html/googlef56dee9892c586e7.html
-COPY robots.txt /var/www/html/robots.txt
+COPY robots.txt /var/www/html/w/robots.txt
 
 
 ENV WIKIBASE_HOST=wikibase
