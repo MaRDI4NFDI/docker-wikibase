@@ -122,8 +122,8 @@ if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'c
 	$wgMathTexMaxLength = 30000;
 	// https://github.com/ProfessionalWiki/WikibaseLocalMedia
 	## WikibaseLocalMedia Configuration
-	## NOTE: WikibaseLocalMedia does currently not work in a client only setup.
-	wfLoadExtension( 'WikibaseLocalMedia' );
+	## NOTE: WikibaseLocalMedia does currently not work in a client-only setup.
+	# wfLoadExtension( 'WikibaseLocalMedia' );
 	// https://www.mediawiki.org/wiki/Extension:EntitySchema
 	## EntitySchema Configuration
 	wfLoadExtension( 'EntitySchema' );
