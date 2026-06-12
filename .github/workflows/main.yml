@@ -59,14 +59,18 @@ jobs:
           labels: |
             org.opencontainers.image.description=Mediawiki/Wikibase image for the MaRDI portal
             org.opencontainers.image.title=Wikibase image
+          annotations: |
+            org.opencontainers.image.description=Mediawiki/Wikibase image for the MaRDI portal
+            org.opencontainers.image.title=Wikibase image
 
       - name: Build and push wikibase image
         uses: docker/build-push-action@v7.2.0
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
-          load: ${{ env.PUSH_IMAGE == 'false' }} # CRITICAL: Loads into local Docker during PRs
-          tags: ${{ steps.meta-wikibase.outputs.tags }}
+          tags: |
+            ${{ steps.meta-wikibase.outputs.tags }}
+            local/wikibase:latest
           labels: ${{ steps.meta-wikibase.outputs.labels }}
           annotations: ${{ steps.meta-wikibase.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
@@ -89,19 +93,22 @@ jobs:
           labels: |
             org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
             org.opencontainers.image.title=Apache Proxy
+          annotations: |
+            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
+            org.opencontainers.image.title=Apache Proxy
 
       - name: Build and push Apache image
         uses: docker/build-push-action@v7.2.0
         with:
           context: apache
           push: ${{ env.PUSH_IMAGE }}
-          load: ${{ env.PUSH_IMAGE == 'false' }} # CRITICAL: Loads into local Docker during PRs
-          tags: ${{ steps.meta-apache.outputs.tags }}
+          tags: |
+            ${{ steps.meta-apache.outputs.tags }}
+            local/apache:latest
           labels: ${{ steps.meta-apache.outputs.labels }}
           annotations: ${{ steps.meta-apache.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: type=gha,scope=apache-shared
-          cache-to: type=gha,mode=max,scope=apache-shared
+          cache-from: type=gha,scope=wikibase-shared
 
       # ==========================================
       # 3. APACHE ASSETS IMAGE
@@ -119,22 +126,23 @@ jobs:
           labels: |
             org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
             org.opencontainers.image.title=Apache Proxy (assets)
+          annotations: |
+            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
+            org.opencontainers.image.title=Apache Proxy (assets)
 
       - name: Build and push Apache assets image
         uses: docker/build-push-action@v7.2.0
         with:
           context: apache_assets
           push: ${{ env.PUSH_IMAGE }}
-          # No load needed here unless a future step requires this image locally
           tags: ${{ steps.meta-assets.outputs.tags }}
           labels: ${{ steps.meta-assets.outputs.labels }}
           annotations: ${{ steps.meta-assets.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: type=gha,scope=assets-shared
-          cache-to: type=gha,mode=max,scope=assets-shared
+          cache-from: type=gha,scope=wikibase-shared
           build-args: |
-            APACHE_IMAGE=${{ fromJSON(steps.meta-apache.outputs.json).tags[0] }}
-            WB_IMAGE=${{ fromJSON(steps.meta-wikibase.outputs.json).tags[0] }}
+            APACHE_IMAGE=${{ env.PUSH_IMAGE == 'true' && fromJSON(steps.meta-apache.outputs.json).tags[0] || 'local/apache:latest' }}
+            WB_IMAGE=${{ env.PUSH_IMAGE == 'true' && fromJSON(steps.meta-wikibase.outputs.json).tags[0] || 'local/wikibase:latest' }}
 
       # ==========================================
       # 4. DEV IMAGE
@@ -149,6 +157,9 @@ jobs:
           labels: |
             org.opencontainers.image.title=Wikibase Development
             org.opencontainers.image.description=Wikibase development environment with additional tools
+          annotations: |
+            org.opencontainers.image.title=Wikibase Development
+            org.opencontainers.image.description=Wikibase development environment with additional tools
 
       - name: Build and push Docker dev image
         uses: docker/build-push-action@v7.2.0
@@ -157,9 +168,8 @@ jobs:
           push: ${{ env.PUSH_IMAGE }}
           tags: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev:latest
           labels: ${{ steps.meta-dev.outputs.labels }}
-          annotations: ${{ steps.meta-dev.outputs.labels }}
+          annotations: ${{ steps.meta-dev.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
-            BASE_IMAGE=${{ fromJSON(steps.meta-wikibase.outputs.json).tags[0] }}
-          cache-from: type=gha,scope=dev-shared
-          cache-to: type=gha,mode=max,scope=dev-shared
+            BASE_IMAGE=${{ env.PUSH_IMAGE == 'true' && fromJSON(steps.meta-wikibase.outputs.json).tags[0] || 'local/wikibase:latest' }}
+          cache-from: type=gha,scope=wikibase-shared
