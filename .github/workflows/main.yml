@@ -77,7 +77,7 @@ jobs:
       - name: Set single tag output
         id: single-tag
         run: |
-          echo "single-tag=ghcr.io/mardi4nfdi/wikibase:latest" >> $GITHUB_OUTPUT
+          echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
 
 
   build-apache:
