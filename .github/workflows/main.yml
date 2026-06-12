@@ -23,13 +23,11 @@ env:
   PUSH_IMAGE: ${{ github.event_name != 'pull_request' }}
 
 jobs:
-  build:
+  build-all:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    outputs:
-      single-tag: ${{ steps.single-tag.outputs.single-tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -42,8 +40,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4.1.0
+
+      # ==========================================
+      # 1. WIKIBASE IMAGE
+      # ==========================================
       - name: Extract metadata wikibase
-        id: meta
+        id: meta-wikibase
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase
@@ -55,52 +59,25 @@ jobs:
           labels: |
             org.opencontainers.image.description=Mediawiki/Wikibase image for the MaRDI portal
             org.opencontainers.image.title=Wikibase image
-          annotations: |
-            org.opencontainers.image.description=Mediawiki/Wikibase image for the MaRDI portal
-            org.opencontainers.image.title=Wikibase image
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push wikibase image
         uses: docker/build-push-action@v7.2.0
         with:
           context: .
           push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
+          load: ${{ env.PUSH_IMAGE == 'false' }} # CRITICAL: Loads into local Docker during PRs
+          tags: ${{ steps.meta-wikibase.outputs.tags }}
+          labels: ${{ steps.meta-wikibase.outputs.labels }}
+          annotations: ${{ steps.meta-wikibase.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
           cache-from: type=gha,scope=wikibase-shared
           cache-to: type=gha,mode=max,scope=wikibase-shared
 
-      - name: Set single tag output
-        id: single-tag
-        run: |
-          echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
-
-
-  build-apache:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    outputs:
-      single-tag: ${{ steps.single-tag.outputs.single-tag }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
+      # ==========================================
+      # 2. APACHE IMAGE
+      # ==========================================
+      - name: Extract metadata apache
+        id: meta-apache
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache
@@ -112,52 +89,25 @@ jobs:
           labels: |
             org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
             org.opencontainers.image.title=Apache Proxy
-          annotations: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
-            org.opencontainers.image.title=Apache Proxy
-
-      - name: Set single tag output
-        id: single-tag
-        run: |
-          echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push Apache image
         uses: docker/build-push-action@v7.2.0
         with:
           context: apache
           push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
+          load: ${{ env.PUSH_IMAGE == 'false' }} # CRITICAL: Loads into local Docker during PRs
+          tags: ${{ steps.meta-apache.outputs.tags }}
+          labels: ${{ steps.meta-apache.outputs.labels }}
+          annotations: ${{ steps.meta-apache.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
+          cache-from: type=gha,scope=apache-shared
+          cache-to: type=gha,mode=max,scope=apache-shared
 
-  build-apache-assets:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs:
-     - build-apache
-     - build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
+      # ==========================================
+      # 3. APACHE ASSETS IMAGE
+      # ==========================================
+      - name: Extract metadata apache-assets
+        id: meta-assets
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets
@@ -169,49 +119,28 @@ jobs:
           labels: |
             org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
             org.opencontainers.image.title=Apache Proxy (assets)
-          annotations: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets
-            org.opencontainers.image.title=Apache Proxy (assets)
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build and push Apache assets image
         uses: docker/build-push-action@v7.2.0
         with:
           context: apache_assets
           push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
+          # No load needed here unless a future step requires this image locally
+          tags: ${{ steps.meta-assets.outputs.tags }}
+          labels: ${{ steps.meta-assets.outputs.labels }}
+          annotations: ${{ steps.meta-assets.outputs.annotations }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: |
-            type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
+          cache-from: type=gha,scope=assets-shared
+          cache-to: type=gha,mode=max,scope=assets-shared
           build-args: |
-            APACHE_IMAGE=${{ needs.build-apache.outputs.single-tag }}
-            WB_IMAGE=${{ needs.build.outputs.single-tag }}
+            APACHE_IMAGE=${{ fromJSON(steps.meta-apache.outputs.json).tags[0] }}
+            WB_IMAGE=${{ fromJSON(steps.meta-wikibase.outputs.json).tags[0] }}
 
-  build-dev:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
+      # ==========================================
+      # 4. DEV IMAGE
+      # ==========================================
       - name: Extract metadata for dev
-        id: meta
+        id: meta-dev
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
@@ -221,20 +150,16 @@ jobs:
             org.opencontainers.image.title=Wikibase Development
             org.opencontainers.image.description=Wikibase development environment with additional tools
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
-
       - name: Build and push Docker dev image
         uses: docker/build-push-action@v7.2.0
         with:
           context: dev
           push: ${{ env.PUSH_IMAGE }}
           tags: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev:latest
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta-dev.outputs.labels }}
+          annotations: ${{ steps.meta-dev.outputs.labels }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
           build-args: |
-            BASE_IMAGE=${{ needs.build.outputs.single-tag }}
-          cache-from: |
-            type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
+            BASE_IMAGE=${{ fromJSON(steps.meta-wikibase.outputs.json).tags[0] }}
+          cache-from: type=gha,scope=dev-shared
+          cache-to: type=gha,mode=max,scope=dev-shared
