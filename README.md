@@ -1,36 +1,51 @@
 # docker-wikibase
-MediaWiki/Wikibase Docker Image 
+MediaWiki/Wikibase Docker Image
 * Built from the official latest MediaWiki docker image
 * With standard and MaRDI extensions preinstalled
 
 * Staging image is built automatically on push to main or on merging a PR
 * Production image is only built when pushing a tag
 
-# Description of the Dockerfile
+# Generated Container Images
 
-## 1. Fetcher Stage (Ubuntu Container)
-- Creates an Ubuntu container with git and curl
+When you run the build orchestration via Docker Bake, the pipeline compiles your code into **4 distinct application images**:
+
+| Image Name | Description / Role |
+| :--- | :--- |
+| `ghcr.io/mardi4nfdi/wikibase` | The core application container containing MediaWiki and preinstalled extensions. |
+| `ghcr.io/mardi4nfdi/apache` | The baseline Apache reverse proxy container configured for the environment. |
+| `ghcr.io/mardi4nfdi/apache-assets` | An optimized proxy layer containing static assets extracted straight from the core Wikibase container. |
+| `ghcr.io/mardi4nfdi/wikibase-dev` | Extended development environment equipped with extra debugging and testing tools (Git, zip, etc.). |
+
+
+# Architecture of the Core Wikibase Dockerfile
+
+The primary `wikibase` image is constructed using a Multi-Stage Dockerfile compilation pattern divided into three functional internal steps:
+
+## 1. Fetcher Stage (Internal Ubuntu Helper)
+- Creates an ephemeral Ubuntu container environment with git and curl
 - Downloads MediaWiki extensions from specified source repositories using `clone_all.sh`
-- Removes git artifacts (.git folders) to clean up the build
+- Removes git artifacts (.git folders) to keep layers clean and optimized
 
-## 2. Composer Stage (MediaWiki Container)
-- Uses the official MediaWiki Docker container as base
-- Places downloaded repositories from the fetcher into MediaWiki's extensions folder
-- Runs `composer install` to execute extension-specific installation steps
+## 2. Composer Stage (Internal MediaWiki Helper)
+- Uses the official MediaWiki Docker container as its execution context
+- Places the downloaded extensions from the fetcher stage into MediaWiki's extensions directory
+- Runs `composer install` to resolve and execute extension-specific software installation steps
 
-## 3. Final Image Creation (MaRDI-Wikibase)
-- Creates the final container image based on MediaWiki
-- Installs prerequisite packages
-- Copies MediaWiki content (including extensions) from the composer stage
-- Adds additional data and configuration files
-- Creates necessary endpoints
-- Copies settings templates to the final container image
+## 3. Final Image Target (The resulting `wikibase` Image)
+- Creates the final deployment container image based on MediaWiki
+- Installs all runtime prerequisite packages
+- Copies the assembled MediaWiki framework (including fully installed extensions) from the composer stage
+- Adds custom application configurations, endpoints, data layers, and sets up settings templates
 
-# Description of Localsettings.d directory
 
-  1. `base`: Contains all the extension configuration that is shared both in production and staging
-  2. `staging`: Contains configuration files that are only installed in the staging image
-  2. `production`: Contains configuration files that are only installed in the production image
+# Description of LocalSettings.d directory
+
+The `LocalSettings.d` directory isolates runtime configuration rules. Files are evaluated dynamically based on the deployment tier environment context:
+
+* **Root of `LocalSettings.d/`**: Contains global baseline configuration templates (e.g., `Wikibase.php`, `CirrusSearch.php`) loaded across all pipeline layers.
+* **`staging/`**: Contains target configuration layers (such as test overrides and custom captcha engines) injected exclusively during staging builds.
+* **`prod/`**: Contains target infrastructure parameters (including production performance logging frameworks and live SPARQL configurations) executed strictly within live release tags.
 
 # Create tag and new release
 
@@ -62,7 +77,7 @@ To install and activate a new extension you have to:
 
 `"AdvancedSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-AdvancedSearch.git"`
 
-* Activate and configure it as required with the corresponding `php` file under `base`, `staging` or `production` in the `LocalSettings.d` directory.
+* Activate and configure it as required with a corresponding `.php` file placed either directly in the root of `LocalSettings.d` (for global base settings) or inside the `staging/` or `prod/` subdirectories.
 
 # Local Building and Execution with Docker Bake
 
