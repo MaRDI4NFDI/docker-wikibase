@@ -99,10 +99,10 @@ jobs:
         with:
           files: |
             docker-bake.hcl
-            ${{ steps.meta-wikibase.outputs.bake-file }}
-            ${{ steps.meta-apache.outputs.bake-file }}
-            ${{ steps.meta-assets.outputs.bake-file }}
-            ${{ steps.meta-dev.outputs.bake-file }}
+            cwd://${{ steps.meta-wikibase.outputs.bake-file }}
+            cwd://${{ steps.meta-apache.outputs.bake-file }}
+            cwd://${{ steps.meta-assets.outputs.bake-file }}
+            cwd://${{ steps.meta-dev.outputs.bake-file }}
           push: ${{ env.PUSH_IMAGE }}
           load: ${{ env.PUSH_IMAGE == 'false' }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
