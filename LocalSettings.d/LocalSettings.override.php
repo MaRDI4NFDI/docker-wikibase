@@ -233,3 +233,13 @@ $wgSitemapApiConfig['enabled'] = true;
 $wgSitemapNamespaces = [
     0
 ];
+
+
+$deployment_env = getenv('DEPLOYMENT_ENV');
+if ( $deployment_env && is_dir("/var/www/html/w/LocalSettings.d/$deployment_env") ) {
+    foreach (glob("/var/www/html/w/LocalSettings.d/$deployment_env/*.php") as $filename) {
+        include $filename;
+    }
+} else {
+    echo "DEPLOYMENT_ENV not specified or directory does not exist, skipping environment-specific settings.";
+}
