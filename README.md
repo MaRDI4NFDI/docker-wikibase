@@ -60,6 +60,14 @@ Manually trigger the **Create Release Tag** action.
 git tag -s <tag_version>
 git push origin <tag_version>
 ```
+## Option 3: Create a Release via GitHub CLI (`gh`)
+
+If you have the GitHub CLI installed and authenticated, you can create and push the Git tag while simultaneously generating the official GitHub Release in a single terminal command.
+
+Run the following command in your repository root:
+```bash
+gh release create v1.47.10 --generate-notes
+```
 
 * Manually create the release through the Github UI from the corresponding tag
 # Overview of the Shell-scripts 

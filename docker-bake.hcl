@@ -31,5 +31,6 @@ target "image-stack" {
     "org.opencontainers.image.title"       = "MaRDI ${item.name} Container"
     "org.opencontainers.image.description" = item.desc
     "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/${item.dir}"
+    "org.opencontainers.image.documentation" = "https://github.com/MaRDI4NFDI/docker-wikibase"
   }
 }
