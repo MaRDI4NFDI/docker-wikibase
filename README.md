@@ -64,13 +64,52 @@ To install and activate a new extension you have to:
 
 * Activate and configure it as required with the corresponding `php` file under `base`, `staging` or `production` in the `LocalSettings.d` directory.
 
-# Build manually
+# Local Building and Execution with Docker Bake
 
-`docker build -t ghcr.io/mardi4nfdi/docker-wikibase:main .`
+This repository utilizes a centralized `docker-bake.hcl` configuration. This architecture enforces strict build-time dependencies directly within the Docker build engine (Buildx). Downstream targets like `apache-assets` and `wikibase-dev` securely read compiled image metadata right from your local cache memory. This completely blocks network lookups to GitHub Packages (`ghcr.io`) and prevents local image or architecture conflicts.
 
-# Creating a stable tag
-
+### 1. Build All Images Locally
+To compile the entire multi-container stack (`wikibase`, `apache`, `apache-assets`, and `wikibase-dev`) at once, run:
+```bash
+docker buildx bake --load
 ```
-docker pull ghcr.io/mardi4nfdi/docker-wikibase:main
-docker tag ghcr.io/mardi4nfdi/docker-wikibase:main ghcr.io/mardi4nfdi/docker-wikibase:stable
-docker push ghcr.io/mardi4nfdi/docker-wikibase:stable
+*Note: The `--load` flag ensures that the compiled image layers are exported directly out of the build cache into your local standard Docker Desktop daemon list.*
+
+### 2. Build Specific Service Targets
+You can compile individual image variations by passing their defined target keys:
+
+* **Build the development image only:**
+  ```bash
+  docker buildx bake wikibase-dev --load
+  ```
+* **Build the assets proxy configuration only:**
+  ```bash
+  docker buildx bake apache-assets --load
+  ```
+
+### 3. Testing Specific Production/PR Tags Locally (`IMAGE_TAG`)
+The configuration reads the environment dynamically. If you want to simulate a specific release version (e.g., `1.23.4`) or pull request layout locally without running the online GitHub Actions pipeline, prefix your command with the `IMAGE_TAG` variable:
+
+```bash
+IMAGE_TAG=1.23.4 docker buildx bake --load
+```
+
+# Pushing Local ARM64 Builds to GHCR (Manual)
+
+If you need to share your locally compiled Apple Silicon (`arm64`) images on GitHub Packages manually, you can bake and push them using the `IMAGE_TAG` environment variable.
+
+### 1. Authenticate with GHCR via GitHub CLI (`gh`)
+```bash
+gh auth login --scopes write:packages
+gh auth token | docker login ghcr.io -u "\$(gh api user --jq .login)" --password-stdin
+```
+
+### 2. Build and Push All 4 Variants with an ARM64 Tag
+```bash
+export IMAGE_TAG="1.47.9-arm64"
+docker buildx bake --load
+docker push "ghcr.io/mardi4nfdi/wikibase:${IMAGE_TAG}"
+docker push "ghcr.io/mardi4nfdi/apache:${IMAGE_TAG}"
+docker push "ghcr.io/mardi4nfdi/apache-assets:${IMAGE_TAG}"
+docker push "ghcr.io/mardi4nfdi/wikibase-dev:${IMAGE_TAG}"
+```
