@@ -48,6 +48,7 @@ jobs:
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase
+          bake-target: wikibase
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
@@ -60,6 +61,7 @@ jobs:
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache
+          bake-target: apache
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
@@ -72,6 +74,7 @@ jobs:
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets
+          bake-target: apache-assets
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
@@ -84,6 +87,7 @@ jobs:
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
+          bake-target: wikibase-dev
           tags: |
             type=ref,event=pr
             type=raw,value=latest,enable={{is_default_branch}}
