@@ -123,7 +123,7 @@ if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'c
 	// https://github.com/ProfessionalWiki/WikibaseLocalMedia
 	## WikibaseLocalMedia Configuration
 	## NOTE: WikibaseLocalMedia does currently not work in a client-only setup.
-	# wfLoadExtension( 'WikibaseLocalMedia' );
+	wfLoadExtension( 'WikibaseLocalMedia' );
 	// https://www.mediawiki.org/wiki/Extension:EntitySchema
 	## EntitySchema Configuration
 	wfLoadExtension( 'EntitySchema' );

@@ -23,13 +23,11 @@ env:
   PUSH_IMAGE: ${{ github.event_name != 'pull_request' }}
 
 jobs:
-  build-staging:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    outputs:
-      single-tag: ${{ steps.single-tag.outputs.single-tag }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -42,144 +40,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata for staging
-        id: meta
+      # ==========================================
+      # METADATA EXTRACTION (NATIVE TAG CALCULATION)
+      # ==========================================
+      - name: Extract metadata wikibase
+        id: meta-wikibase
         uses: docker/metadata-action@v6.1.0
         with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-staging
+          images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.description=Mediawiki/Wikibase image for the staging MaRDI portal
-            org.opencontainers.image.title=Staging Wikibase image
-          annotations: |
-            org.opencontainers.image.description=Mediawiki/Wikibase image for the staging MaRDI portal
-            org.opencontainers.image.title=Staging Wikibase image
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
-
-      - name: Build and push staging image
-        uses: docker/build-push-action@v7.2.0
-        with:
-          context: .
-          push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          no-cache: ${{ github.event.inputs.no_cache || false }}
-          build-args: |
-            ENVIRONMENT=staging
-          cache-from: type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
-
-      - name: Set single tag output
-        id: single-tag
-        run: |
-          echo "single-tag=ghcr.io/mardi4nfdi/wikibase-staging:latest" >> $GITHUB_OUTPUT
-
-  build-production:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    outputs:
-      single-tag: ${{ steps.single-tag.outputs.single-tag }}
-    steps:
-      - name: Start Measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5
-        with:
-          task: start-measurement
-
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Checkout Repo Measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5
-        with:
-          task: get-measurement
-          label: 'repo checkout'
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata for production
-        id: meta
-        uses: docker/metadata-action@v6.1.0
-        with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-production
-          tags: |
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.description=Mediawiki/Wikibase production-ready image for the MaRDI portal
-            org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
-          annotations: |
-            org.opencontainers.image.description=Mediawiki/Wikibase production-ready image for the MaRDI portal
-            org.opencontainers.image.title=MaRDI Portal Mediawiki/Wikibase image for Kubernetes
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
-
-      - name: Build and push production image
-        uses: docker/build-push-action@v7.2.0
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          no-cache: ${{ github.event.inputs.no_cache || false }}
-          build-args: |
-            ENVIRONMENT=production
-          cache-from: type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
-
-      - name: Set single tag output
-        id: single-tag
-        run: |
-          echo "single-tag=ghcr.io/mardi4nfdi/wikibase-production:latest" >> $GITHUB_OUTPUT
-
-      - name: Tests measurement
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5
-        with:
-          task: get-measurement
-          label: 'build and push'
-
-      - name: Show Energy Results
-        uses: green-coding-solutions/eco-ci-energy-estimation@v5
-        with:
-          task: display-results
-
-  build-apache:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    outputs:
-      single-tag: ${{ steps.single-tag.outputs.single-tag }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
+      - name: Extract metadata apache
+        id: meta-apache
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/apache
@@ -187,131 +64,48 @@ jobs:
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
-            org.opencontainers.image.title=Apache Proxy
-          annotations: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase
-            org.opencontainers.image.title=Apache Proxy
 
-      - name: Set single tag output
-        id: single-tag
-        run: |
-          echo "single-tag=${{ fromJSON(steps.meta.outputs.json).tags[0] }}" >> $GITHUB_OUTPUT
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
-
-      - name: Build and push Apache image
-        uses: docker/build-push-action@v7.2.0
-        with:
-          context: apache
-          push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
-
-  build-apache-assets-production:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs:
-     - build-apache
-     - build-production
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
+      - name: Extract metadata apache-assets
+        id: meta-assets
         uses: docker/metadata-action@v6.1.0
         with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets-production
+          images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
             type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets for production
-            org.opencontainers.image.title=Apache Proxy (assets, production)
-          annotations: |
-            org.opencontainers.image.description=Apache reverse proxy for Mediawiki/Wikibase with static assets for production
-            org.opencontainers.image.title=Apache Proxy (assets, production)
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4.1.0
-
-      - name: Build and push Apache assets image
-        uses: docker/build-push-action@v7.2.0
-        with:
-          context: apache_assets
-          push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.annotations }}
-          no-cache: ${{ github.event.inputs.no_cache || false }}
-          cache-from: type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
-          build-args: |
-            APACHE_IMAGE=${{ needs.build-apache.outputs.single-tag }}
-            WB_IMAGE=${{ needs.build-production.outputs.single-tag }}
-
-  build-dev:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    needs: build-staging
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
-        uses: docker/login-action@v4.2.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata for dev
-        id: meta
+      - name: Extract metadata wikibase-dev
+        id: meta-dev
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
           tags: |
+            type=ref,event=pr
             type=raw,value=latest,enable={{is_default_branch}}
-          labels: |
-            org.opencontainers.image.title=Wikibase Development
-            org.opencontainers.image.description=Wikibase development environment with additional tools
 
+      # ==========================================
+      # BUILD AND EXECUTION VIA BAKE
+      # ==========================================
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.1.0
 
-      - name: Build and push Docker dev image
-        uses: docker/build-push-action@v7.2.0
+      - name: Build and Push All Images via Bake
+        uses: docker/bake-action@v6.0.0
         with:
-          context: dev
+          files: |
+            docker-bake.hcl
+            cwd://${{ steps.meta-wikibase.outputs.bake-file }}
+            cwd://${{ steps.meta-apache.outputs.bake-file }}
+            cwd://${{ steps.meta-assets.outputs.bake-file }}
+            cwd://${{ steps.meta-dev.outputs.bake-file }}
           push: ${{ env.PUSH_IMAGE }}
-          tags: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev:latest
-          labels: ${{ steps.meta.outputs.labels }}
-          annotations: ${{ steps.meta.outputs.labels }}
+          load: ${{ env.PUSH_IMAGE == 'false' }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          build-args: |
-            BASE_IMAGE=${{ needs.build-staging.outputs.single-tag }}
-          cache-from: type=gha,scope=wikibase-shared
-          cache-to: type=gha,mode=max,scope=wikibase-shared
+          set: |
+            *.cache-from=type=gha,scope=wikibase-shared
+            *.cache-to=type=gha,mode=max,scope=wikibase-shared
