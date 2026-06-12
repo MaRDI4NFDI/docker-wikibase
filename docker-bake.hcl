@@ -1,11 +1,13 @@
-variable "TAGS" {
-  default = ["latest"]
+variable "B_TAGS" {
+  default = "{\"tag-names\":[\"latest\"]}"
 }
 
+variable "TAGS" {
+  default = jsondecode(B_TAGS).tag-names
+}
 group "default" {
   targets = ["image-stack"]
 }
-
 target "image-stack" {
   matrix = {
     item = [

@@ -121,10 +121,5 @@ gh auth token | docker login ghcr.io -u "\$(gh api user --jq .login)" --password
 
 ### 2. Build and Push All 4 Variants with an ARM64 Tag
 ```bash
-export IMAGE_TAG="1.47.9-arm64"
-docker buildx bake --load
-docker push "ghcr.io/mardi4nfdi/wikibase:${IMAGE_TAG}"
-docker push "ghcr.io/mardi4nfdi/apache:${IMAGE_TAG}"
-docker push "ghcr.io/mardi4nfdi/apache-assets:${IMAGE_TAG}"
-docker push "ghcr.io/mardi4nfdi/wikibase-dev:${IMAGE_TAG}"
+B_TAGS='{"tag-names":["1.47.9-arm64"]}' docker buildx bake --push
 ```
