@@ -40,56 +40,16 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # ==========================================
-      # METADATA EXTRACTION (NATIVE TAG CALCULATION)
-      # ==========================================
-      - name: Extract metadata wikibase
-        id: meta-wikibase
+      - name: Extract Global SemVer Metadata
+        id: meta
         uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase
-          bake-target: wikibase
           tags: |
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Extract metadata apache
-        id: meta-apache
-        uses: docker/metadata-action@v6.1.0
-        with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/apache
-          bake-target: apache
-          tags: |
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Extract metadata apache-assets
-        id: meta-assets
-        uses: docker/metadata-action@v6.1.0
-        with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/apache-assets
-          bake-target: apache-assets
-          tags: |
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=raw,value=latest,enable={{is_default_branch}}
-
-      - name: Extract metadata wikibase-dev
-        id: meta-dev
-        uses: docker/metadata-action@v6.1.0
-        with:
-          images: ${{ env.REGISTRY }}/mardi4nfdi/wikibase-dev
-          bake-target: wikibase-dev
-          tags: |
-            type=ref,event=pr
             type=raw,value=latest,enable={{is_default_branch}}
 
       # ==========================================
@@ -101,15 +61,11 @@ jobs:
       - name: Build and Push All Images via Bake
         uses: docker/bake-action@v6.0.0
         with:
-          files: |
-            docker-bake.hcl
-            cwd://${{ steps.meta-wikibase.outputs.bake-file }}
-            cwd://${{ steps.meta-apache.outputs.bake-file }}
-            cwd://${{ steps.meta-assets.outputs.bake-file }}
-            cwd://${{ steps.meta-dev.outputs.bake-file }}
+          files: docker-bake.hcl
           push: ${{ env.PUSH_IMAGE }}
           load: ${{ env.PUSH_IMAGE == 'false' }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
           set: |
             *.cache-from=type=gha,scope=wikibase-shared
             *.cache-to=type=gha,mode=max,scope=wikibase-shared
+            *.tags=${{ steps.meta.outputs.tags }}

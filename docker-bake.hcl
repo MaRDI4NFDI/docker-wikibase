@@ -1,78 +1,33 @@
-variable "IMAGE_TAG" {
-  default = "latest"
+variable "TAGS" {
+  default = ["latest"]
 }
 
 group "default" {
-  targets = ["wikibase", "apache", "apache-assets", "wikibase-dev"]
+  targets = ["image-stack"]
 }
 
-# ==========================================
-# 1. CORE WIKIBASE IMAGE
-# ==========================================
-target "wikibase" {
-  context    = "."
-  dockerfile = "Dockerfile"
-  tags       = ["ghcr.io/mardi4nfdi/wikibase:${IMAGE_TAG}"]
-  labels = {
-    "org.opencontainers.image.title"       = "Wikibase image"
-    "org.opencontainers.image.description" = "Mediawiki/Wikibase image for the MaRDI portal"
-    "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase"
+target "image-stack" {
+  matrix = {
+    item = [
+      { name = "wikibase",      desc = "Mediawiki/Wikibase image for the MaRDI portal", dir = ".",               dep = [],                     ctx = {} },
+      { name = "apache",        desc = "Apache reverse proxy for the MaRDI portal",     dir = "./apache",        dep = [],                     ctx = {} },
+      { name = "apache-assets", desc = "Reverse proxy with static assets for MaRDI",    dir = "./apache_assets", dep = ["wikibase", "apache"], ctx = { "wikibase-local" = "target:image-stack-wikibase", "apache-local" = "target:image-stack-apache" } },
+      { name = "wikibase-dev",  desc = "Mediawiki dev image for the MaRDI portal",      dir = "./dev",           dep = ["wikibase"],           ctx = { "wikibase-local" = "target:image-stack-wikibase" } }
+    ]
   }
-}
 
-# ==========================================
-# 2. APACHE REVERSE PROXY
-# ==========================================
-target "apache" {
-  context    = "./apache"
-  dockerfile = "Dockerfile"
-  tags       = ["ghcr.io/mardi4nfdi/apache:${IMAGE_TAG}"]
-  labels = {
-    "org.opencontainers.image.title"       = "Apache Proxy"
-    "org.opencontainers.image.description" = "Apache reverse proxy for Mediawiki/Wikibase"
-    "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/apache"
-  }
-}
+  name        = "image-stack-${item.name}"
+  context     = item.dir
+  dockerfile  = "Dockerfile"
 
-# ==========================================
-# 3. APACHE WITH STATIC ASSETS
-# ==========================================
-target "apache-assets" {
-  context    = "./apache_assets"
-  dockerfile = "Dockerfile"
-  tags       = ["ghcr.io/mardi4nfdi/apache-assets:${IMAGE_TAG}"]
+  depends_on  = [for d in item.dep : "image-stack-${d}"]
+  contexts    = item.ctx
 
-  depends_on = ["wikibase", "apache"]
-
-  contexts = {
-    wikibase-local = "target:wikibase"
-    apache-local   = "target:apache"
-  }
+  tags = [for t in TAGS : "ghcr.io/mardi4nfdi/${item.name}:${t}"]
 
   labels = {
-    "org.opencontainers.image.title"       = "Apache Proxy (assets)"
-    "org.opencontainers.image.description" = "Apache reverse proxy for Mediawiki/Wikibase with static assets"
-    "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/apache_assets"
-  }
-}
-
-# ==========================================
-# 4. DEVELOPMENT ENVIRONMENT
-# ==========================================
-target "wikibase-dev" {
-  context    = "./dev"
-  dockerfile = "Dockerfile"
-  tags       = ["ghcr.io/mardi4nfdi/wikibase-dev:${IMAGE_TAG}"]
-
-  depends_on = ["wikibase"]
-
-  contexts = {
-    wikibase-local = "target:wikibase"
-  }
-
-  labels = {
-    "org.opencontainers.image.title"       = "Wikibase Development"
-    "org.opencontainers.image.description" = "Wikibase development environment with additional tools"
-    "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/dev"
+    "org.opencontainers.image.title"       = "MaRDI ${item.name} Container"
+    "org.opencontainers.image.description" = item.desc
+    "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/${item.dir}"
   }
 }
