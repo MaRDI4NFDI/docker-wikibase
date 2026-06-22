@@ -77,6 +77,8 @@ $wgWBRepoSettings['sparqlEndpoint'] = 'https://query.' . $wikibase_host . '/spar
 wfLoadExtension( 'Lockdown' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'ExternalContent' );
+wfLoadExtension( 'ParserMigration' );
+
 
 $wgMathDisableTexFilter = 'always';
 
