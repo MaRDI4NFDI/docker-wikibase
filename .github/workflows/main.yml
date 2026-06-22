@@ -67,3 +67,78 @@ jobs:
             *.cache-to=type=gha,mode=max,scope=wikibase-shared
         env:
           B_TAGS: ${{ steps.meta.outputs.json }}
+
+      - name: Checkout portal-k8s
+        if: env.PUSH_IMAGE == 'true'
+        uses: actions/checkout@v7
+        with:
+          repository: MaRDI4NFDI/portal-k8s
+          token: ${{ secrets.PORTAL_K8S_PAT }}
+          path: portal-k8s
+
+      - name: Update staging values
+        if: env.PUSH_IMAGE == 'true' && github.ref == 'refs/heads/main'
+        working-directory: portal-k8s
+        run: |
+          DIGEST=$(docker buildx imagetools inspect ghcr.io/mardi4nfdi/wikibase:latest \
+            --format '{{json .Manifest.Digest}}' | tr -d '"')
+
+          yq -i \
+            '.spec.values.mediawiki.image.tag = "latest@'"$DIGEST"'"' \
+            apps/staging/wikibase/values-staging.yaml
+
+      - name: Update production values
+        if: env.PUSH_IMAGE == 'true' && startsWith(github.ref, 'refs/tags/v')
+        working-directory: portal-k8s
+        run: |
+          yq -i \
+            '.spec.values.mediawiki.image.tag = "${{ github.ref_name }}"' \
+            apps/production/wikibase/values-production.yaml
+
+      - name: Create staging PR
+        if: env.PUSH_IMAGE == 'true' && github.ref == 'refs/heads/main'
+        id: cpr-staging
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.PORTAL_K8S_PAT }}
+          path: portal-k8s
+          branch: update/wikibase-staging
+          delete-branch: true
+          title: "Update staging Wikibase image"
+          commit-message: "Update staging Wikibase image"
+          body: |
+            Automated update from `MaRDI4NFDI/docker-wikibase`.
+
+            Environment: staging
+            Source commit: `${{ github.sha }}`
+            Image: `ghcr.io/mardi4nfdi/wikibase:latest`
+
+      - name: Create production PR
+        if: env.PUSH_IMAGE == 'true' && startsWith(github.ref, 'refs/tags/v')
+        id: cpr-production
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.PORTAL_K8S_PAT }}
+          path: portal-k8s
+          branch: update/wikibase-production
+          delete-branch: true
+          title: "Update production Wikibase image to ${{ github.ref_name }}"
+          commit-message: "Update production Wikibase image to ${{ github.ref_name }}"
+          body: |
+            Automated update from `MaRDI4NFDI/docker-wikibase`.
+
+            Environment: production
+            Release tag: `${{ github.ref_name }}`
+            Source commit: `${{ github.sha }}`
+            Image: `ghcr.io/mardi4nfdi/wikibase:${{ github.ref_name }}`
+
+      - name: Add portal-k8s PR links to summary
+        if: always()
+        run: |
+          if [ -n "${{ steps.cpr-staging.outputs.pull-request-url }}" ]; then
+            echo "Staging PR: ${{ steps.cpr-staging.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+          if [ -n "${{ steps.cpr-production.outputs.pull-request-url }}" ]; then
+            echo "Production PR: ${{ steps.cpr-production.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
+          fi
