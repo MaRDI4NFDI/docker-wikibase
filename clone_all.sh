@@ -5,81 +5,103 @@ set -euxo pipefail
 WMF_BRANCH=wmf/1.47.0-wmf.7
 REL_BRANCH=REL1_45
 
+GITHUB_WIKIMEDIA_EXTENSIONS=https://github.com/wikimedia/mediawiki-extensions
+GITHUB_PROFESSIONALWIKI=https://github.com/ProfessionalWiki
+
 git clone --depth=1 --single-branch -b "${WMF_BRANCH}" https://github.com/wikimedia/mediawiki.git mediawiki
 
 EXTENSIONS=(
-  "AdvancedSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-AdvancedSearch.git"
-  "AWS master https://github.com/edwardspec/mediawiki-aws-s3.git"
-  "ArticlePlaceholder ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ArticlePlaceholder.git"
-  "Babel ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Babel.git"
-  "CirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-CirrusSearch.git"
-  "Cite ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Cite.git"
-  "CiteThisPage ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-CiteThisPage.git"
-  "cldr ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-cldr.git"
-  "CodeEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-CodeEditor.git"
-  "CodeMirror ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-CodeMirror.git"
-  "ConfirmEdit ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ConfirmEdit.git"
-  "DataTransfer ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-DataTransfer.git"
-  "DisplayTitle ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-DisplayTitle.git"
-  "Echo ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Echo.git"
-  "Elastica ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Elastica.git"
-  "EntitySchema ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EntitySchema.git"
-  "EventBus ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EventBus.git"
-  "EventStreamConfig ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-EventStreamConfig.git"
-  "ExternalContent master https://github.com/ProfessionalWiki/ExternalContent.git"
-  "ExternalData master https://github.com/wikimedia/mediawiki-extensions-ExternalData.git"
-  "Gadgets ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Gadgets.git"
-  "InputBox ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-InputBox.git"
-  "JsonConfig ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-JsonConfig.git"
-  "Lockdown ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Lockdown.git"
-  "MardiImport main https://github.com/MaRDI4NFDI/mediawiki-extension-MardiImport.git"
-  "Math master https://github.com/wikimedia/mediawiki-extensions-Math.git"
-  "MathSearch master https://github.com/wikimedia/mediawiki-extensions-MathSearch.git"
-  "MatomoAnalytics main https://github.com/miraheze/MatomoAnalytics.git"
-  "MultimediaViewer ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-MultimediaViewer.git"
-  "Nuke ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Nuke.git"
-  "OAuth ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OAuth.git"
-  "OpenIDConnect ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-OpenIDConnect.git"
-  "PageForms ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageForms.git"
-  "PageImages ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageImages.git"
-  "ParserFunctions ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ParserFunctions.git"
-  "ParserMigration ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ParserMigration.git"
-  "PdfHandler ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PdfHandler.git"
-  "PluggableAuth master https://github.com/wikimedia/mediawiki-extensions-PluggableAuth.git"
-  "Popups ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Popups.git"
-  "ProofreadPage ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ProofreadPage.git"
-  "ReplaceText ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ReplaceText.git"
-  "Scribunto ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Scribunto.git"
-  "SemanticDrilldown master https://github.com/MaRDI4NFDI/SemanticDrilldown.git"
-  "SemanticMediaWiki master https://github.com/SemanticMediaWiki/SemanticMediaWiki.git"
-  "SPARQL master https://github.com/ProfessionalWiki/SPARQL.git"
-  "SyntaxHighlight_GeSHi ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-SyntaxHighlight_GeSHi.git"
-  "TemplateStyles ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-TemplateStyles.git"
-  "TextExtracts ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-TextExtracts.git"
-  "Thanks ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Thanks.git"
-  "TimedMediaHandler ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-TimedMediaHandler.git"
-  "UniversalLanguageSelector ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UniversalLanguageSelector.git"
-  "UrlGetParameters ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UrlGetParameters.git"
-  "UserMerge ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-UserMerge.git"
-  "Variables ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Variables.git"
-  "VisualEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-VisualEditor.git"
-  "Widgets ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Widgets.git"
-  "WikibaseCirrusSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseCirrusSearch.git"
-  "WikibaseExport master https://github.com/ProfessionalWiki/WikibaseExport.git"
-  "WikibaseFacetedSearch master https://github.com/ProfessionalWiki/WikibaseFacetedSearch.git"
- # "WikibaseLexeme ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseLexeme.git"
-  "WikibaseLocalMedia master https://github.com/ProfessionalWiki/WikibaseLocalMedia.git"
-  "WikibaseManifest ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseManifest.git"
-  "WikibaseMediaInfo ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseMediaInfo.git"
-  "WikibaseQualityConstraints ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikibaseQualityConstraints.git"
-  "WikiEditor ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-WikiEditor.git"
-  "YouTube ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-YouTube.git"
+  # name|branch|repo-override
+  # If branch is omitted, WMF_BRANCH is used.
+  # If repo-override is omitted, Wikimedia's standard extension URL is used.
+  "AdvancedSearch"
+  "AWS|master|https://github.com/edwardspec/mediawiki-aws-s3.git"
+  "ArticlePlaceholder"
+  "Babel"
+  "CirrusSearch"
+  "Cite"
+  "CiteThisPage"
+  "cldr"
+  "CodeEditor"
+  "CodeMirror"
+  "ConfirmEdit"
+  "DataTransfer|${REL_BRANCH}"
+  "DisplayTitle|${REL_BRANCH}"
+  "Echo"
+  "Elastica"
+  "EntitySchema"
+  "EventBus"
+  "EventStreamConfig"
+  "ExternalContent|master|professionalwiki:ExternalContent"
+  "ExternalData|master"
+  "Gadgets"
+  "InputBox"
+  "JsonConfig"
+  "Lockdown|${REL_BRANCH}"
+  "MardiImport|main|https://github.com/MaRDI4NFDI/mediawiki-extension-MardiImport.git"
+  "Math|master"
+  "MathSearch|master"
+  "MatomoAnalytics|main|https://github.com/miraheze/MatomoAnalytics.git"
+  "MultimediaViewer"
+  "Nuke"
+  "OAuth"
+  "OpenIDConnect|${REL_BRANCH}"
+  "PageForms|${REL_BRANCH}"
+  "PageImages"
+  "ParserFunctions"
+  "ParserMigration"
+  "PdfHandler"
+  "PluggableAuth|master"
+  "Popups"
+  "ProofreadPage"
+  "ReplaceText|${REL_BRANCH}"
+  "Scribunto"
+  "SemanticDrilldown|master|https://github.com/MaRDI4NFDI/SemanticDrilldown.git"
+  "SemanticMediaWiki|master|https://github.com/SemanticMediaWiki/SemanticMediaWiki.git"
+  "SPARQL|master|professionalwiki:SPARQL"
+  "SyntaxHighlight_GeSHi"
+  "TemplateStyles"
+  "TextExtracts"
+  "Thanks"
+  "TimedMediaHandler"
+  "UniversalLanguageSelector"
+  "UrlGetParameters|${REL_BRANCH}"
+  "UserMerge|${REL_BRANCH}"
+  "Variables|${REL_BRANCH}"
+  "VisualEditor"
+  "Widgets|${REL_BRANCH}"
+  "WikibaseCirrusSearch"
+  "WikibaseExport|master|professionalwiki:WikibaseExport"
+  "WikibaseFacetedSearch|master|professionalwiki:WikibaseFacetedSearch"
+ # "WikibaseLexeme"
+  "WikibaseLocalMedia|master|professionalwiki:WikibaseLocalMedia"
+  "WikibaseManifest|${REL_BRANCH}"
+  "WikibaseMediaInfo"
+  "WikibaseQualityConstraints"
+  "WikiEditor"
+  "YouTube|${REL_BRANCH}"
 )
+
+resolve_repo() {
+    REPO=${2:-}
+
+    case "$REPO" in
+        "")
+            echo "${GITHUB_WIKIMEDIA_EXTENSIONS}-${1}.git"
+            ;;
+        professionalwiki:*)
+            echo "${GITHUB_PROFESSIONALWIKI}/${REPO#professionalwiki:}.git"
+            ;;
+        *)
+            echo "$REPO"
+            ;;
+    esac
+}
 
 add_submodule() {
     EXTENSION=$1
-    BRANCH=$2
-    REPO_URL=$3
+    BRANCH=${2:-$WMF_BRANCH}
+    REPO_URL=$(resolve_repo "$EXTENSION" "${3:-}")
     
     # Execute the script with the extension and branch as arguments
     echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
@@ -99,10 +121,7 @@ jobs=()
 
 for ext in "${EXTENSIONS[@]}"
 do
-    # Split the extension name, branch, and URL using space as delimiter
-    EXTENSION=$(echo "$ext" | awk '{print $1}')
-    BRANCH=$(echo "$ext" | awk '{print $2}')
-    REPO_URL=$(echo "$ext" | awk '{print $3}')
+    IFS='|' read -r EXTENSION BRANCH REPO_URL <<< "$ext"
 
     # Run each add_submodule function in the background
     add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL"
