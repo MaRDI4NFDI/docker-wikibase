@@ -81,9 +81,38 @@ gh release create v1.47.10 --generate-notes
 
 # Adding extensions
 To install and activate a new extension you have to:
-* Add it to the `clone_all.sh` script in the `EXTENSIONS` array:
 
-`"AdvancedSearch ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-AdvancedSearch.git"`
+* Add it to the `clone_all.sh` script in the `EXTENSIONS` array.
+
+Entries use the format:
+
+```bash
+"name|branch|repo-override"
+```
+
+Rules:
+
+* If `branch` is omitted, `WMF_BRANCH` is used.
+* If `repo-override` is omitted, the standard Wikimedia extension URL is used:
+  `https://github.com/wikimedia/mediawiki-extensions-${name}.git`
+* For ProfessionalWiki repositories, the shorthand
+  `professionalwiki:<repo>` may be used.
+
+Examples:
+
+```bash
+# Standard Wikimedia extension on WMF_BRANCH
+"AdvancedSearch"
+
+# Wikimedia extension on a different branch
+"DataTransfer|${REL_BRANCH}"
+
+# ProfessionalWiki extension
+"ExternalContent|master|professionalwiki:ExternalContent"
+
+# Custom repository
+"AWS|master|https://github.com/edwardspec/mediawiki-aws-s3.git"
+```
 
 * Activate and configure it as required with a corresponding `.php` file placed either directly in the root of `LocalSettings.d` (for global base settings) or inside the `staging/` or `prod/` subdirectories.
 
