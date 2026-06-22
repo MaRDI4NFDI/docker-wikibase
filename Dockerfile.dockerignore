@@ -1,0 +1,9 @@
+.github
+
+README
+README.*
+*.md
+
+apache
+apache-assets
+dev
