@@ -43,6 +43,7 @@ EXTENSIONS=(
   "PageForms ${REL_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageForms.git"
   "PageImages ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PageImages.git"
   "ParserFunctions ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ParserFunctions.git"
+  "ParserMigration ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-ParserMigration.git"
   "PdfHandler ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-PdfHandler.git"
   "PluggableAuth master https://github.com/wikimedia/mediawiki-extensions-PluggableAuth.git"
   "Popups ${WMF_BRANCH} https://github.com/wikimedia/mediawiki-extensions-Popups.git"
