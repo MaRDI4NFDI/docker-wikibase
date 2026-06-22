@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout portal-k8s
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: MaRDI4NFDI/portal-k8s
           token: ${{ secrets.PORTAL_K8S_PAT }}
@@ -37,7 +37,8 @@ jobs:
           } > .github/pr-tests/docker-wikibase-pr-test.md
 
       - name: Create pull request in portal-k8s
-        uses: peter-evans/create-pull-request@v6
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.PORTAL_K8S_PAT }}
           path: portal-k8s
@@ -54,3 +55,8 @@ jobs:
             - create a pull request
 
             Safe to close after testing.
+
+      - name: Add PR link to summary
+        if: ${{ steps.cpr.outputs.pull-request-url != '' }}
+        run: |
+          echo "Created PR: ${{ steps.cpr.outputs.pull-request-url }}" >> "$GITHUB_STEP_SUMMARY"
