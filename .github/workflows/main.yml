@@ -63,16 +63,37 @@ jobs:
             type=sha,prefix=sha-
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Set staging image tag
-        if: env.PUSH_IMAGE == 'true' && github.ref == 'refs/heads/main'
-        id: staging-tag
+      - name: Set image tags
+        if: env.PUSH_IMAGE == 'true'
+        id: image-tags
         run: |
-          echo "tag=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          echo "staging=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            echo "release=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.1.0
 
+      - name: Check whether commit images already exist
+        if: env.PUSH_IMAGE == 'true' && startsWith(github.ref, 'refs/tags/v')
+        id: commit-images
+        run: |
+          SOURCE_TAG="${{ steps.image-tags.outputs.staging }}"
+
+          if docker buildx imagetools inspect ghcr.io/mardi4nfdi/wikibase:${SOURCE_TAG} >/dev/null 2>&1 \
+            && docker buildx imagetools inspect ghcr.io/mardi4nfdi/apache-assets:${SOURCE_TAG} >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and Push All Images via Bake
+        if: |
+          github.event_name == 'pull_request' ||
+          github.ref == 'refs/heads/main' ||
+          (env.PUSH_IMAGE == 'true' && startsWith(github.ref, 'refs/tags/v') && steps.commit-images.outputs.exists == 'false')
         uses: docker/bake-action@v7.2.0
         with:
           files: docker-bake.hcl
@@ -84,6 +105,20 @@ jobs:
             *.cache-to=type=gha,mode=max,scope=wikibase-shared
         env:
           B_TAGS: ${{ steps.meta.outputs.json }}
+
+      - name: Promote commit images for production
+        if: env.PUSH_IMAGE == 'true' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          SOURCE_TAG="${{ steps.image-tags.outputs.staging }}"
+          RELEASE_TAG="${{ steps.image-tags.outputs.release }}"
+
+          docker buildx imagetools create \
+            --tag ghcr.io/mardi4nfdi/wikibase:${RELEASE_TAG} \
+            ghcr.io/mardi4nfdi/wikibase:${SOURCE_TAG}
+
+          docker buildx imagetools create \
+            --tag ghcr.io/mardi4nfdi/apache-assets:${RELEASE_TAG} \
+            ghcr.io/mardi4nfdi/apache-assets:${SOURCE_TAG}
 
       - name: Checkout portal-k8s
         if: env.PUSH_IMAGE == 'true'
@@ -98,7 +133,7 @@ jobs:
         working-directory: portal-k8s
         run: |
           yq -i \
-            '.spec.values.mediawiki.image.tag = "${{ steps.staging-tag.outputs.tag }}"' \
+            '.spec.values.mediawiki.image.tag = "${{ steps.image-tags.outputs.staging }}"' \
             apps/staging/wikibase/values-staging.yaml
 
       - name: Update production values
@@ -106,7 +141,7 @@ jobs:
         working-directory: portal-k8s
         run: |
           yq -i \
-            '.spec.values.mediawiki.image.tag = "${{ github.ref_name }}"' \
+            '.spec.values.mediawiki.image.tag = "${{ steps.image-tags.outputs.release }}"' \
             apps/production/wikibase/values-production.yaml
 
       - name: Create staging PR
@@ -119,8 +154,8 @@ jobs:
           branch: update/wikibase-staging
           delete-branch: true
           sign-commits: true
-          title: "Update staging Wikibase image to ${{ steps.staging-tag.outputs.tag }}"
-          commit-message: "Update staging Wikibase image to ${{ steps.staging-tag.outputs.tag }}"
+          title: "Update staging Wikibase image to ${{ steps.image-tags.outputs.staging }}"
+          commit-message: "Update staging Wikibase image to ${{ steps.image-tags.outputs.staging }}"
           body: |
             @coderabbitai ignore
 
@@ -132,12 +167,12 @@ jobs:
 
             - Environment: **staging**
             - Source commit: [`${{ github.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
-            - Image tag: `${{ steps.staging-tag.outputs.tag }}`
+            - Image tag: `${{ steps.image-tags.outputs.staging }}`
 
             ## Images
 
-            - [wikibase package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/wikibase): `ghcr.io/mardi4nfdi/wikibase:${{ steps.staging-tag.outputs.tag }}`
-            - [apache-assets package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/apache-assets): `ghcr.io/mardi4nfdi/apache-assets:${{ steps.staging-tag.outputs.tag }}`
+            - [wikibase package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/wikibase): `ghcr.io/mardi4nfdi/wikibase:${{ steps.image-tags.outputs.staging }}`
+            - [apache-assets package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/apache-assets): `ghcr.io/mardi4nfdi/apache-assets:${{ steps.image-tags.outputs.staging }}`
 
       - name: Create production PR
         if: env.PUSH_IMAGE == 'true' && startsWith(github.ref, 'refs/tags/v')
@@ -149,8 +184,8 @@ jobs:
           branch: update/wikibase-production
           delete-branch: true
           sign-commits: true
-          title: "Update production Wikibase image to ${{ github.ref_name }}"
-          commit-message: "Update production Wikibase image to ${{ github.ref_name }}"
+          title: "Update production Wikibase image to ${{ steps.image-tags.outputs.release }}"
+          commit-message: "Update production Wikibase image to ${{ steps.image-tags.outputs.release }}"
           body: |
             @coderabbitai ignore
 
@@ -161,13 +196,14 @@ jobs:
             ## Deployment information
 
             - Environment: **production**
-            - Release tag: [`${{ github.ref_name }}`](https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }})
+            - Git tag: [`${{ github.ref_name }}`](https://github.com/${{ github.repository }}/releases/tag/${{ github.ref_name }})
+            - Image tag: `${{ steps.image-tags.outputs.release }}`
             - Source commit: [`${{ github.sha }}`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
 
             ## Images
 
-            - [wikibase package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/wikibase): `ghcr.io/mardi4nfdi/wikibase:${{ github.ref_name }}`
-            - [apache-assets package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/apache-assets): `ghcr.io/mardi4nfdi/apache-assets:${{ github.ref_name }}`
+            - [wikibase package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/wikibase): `ghcr.io/mardi4nfdi/wikibase:${{ steps.image-tags.outputs.release }}`
+            - [apache-assets package](https://github.com/MaRDI4NFDI/docker-wikibase/pkgs/container/apache-assets): `ghcr.io/mardi4nfdi/apache-assets:${{ steps.image-tags.outputs.release }}`
 
       - name: Add portal-k8s PR links to summary
         if: always()
