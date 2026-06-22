@@ -1,8 +1,5 @@
 .github
-
-README
-README.*
-*.md
+README.md
 
 apache
 apache-assets
