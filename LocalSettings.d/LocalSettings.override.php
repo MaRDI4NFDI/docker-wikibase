@@ -241,4 +241,12 @@ if ( $deployment_env && is_dir( "/var/www/html/w/LocalSettings.d/$deployment_env
 	}
 } else {
 	wfDebug( "DEPLOYMENT_ENV not specified or directory does not exist, skipping environment-specific settings." );
+	$deployment_env = 'unknown';
 }
+$image_tag = getenv( 'WIKIBASE_IMAGE_TAG' ) ?: 'unknown';
+
+$wgExtensionCredits['other'][] = [
+	'name' => 'MaRDI deployment',
+	'version' => $image_tag,
+	'description' => "Environment: $deployment_env",
+];
