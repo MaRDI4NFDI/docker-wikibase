@@ -1,13 +1,19 @@
 variable "B_TAGS" {
   default = "{\"tag-names\":[\"latest\"]}"
 }
-
 variable "TAGS" {
   default = jsondecode(B_TAGS).tag-names
 }
 group "default" {
   targets = ["image-stack"]
 }
+variable "WIKIBASE_COMMIT" {
+  default = "unknown"
+}
+variable "WIKIBASE_BUILT_AT" {
+  default = "unknown"
+}
+
 target "image-stack" {
   matrix = {
     item = [
@@ -27,10 +33,22 @@ target "image-stack" {
 
   tags = [for t in TAGS : "ghcr.io/mardi4nfdi/${item.name}:${t}"]
 
+  args = item.name == "wikibase" ? {
+    WIKIBASE_VERSION  = TAGS[0]
+    WIKIBASE_COMMIT   = WIKIBASE_COMMIT
+    WIKIBASE_BUILT_AT = WIKIBASE_BUILT_AT
+  } : {}
+
   labels = {
     "org.opencontainers.image.title"       = "MaRDI ${item.name} Container"
     "org.opencontainers.image.description" = item.desc
     "org.opencontainers.image.source"      = "https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/${item.dir}"
     "org.opencontainers.image.documentation" = "https://github.com/MaRDI4NFDI/docker-wikibase"
   }
+  annotations = [
+    "index:org.opencontainers.image.title=MaRDI ${item.name} Container",
+    "index:org.opencontainers.image.description=${item.desc}",
+    "index:org.opencontainers.image.source=https://github.com/MaRDI4NFDI/docker-wikibase/tree/main/${item.dir}",
+    "index:org.opencontainers.image.documentation=https://github.com/MaRDI4NFDI/docker-wikibase"
+  ]
 }

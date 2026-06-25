@@ -243,10 +243,29 @@ if ( $deployment_env && is_dir( "/var/www/html/w/LocalSettings.d/$deployment_env
 	wfDebug( "DEPLOYMENT_ENV not specified or directory does not exist, skipping environment-specific settings." );
 	$deployment_env = 'unknown';
 }
-$image_tag = getenv( 'WIKIBASE_IMAGE_TAG' ) ?: 'unknown';
+
+$image_tag = getenv( 'WIKIBASE_VERSION' ) ?: 'unknown';
+$commit = getenv( 'WIKIBASE_COMMIT' ) ?: 'unknown';
+$built_at = getenv( 'WIKIBASE_BUILT_AT' ) ?: 'unknown';
+
+if ( $built_at !== 'unknown' ) {
+	try {
+		$built_at = ( new DateTimeImmutable( $built_at ) )
+			->setTimezone( new DateTimeZone( 'Europe/Berlin' ) )
+			->format( 'H:i, d F Y T' );
+	} catch ( Exception $e ) {
+		$built_at = 'unknown';
+	}
+}
+
+$short_commit = $commit !== 'unknown' ? substr( $commit, 0, 7 ) : 'unknown';
+$repo_url = 'https://github.com/MaRDI4NFDI/docker-wikibase';
+$commit_url = $commit !== 'unknown' ? "$repo_url/commit/$commit" : $repo_url;
 
 $wgExtensionCredits['other'][] = [
-	'name' => 'MaRDI deployment',
-	'version' => $image_tag,
-	'description' => "Environment: $deployment_env",
+    'name' => 'MaRDI deployment',
+    'version' => "$image_tag ($short_commit) $built_at",
+    'url' => $commit_url,
+    'description' => "Environment: $deployment_env",
+    'author' => 'MaRDI developer team',
 ];
