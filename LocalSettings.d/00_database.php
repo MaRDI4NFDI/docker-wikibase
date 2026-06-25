@@ -12,6 +12,8 @@ if ( defined( 'MW_DB' ) ) {
 	$logger->warning( 'Server name not set. Falling back to my_wiki.' );
 } elseif ( str_contains( $host, 'swmath' ) ) {
 	$wgDBname = 'wiki_swmath';
+} elseif ( str_contains( $host, 'p2' ) ) {
+    $wgDBname = 'staging_wiki';
 } elseif ( str_contains( $host, '.wik' ) ) {
 	$wikibase_host = getenv( 'WIKIBASE_HOST' );
 	if ( preg_match( '/^([0-9a-z-]+)\.(wik.*?)' . $wikibase_host . '$/', $host, $match ) !== 1 ) {
@@ -37,6 +39,7 @@ if ( getenv('DB_PRIMARY_IP') && getenv('DB_SECONDARY_IP') ) {
 		'class' => 'LBFactoryMulti',
 
 		'sectionsByDB' => array(
+            'staging_wiki' => 's1',
 			'my_wiki' => 's1', 
 			'wiki_swmath' => 's1',
 		),
