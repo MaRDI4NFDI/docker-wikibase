@@ -2,13 +2,6 @@
 #   Global settings  #
 ######################
 ARG MEDIAWIKI_VERSION=stable-fpm
-ARG WIKIBASE_VERSION=unknown
-ARG WIKIBASE_COMMIT=unknown
-ARG WIKIBASE_BUILT_AT=unknown
-
-ENV WIKIBASE_VERSION=$WIKIBASE_VERSION
-ENV WIKIBASE_COMMIT=$WIKIBASE_COMMIT
-ENV WIKIBASE_BUILT_AT=$WIKIBASE_BUILT_AT
 
 ################
 #   Fetcher    #
@@ -120,7 +113,11 @@ COPY mardi_php.ini /usr/local/etc/php/conf.d/mardi_php.ini
 
 # PHP-FPM configuration
 COPY ./php-fpm/logging.conf /usr/local/etc/php-fpm.d/zz-logging.conf
-
+COPY ./php-fpm/performance.conf.template /templates/performance.conf.template
+COPY ./php-fpm/opcache.conf.template /templates/opcache.conf.template
+ARG WIKIBASE_VERSION=unknown
+ARG WIKIBASE_COMMIT=unknown
+ARG WIKIBASE_BUILT_AT=unknown
 # PHP-FPM tuning via environment variables (production defaults)
 ENV PHP_FPM_PM=dynamic \
     PHP_FPM_MAX_CHILDREN=75 \
@@ -128,20 +125,18 @@ ENV PHP_FPM_PM=dynamic \
     PHP_FPM_MIN_SPARE_SERVERS=10 \
     PHP_FPM_MAX_SPARE_SERVERS=40 \
     PHP_FPM_MAX_REQUESTS=1000 \
-    PHP_FPM_REQUEST_TIMEOUT=60s
-
-COPY ./php-fpm/performance.conf.template /templates/performance.conf.template
-
-ENV OPCACHE_MEMORY_CONSUMPTION=512 \
+    PHP_FPM_REQUEST_TIMEOUT=60s \
+    OPCACHE_MEMORY_CONSUMPTION=512 \
     OPCACHE_MAX_ACCELERATED_FILES=50000 \
     OPCACHE_INTERNED_STRINGS_BUFFER=32 \
     OPCACHE_VALIDATE_TIMESTAMPS=0 \
     OPCACHE_REVALIDATE_FREQ=0 \
-    OPCACHE_JIT_BUFFER_SIZE=128M
+    OPCACHE_JIT_BUFFER_SIZE=128M \
+    WIKIBASE_VERSION=$WIKIBASE_VERSION \
+    WIKIBASE_COMMIT=$WIKIBASE_COMMIT \
+    WIKIBASE_BUILT_AT=$WIKIBASE_BUILT_AT \
+    TZ=Europe/Berlin
 
-COPY ./php-fpm/opcache.conf.template /templates/opcache.conf.template
-
-ENV TZ=Europe/Berlin
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN printf '[PHP]\ndate.timezone = "Europe/Berlin"\n' > /usr/local/etc/php/conf.d/tzone.ini
 
