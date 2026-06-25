@@ -30,7 +30,7 @@ $wgEventBusEnableRunJobAPI = true;
 $wgConf->suffixes = [ '' ];
 $wgConf->wikis = $wgLocalDatabases;
 $wgConf->settings = [
-	'wgCanonicalgoServer' => [
+	'wgCanonicalServer' => [
 		'my_wiki' => 'https://' . getenv( 'WIKIBASE_HOST' ),
 		'staging_wiki' => 'https://p2.staging.mardi4nfdi.org',
 	],
