@@ -25,6 +25,9 @@ $wgWBRepoSettings['statementSections'] = [
 
 if ( $wgDBname === 'my_wiki' ) {
 	if ( getenv( 'MW_ELASTIC_HOST' ) !== false ) {
+		if ( ! isset( $wbmSearchIndexProperties ) ) {
+			throw new RuntimeException( 'mardi_properties.php must be loaded before prod/WikibaseConfig.php' );
+		}
 		$wgWBRepoSettings['searchIndexProperties'] = $wbmSearchIndexProperties;
 	}
 
