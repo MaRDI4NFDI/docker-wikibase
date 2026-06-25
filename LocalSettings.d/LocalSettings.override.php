@@ -78,7 +78,7 @@ wfLoadExtension( 'Lockdown' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'ExternalContent' );
 wfLoadExtension( 'ParserMigration' );
-
+$wgParserMigrationEnableParsoidArticlePages = false;
 
 $wgMathDisableTexFilter = 'always';
 
