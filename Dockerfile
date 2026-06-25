@@ -138,5 +138,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo "$TZ" > /etc/timezone && \
     printf '[PHP]\ndate.timezone = "%s"\n' "$TZ" > /usr/local/etc/php/conf.d/tzone.ini
 
+
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 CMD php /var/www/html/w/maintenance/run.php getConfiguration --format json  --settings wgServer
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 CMD php /var/www/html/w/maintenance/run.php view Main_Page
+
+
 ENTRYPOINT ["/bin/bash"]
 CMD ["/entrypoint.sh"]
