@@ -12,7 +12,7 @@ if ( defined( 'MW_DB' ) ) {
 	$logger->warning( 'Server name not set. Falling back to my_wiki.' );
 } elseif ( str_contains( $host, 'swmath' ) ) {
 	$wgDBname = 'wiki_swmath';
-} elseif ( str_contains( $host, 'p2' ) ) {
+} elseif ( str_contains( $host, 'p2.staging' ) ) {
     $wgDBname = 'staging_wiki';
 } elseif ( str_contains( $host, '.wik' ) ) {
 	$wikibase_host = getenv( 'WIKIBASE_HOST' );
