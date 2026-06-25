@@ -27,6 +27,7 @@ target "image-stack" {
   name        = "image-stack-${item.name}"
   context     = item.dir
   dockerfile  = "Dockerfile"
+  description = item.desc
 
   depends_on  = [for d in item.dep : "image-stack-${d}"]
   contexts    = item.ctx
