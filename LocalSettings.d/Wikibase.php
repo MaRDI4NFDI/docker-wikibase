@@ -41,7 +41,8 @@ $wgNamespacesToBeSearchedDefault[122] = true; // WB_PROPERTY_NAMESPACE===122
 // Add mul language support
 $wgWBRepoSettings['enableMulLanguageCode'] = true;
 
-if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'commonswiki' ) {
+$wbRepoWikis = [ 'staging_wiki', 'my_wiki', 'wikidatawiki', 'commonswiki' ];
+if ( in_array( $wgDBname, $wbRepoWikis, true ) ) {
 
 	wfLoadExtension( 'WikibaseRepository', "$IP/extensions/Wikibase/extension-repo.json" );
 	// from https://github.com/wikimedia/mediawiki-extensions-Wikibase/blob/f2bd35609b6bf3f8d38ef8c78d2f340497906706/repo/includes/RepoHooks.php#L170C1-L180C61
@@ -127,7 +128,7 @@ if ( $wgDBname === 'my_wiki' || $wgDBname === 'wikidatawiki' || $wgDBname === 'c
 	// https://www.mediawiki.org/wiki/Extension:EntitySchema
 	## EntitySchema Configuration
 	wfLoadExtension( 'EntitySchema' );
-	$wgEntitySchemaShExSimpleUrl = 'https://shex-simple.toolforge.org/wikidata/packages/shex-webapp/doc/shex-simple.html?data=Endpoint: https://query.' . getenv('WIKIBASE_HOST') .'/sparql&hideData&manifest=[]&textMapIsSparqlQuery';
+	$wgEntitySchemaShExSimpleUrl = 'https://shex-simple.toolforge.org/wikidata/packages/shex-webapp/doc/shex-simple.html?data=Endpoint: https://query.' . getenv( 'WIKIBASE_HOST' ) . '/sparql&hideData&manifest=[]&textMapIsSparqlQuery';
 	// https://www.mediawiki.org/wiki/Extension:WikibaseCirrusSearch
 	wfLoadExtension( 'WikibaseCirrusSearch' );
 	if ( $wgDBname === 'commonswiki' ) {
