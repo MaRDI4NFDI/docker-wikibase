@@ -170,11 +170,14 @@ ini_set( 'memory_limit', '2G' );
 if ( MW_ENTRY_POINT !== 'cli' ) {
 	$wgUseInstantCommons = true;
 }
+
 # Jobrunner configuration with Eventgate/EventBus
-$wgJobTypeConf['default'] = [
-	'class' => JobQueueEventBus::class,
-	'readOnlyReason' => false,
-];
+if ( $wgDBname !== 'staging_wiki' ) {
+	$wgJobTypeConf['default'] = [
+		'class' => JobQueueEventBus::class,
+		'readOnlyReason' => false,
+	];
+}
 # The wdqs-updater would trigger a lot of jobs if the jun rate was not 0
 $wgJobRunRate = 0;
 # Allow to display how many profile pages exist https://www.mediawiki.org/wiki/Help:Magic_words#Statistics
@@ -263,9 +266,9 @@ $repo_url = 'https://github.com/MaRDI4NFDI/docker-wikibase';
 $commit_url = $commit !== 'unknown' ? "$repo_url/commit/$commit" : $repo_url;
 
 $wgExtensionCredits['other'][] = [
-    'name' => 'MaRDI deployment',
-    'version' => "$image_tag ($short_commit) $built_at",
-    'url' => $commit_url,
-    'description' => "Environment: $deployment_env",
-    'author' => 'MaRDI developer team',
+	'name' => 'MaRDI deployment',
+	'version' => "$image_tag ($short_commit) $built_at",
+	'url' => $commit_url,
+	'description' => "Environment: $deployment_env",
+	'author' => 'MaRDI developer team',
 ];
