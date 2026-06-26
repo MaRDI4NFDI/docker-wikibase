@@ -5,6 +5,9 @@ wfLoadExtension( 'WikibaseClient', "$IP/extensions/Wikibase/extension-client.jso
 require_once "$IP/extensions/Wikibase/client/ExampleSettings.php";
 
 $wikibaseHost = getenv( 'WIKIBASE_SCHEME' ) . '://' . getenv( 'WIKIBASE_HOST' );
+if ( $wgDBname === 'staging_wiki' ) {
+	$wikibaseHost = 'https://p2.staging.mardi4nfdi.org';
+}
 $portalHost = $wikibaseHost;
 if ( getenv( 'WIKIBASE_HOST' ) === 'localhost' ) {
 		$wikibaseHost = getenv( 'WIKIBASE_SCHEME' ) . '://mardi-wikibase';
@@ -50,11 +53,14 @@ if ( in_array( $wgDBname, $wbRepoWikis, true ) ) {
 	$wgExtraNamespaces[121] = 'Item_talk';
 	$wgExtraNamespaces[122] = 'Property';
 	$wgExtraNamespaces[123] = 'Property_talk';
-	// do not declare namespaces if that would be done by default https://gerrit.wikimedia.org/r/c/mediawiki/extensions/Wikibase/+/933906 https://phabricator.wikimedia.org/T291617
+	// do not declare namespaces if that would be done by default
+	// https://gerrit.wikimedia.org/r/c/mediawiki/extensions/Wikibase/+/933906
+	// https://phabricator.wikimedia.org/T291617
 	$wgWBRepoSettings['defaultEntityNamespaces'] = false;
+	$mardiRepoDb = $wgDBname === 'staging_wiki' ? $wgDBname : 'my_wiki';
 	$wgWBRepoSettings['entitySources'] = [
 			'mardi_source' => [
-				'repoDatabase' => 'my_wiki',
+				'repoDatabase' => $mardiRepoDb,
 				'baseUri' => $wikibaseHost . '/entity/',
 				'entityNamespaces' => [
 						'item' => 120,
@@ -67,7 +73,7 @@ if ( in_array( $wgDBname, $wbRepoWikis, true ) ) {
 
 	];
 	$wgWBRepoSettings['localEntitySourceName'] = 'mardi_source';
-	if ( $wgDBname !== 'my_wiki' ) {
+	if ( $wgDBname !== 'my_wiki' && $wgDBname !== 'staging_wiki' ) {
 		$wgWBRepoSettings['entitySources'] = [
 			'wikidata' => [
 				'entityNamespaces' => [
@@ -96,7 +102,7 @@ if ( in_array( $wgDBname, $wbRepoWikis, true ) ) {
 	}
 
 	$wgWBRepoSettings['localClientDatabases'] = [
-		'mardi' => 'my_wiki',
+		'mardi' => $mardiRepoDb,
 		'swmath' => 'wiki_swmath'
 	];
 	// insert site with
@@ -128,7 +134,9 @@ if ( in_array( $wgDBname, $wbRepoWikis, true ) ) {
 	// https://www.mediawiki.org/wiki/Extension:EntitySchema
 	## EntitySchema Configuration
 	wfLoadExtension( 'EntitySchema' );
-	$wgEntitySchemaShExSimpleUrl = 'https://shex-simple.toolforge.org/wikidata/packages/shex-webapp/doc/shex-simple.html?data=Endpoint: https://query.' . getenv( 'WIKIBASE_HOST' ) . '/sparql&hideData&manifest=[]&textMapIsSparqlQuery';
+	$wgEntitySchemaShExSimpleUrl =
+		'https://shex-simple.toolforge.org/wikidata/packages/shex-webapp/doc/shex-simple.html?data=Endpoint: https://query.'
+		. getenv( 'WIKIBASE_HOST' ) . '/sparql&hideData&manifest=[]&textMapIsSparqlQuery';
 	// https://www.mediawiki.org/wiki/Extension:WikibaseCirrusSearch
 	wfLoadExtension( 'WikibaseCirrusSearch' );
 	if ( $wgDBname === 'commonswiki' ) {
