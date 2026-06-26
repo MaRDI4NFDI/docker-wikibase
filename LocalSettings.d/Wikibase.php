@@ -7,6 +7,8 @@ require_once "$IP/extensions/Wikibase/client/ExampleSettings.php";
 $wikibaseHost = getenv( 'WIKIBASE_SCHEME' ) . '://' . getenv( 'WIKIBASE_HOST' );
 if ( $wgDBname === 'staging_wiki' ) {
 	$wikibaseHost = 'https://p2.staging.mardi4nfdi.org';
+    $wgServer = 'https://p2.staging.mardi4nfdi.org';
+    $wgCanonicalServer = 'https://p2.staging.mardi4nfdi.org';
 }
 $portalHost = $wikibaseHost;
 if ( getenv( 'WIKIBASE_HOST' ) === 'localhost' ) {
