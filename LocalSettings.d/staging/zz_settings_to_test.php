@@ -22,4 +22,4 @@ $wgDebugLogGroups['DeferredUpdates'] = array(
 	'destination' => '/var/log/mediawiki/other.log',
 	'level' => 'error',
 );
-
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
