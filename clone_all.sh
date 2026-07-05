@@ -2,7 +2,7 @@
 # cache-bust: 2026-03-31b
 set -euxo pipefail
 
-WMF_BRANCH=wmf/1.47.0-wmf.7
+WMF_BRANCH=wmf/1.47.0-wmf.9
 REL_BRANCH=REL1_45
 
 GITHUB_WIKIMEDIA_EXTENSIONS=https://github.com/wikimedia/mediawiki-extensions
