@@ -35,7 +35,7 @@ jobs:
       - name: Generate portal-k8s GitHub App token
         if: env.PUSH_IMAGE == 'true'
         id: portal-app-token
-        uses: actions/create-github-app-token@v2
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.PORTAL_K8S_APP_ID }}
           private-key: ${{ secrets.PORTAL_K8S_APP_PRIVATE_KEY }}
