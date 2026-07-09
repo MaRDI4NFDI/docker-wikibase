@@ -1,5 +1,5 @@
 #!/bin/bash 
-# cache-bust: 2026-03-31b
+# cache-bust: 2026-07-09
 set -euxo pipefail
 
 WMF_BRANCH=wmf/1.47.0-wmf.9
