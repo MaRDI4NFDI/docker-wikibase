@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 WORKDIR /
 
-COPY wikibase-submodules-from-github-instead-of-phabricator.patch clone_all.sh ./
+COPY wikibase-submodules-from-github-instead-of-phabricator.patch wikibase-local-media-parser-options.patch clone_all.sh ./
 
 RUN bash clone_all.sh
 
