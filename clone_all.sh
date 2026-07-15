@@ -149,7 +149,9 @@ wait
 git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} mediawiki/extensions/Wikibase && \
     patch -d mediawiki/extensions/Wikibase -Np1 <./wikibase-submodules-from-github-instead-of-phabricator.patch && \
     git -C mediawiki/extensions/Wikibase submodule update --init --recursive    
-
+# Temporary fix: WikibaseLocalMedia crashes on MW 1.47 (OutputPage::parserOptions() removed).
+# Remove once upstream merges https://github.com/ProfessionalWiki/WikibaseLocalMedia/pull/46
+patch -d mediawiki/extensions/WikibaseLocalMedia -Np1 <./wikibase-local-media-parser-options.patch
 # Workaround for https://phabricator.wikimedia.org/T388624
 cd mediawiki/extensions/DisplayTitle
 git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
