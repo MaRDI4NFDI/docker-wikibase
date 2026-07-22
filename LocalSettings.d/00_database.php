@@ -38,14 +38,8 @@ if ( getenv('DB_PRIMARY_IP') && getenv('DB_SECONDARY_IP') ) {
 
 		'class' => 'LBFactoryMulti',
 
-		'sectionsByDB' => array(
-            'staging_wiki' => 's1',
-			'my_wiki' => 's1', 
-			'wiki_swmath' => 's1',
-		),
-
 		'sectionLoads' => array(
-			's1' => array(
+			'DEFAULT' => array(
 				getenv('DB_PRIMARY_IP') => 0,
 				getenv('DB_SECONDARY_IP') => 100,
 			),
