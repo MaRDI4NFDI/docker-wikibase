@@ -38,6 +38,8 @@ if ( getenv('DB_PRIMARY_IP') && getenv('DB_SECONDARY_IP') ) {
 
 		'class' => 'LBFactoryMulti',
 
+		'sectionsByDB' => array(),
+
 		'sectionLoads' => array(
 			'DEFAULT' => array(
 				getenv('DB_PRIMARY_IP') => 0,
