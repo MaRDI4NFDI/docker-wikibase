@@ -21,7 +21,17 @@ if ( defined( 'MW_DB' ) ) {
 	}
 	$lang = str_replace( '-', '_', $match[1] );
 	$suffix = str_replace( '.', '', $match[2] );
-	$wgDBname = $lang . $suffix;
+	$candidate = $lang . $suffix;
+
+	// Language wikis that actually exist as databases.
+	// When de.wiki / en.wiki go live, create the database and add
+	// 'dewiki' / 'enwiki' here so requests are no longer rejected.
+	$knownLanguageWikis = [];
+	if ( !in_array( $candidate, $knownLanguageWikis, true ) ) {
+		http_response_code( 404 );
+		die( "No wiki configured for server name $host." );
+	}
+	$wgDBname = $candidate;
 }
 
 /** Set language code */
