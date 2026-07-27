@@ -1,5 +1,5 @@
 #!/bin/bash 
-# cache-bust: 2026-07-09
+# cache-bust: 2026-07-27
 set -euxo pipefail
 
 WMF_BRANCH=wmf/1.47.0-wmf.12
@@ -44,7 +44,7 @@ EXTENSIONS=(
   "MatomoAnalytics|main|https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer"
   "Nuke"
-  "OAuth"
+  "OAuth|master" 
   "OpenIDConnect|${REL_BRANCH}"
   "PageForms|${REL_BRANCH}"
   "PageImages"
