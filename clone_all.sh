@@ -145,6 +145,10 @@ wait
 ## Clone Wikibase
 git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} mediawiki/extensions/Wikibase && \
     git -C mediawiki/extensions/Wikibase submodule update --init --recursive
+# Temporary fix: OAuth SessionProvider recursion on valid bearer tokens hits PHP's
+# max_execution_time (T432214). The upstream fix (add 'raw' audience, Gerrit 1306665)
+# is not yet on wmf.12. Remove once WMF_BRANCH includes it.
+patch -d mediawiki/extensions/OAuth -Np1 <./oauth-session-provider-recursion.patch
 # Workaround for https://phabricator.wikimedia.org/T388624
 cd mediawiki/extensions/DisplayTitle
 git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
