@@ -44,7 +44,7 @@ EXTENSIONS=(
   "MatomoAnalytics|main|https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer"
   "Nuke"
-  "OAuth|master" 
+  "OAuth" 
   "OpenIDConnect|${REL_BRANCH}"
   "PageForms|${REL_BRANCH}"
   "PageImages"
