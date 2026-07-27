@@ -15,7 +15,7 @@ RUN apt-get update && \
 
 WORKDIR /
 
-COPY clone_all.sh ./
+COPY oauth-session-provider-recursion.patch clone_all.sh ./
 
 RUN bash clone_all.sh
 
