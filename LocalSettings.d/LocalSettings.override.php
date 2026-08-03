@@ -237,13 +237,11 @@ $wgSitemapNamespaces = [
 	0
 ];
 
+# The settings in LocalSettings.d/$DEPLOYMENT_ENV/ are included by
+# zzz_deployment_env.php, which sorts last in LocalSettings.d so that they
+# override every other file. Here we only resolve the name for the credits below.
 $deployment_env = getenv( 'DEPLOYMENT_ENV' );
-if ( $deployment_env && is_dir( "/var/www/html/w/LocalSettings.d/$deployment_env" ) ) {
-	foreach ( glob( "/var/www/html/w/LocalSettings.d/$deployment_env/*.php" ) as $filename ) {
-		include $filename;
-	}
-} else {
-	wfDebug( "DEPLOYMENT_ENV not specified or directory does not exist, skipping environment-specific settings." );
+if ( !$deployment_env || !is_dir( "/var/www/html/w/LocalSettings.d/$deployment_env" ) ) {
 	$deployment_env = 'unknown';
 }
 

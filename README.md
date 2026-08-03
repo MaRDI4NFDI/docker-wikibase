@@ -47,6 +47,8 @@ The `LocalSettings.d` directory isolates runtime configuration rules. Files are 
 * **`staging/`**: Contains target configuration layers (such as test overrides and custom captcha engines) injected exclusively during staging builds.
 * **`prod/`**: Contains target infrastructure parameters (including production performance logging frameworks and live SPARQL configurations) executed strictly within live release tags.
 
+Loading order: `LocalSettings.php` includes the root `LocalSettings.d/*.php` files in alphabetical order (the glob is *not* recursive). The subdirectory matching `$DEPLOYMENT_ENV` is then included by `zzz_deployment_env.php`, which is named so that it sorts last — the tier-specific files are therefore loaded after every baseline file and genuinely override it. Keep that name sorting last when adding new files to the root of `LocalSettings.d`.
+
 # Create tag and new release
 
 ## Option 1
