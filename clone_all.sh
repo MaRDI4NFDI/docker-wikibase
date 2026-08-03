@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 # cache-bust: 2026-07-27
 set -euxo pipefail
 
@@ -44,7 +44,7 @@ EXTENSIONS=(
   "MatomoAnalytics|main|https://github.com/miraheze/MatomoAnalytics.git"
   "MultimediaViewer"
   "Nuke"
-  "OAuth" 
+  "OAuth"
   "OpenIDConnect|${REL_BRANCH}"
   "PageForms|${REL_BRANCH}"
   "PageImages"
@@ -73,7 +73,7 @@ EXTENSIONS=(
   "WikibaseCirrusSearch"
   "WikibaseExport|master|professionalwiki:WikibaseExport"
   "WikibaseFacetedSearch|master|professionalwiki:WikibaseFacetedSearch"
- # "WikibaseLexeme"
+  # "WikibaseLexeme"
   "WikibaseLocalMedia|master|professionalwiki:WikibaseLocalMedia"
   "WikibaseManifest|${REL_BRANCH}"
   "WikibaseMediaInfo"
@@ -83,31 +83,31 @@ EXTENSIONS=(
 )
 
 resolve_repo() {
-    REPO=${2:-}
+  REPO=${2:-}
 
-    case "$REPO" in
-        "")
-            echo "${GITHUB_WIKIMEDIA_EXTENSIONS}-${1}.git"
-            ;;
-        professionalwiki:*)
-            echo "${GITHUB_PROFESSIONALWIKI}/${REPO#professionalwiki:}.git"
-            ;;
-        *)
-            echo "$REPO"
-            ;;
-    esac
+  case "$REPO" in
+  "")
+    echo "${GITHUB_WIKIMEDIA_EXTENSIONS}-${1}.git"
+    ;;
+  professionalwiki:*)
+    echo "${GITHUB_PROFESSIONALWIKI}/${REPO#professionalwiki:}.git"
+    ;;
+  *)
+    echo "$REPO"
+    ;;
+  esac
 }
 
 add_submodule() {
-    EXTENSION=$1
-    BRANCH=${2:-$WMF_BRANCH}
-    REPO_URL=$(resolve_repo "$EXTENSION" "${3:-}")
-    
-    # Execute the script with the extension and branch as arguments
-    echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
+  EXTENSION=$1
+  BRANCH=${2:-$WMF_BRANCH}
+  REPO_URL=$(resolve_repo "$EXTENSION" "${3:-}")
 
-    # Clone the repository using the provided URL
-    git clone --depth=1 --recurse-submodules "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
+  # Execute the script with the extension and branch as arguments
+  echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
+
+  # Clone the repository using the provided URL
+  git clone --depth=1 --recurse-submodules "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
 }
 
 export -f add_submodule
@@ -119,36 +119,29 @@ export -f add_submodule
 # Track background jobs
 jobs=()
 
-for ext in "${EXTENSIONS[@]}"
-do
-    IFS='|' read -r EXTENSION BRANCH REPO_URL <<< "$ext"
+for ext in "${EXTENSIONS[@]}"; do
+  IFS='|' read -r EXTENSION BRANCH REPO_URL <<<"$ext"
 
-    # Run each add_submodule function in the background
-    add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL"
-    
-    #jobs+=($!)
+  # Run each add_submodule function in the background
+  add_submodule "$EXTENSION" "$BRANCH" "$REPO_URL"
 
-    # Limit the number of background jobs to 1
-    # if [[ ${#jobs[@]} -ge 1 ]]; then
-        # Wait for the first background job to finish before continuing
-    #    wait "${jobs[0]}"
-        # Remove the completed job from the jobs array
-    #    jobs=("${jobs[@]:1}")
-    #fi
+  #jobs+=($!)
+
+  # Limit the number of background jobs to 1
+  # if [[ ${#jobs[@]} -ge 1 ]]; then
+  # Wait for the first background job to finish before continuing
+  #    wait "${jobs[0]}"
+  # Remove the completed job from the jobs array
+  #    jobs=("${jobs[@]:1}")
+  #fi
 done
 
 # Wait for any remaining background jobs to finish
 wait
 
-
-
 ## Clone Wikibase
-git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} mediawiki/extensions/Wikibase && \
-    git -C mediawiki/extensions/Wikibase submodule update --init --recursive
-# Temporary fix: OAuth SessionProvider recursion on valid bearer tokens hits PHP's
-# max_execution_time (T432214). The upstream fix (add 'raw' audience, Gerrit 1306665)
-# is not yet on wmf.12. Remove once WMF_BRANCH includes it.
-patch -d mediawiki/extensions/OAuth -Np1 <./oauth-session-provider-recursion.patch
+git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} mediawiki/extensions/Wikibase &&
+  git -C mediawiki/extensions/Wikibase submodule update --init --recursive
 # Workaround for https://phabricator.wikimedia.org/T388624
 cd mediawiki/extensions/DisplayTitle
 git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
@@ -156,8 +149,8 @@ cd ../../..
 
 # Clone core and other skins
 git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} mediawiki/skins/Vector
-  # Other skins
-git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git mediawiki/skins/chameleon 
+# Other skins
+git clone --depth=1 https://github.com/ProfessionalWiki/chameleon.git mediawiki/skins/chameleon
 git clone --depth=1 https://github.com/ProfessionalWiki/MardiSkin.git mediawiki/skins/MardiSkin
 
 # Temporary dependency fix
