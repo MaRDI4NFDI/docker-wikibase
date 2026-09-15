@@ -27,6 +27,7 @@ RUN echo "Include conf/extra/mediawiki.conf" >> /usr/local/apache2/conf/httpd.co
 
 COPY remoteip.conf /usr/local/apache2/conf/extra/remoteip.conf
 COPY mediawiki.conf.template /usr/local/apache2/conf/extra/mediawiki.conf.template
+COPY --chmod=755 entrypoint.sh /usr/local/bin/mardi-apache-entrypoint
 ENV WIKIBASE_HOST=wikibase
 
-CMD ["sh", "-c", "envsubst '${WIKIBASE_HOST}' < /usr/local/apache2/conf/extra/mediawiki.conf.template > /usr/local/apache2/conf/extra/mediawiki.conf && httpd-foreground"]
+CMD ["mardi-apache-entrypoint"]
