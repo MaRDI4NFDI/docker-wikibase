@@ -1,0 +1,109 @@
+diff --git a/src/SparqlLua.php b/src/SparqlLua.php
+index 90522aa..64dd70c 100644
+--- a/src/SparqlLua.php
++++ b/src/SparqlLua.php
+@@ -10,6 +10,11 @@ use MediaWiki\Extension\Scribunto\Engines\LuaCommon\LibraryBase;
+ 
+ class SparqlLua extends LibraryBase {
+ 
++	/**
++	 * Set on the ParserOutput of a render in which at least one query failed.
++	 */
++	public const FAILED_QUERY_FLAG = 'sparql-query-failed';
++
+ 	public function register(): array {
+ 		return $this->getEngine()->registerInterface(
+ 			__DIR__ . '/Sparql.lua',
+@@ -20,15 +25,44 @@ class SparqlLua extends LibraryBase {
+ 	}
+ 
+ 	private function runSparqlQuery( string $sparql ): array|null {
+-		$sparqlEndpoint = MediaWikiServices::getInstance()->getMainConfig()->get( 'SPARQLEndpoint' );
++		$config = MediaWikiServices::getInstance()->getMainConfig();
++		$sparqlEndpoint = $config->get( 'SPARQLEndpoint' );
+ 
+ 		if ( !is_string( $sparqlEndpoint ) ) {
+ 			throw new InvalidArgumentException( 'SPARQLEndpoint must be configured properly' );
+ 		}
+ 
+ 		$requestFactory = MediaWikiServices::getInstance()->getHttpRequestFactory();
+-		$queryRunner = new SparqlLuaQueryRunner( $requestFactory, $sparqlEndpoint );
+-		return $queryRunner->runQuery( $sparql );
++		$queryRunner = new SparqlLuaQueryRunner(
++			$requestFactory,
++			$sparqlEndpoint,
++			$config->has( 'SPARQLHttpTimeout' ) ? (float)$config->get( 'SPARQLHttpTimeout' ) : null,
++			$config->has( 'SPARQLQueryTimeout' ) ? (string)$config->get( 'SPARQLQueryTimeout' ) : null
++		);
++		$result = $queryRunner->runQuery( $sparql );
++
++		if ( $result === null ) {
++			$this->markRenderAsDegraded(
++				$config->has( 'SPARQLFailedQueryCacheExpiry' ) ? (int)$config->get( 'SPARQLFailedQueryCacheExpiry' ) : 60
++			);
++		}
++
++		return $result;
++	}
++
++	/**
++	 * A failed query leaves part of the page empty. Keep such a render out of the
++	 * parser cache for long, and flag it so the CDN TTL can be lowered as well
++	 * (see the OutputPageParserOutput hook in LocalSettings).
++	 */
++	private function markRenderAsDegraded( int $cacheExpiry ): void {
++		$parser = $this->getParser();
++		if ( $parser === null ) {
++			return;
++		}
++		$output = $parser->getOutput();
++		$output->updateCacheExpiry( $cacheExpiry );
++		$output->setExtensionData( self::FAILED_QUERY_FLAG, true );
+ 	}
+ 
+ }
+diff --git a/src/SparqlLuaQueryRunner.php b/src/SparqlLuaQueryRunner.php
+index 2da8022..a2a9ef3 100644
+--- a/src/SparqlLuaQueryRunner.php
++++ b/src/SparqlLuaQueryRunner.php
+@@ -8,19 +8,35 @@ use MediaWiki\Http\HttpRequestFactory;
+ 
+ class SparqlLuaQueryRunner {
+ 
++	/**
++	 * @param float|null $httpTimeout Seconds the HTTP client waits for a response. Null uses $wgHTTPTimeout.
++	 * @param string|null $queryTimeout Sent as the "timeout" parameter so the endpoint cancels the
++	 *   query itself (QLever syntax, e.g. "5s"). Null sends no parameter.
++	 */
+ 	public function __construct(
+ 		private readonly HttpRequestFactory $requestFactory,
+-		private readonly string $sparqlEndpoint
++		private readonly string $sparqlEndpoint,
++		private readonly ?float $httpTimeout = null,
++		private readonly ?string $queryTimeout = null
+ 	) {
+ 	}
+ 
+ 	public function runQuery( string $sparql ): array|null {
++		$postData = [
++			'query' => $sparql,
++			'format' => 'json'
++		];
++		if ( $this->queryTimeout !== null ) {
++			$postData['timeout'] = $this->queryTimeout;
++		}
++
+ 		$options = [
+-			'postData' => [
+-				'query' => $sparql,
+-				'format' => 'json'
+-			],
++			'postData' => $postData,
+ 		];
++		if ( $this->httpTimeout !== null ) {
++			$options['timeout'] = $this->httpTimeout;
++		}
++
+ 		$response = $this->requestFactory->request( 'POST', $this->sparqlEndpoint, $options );
+ 
+ 		return $response !== null ? json_decode( $response, true ) : null;
