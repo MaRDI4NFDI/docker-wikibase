@@ -24,8 +24,10 @@ RUN sed -i 's/CustomLog \/proc\/self\/fd\/1 common/CustomLog \/proc\/self\/fd\/1
 
 RUN echo "Include conf/extra/remoteip.conf" >> /usr/local/apache2/conf/httpd.conf
 RUN echo "Include conf/extra/mediawiki.conf" >> /usr/local/apache2/conf/httpd.conf
+RUN echo "Include conf/extra/status.conf" >> /usr/local/apache2/conf/httpd.conf
 
 COPY remoteip.conf /usr/local/apache2/conf/extra/remoteip.conf
+COPY status.conf /usr/local/apache2/conf/extra/status.conf
 COPY mediawiki.conf.template /usr/local/apache2/conf/extra/mediawiki.conf.template
 COPY --chmod=755 entrypoint.sh /usr/local/bin/mardi-apache-entrypoint
 ENV WIKIBASE_HOST=wikibase
