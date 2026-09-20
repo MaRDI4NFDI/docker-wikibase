@@ -42,5 +42,6 @@ DocumentRoot "/var/www/html"
 </Directory>
 
 ${APACHE_MAX_REQUEST_WORKERS_DIRECTIVE}
+${APACHE_LISTEN_BACKLOG_DIRECTIVE}
 
 AllowEncodedSlashes NoDecode
