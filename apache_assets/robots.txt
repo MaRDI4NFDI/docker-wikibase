@@ -1,23 +1,22 @@
 User-agent: *
-Disallow: /w/index.php?title=Special:
+# Rendering and media: unlike Wikipedia, this wiki serves them under /w/.
+Allow: /w/load.php?
+Allow: /w/images_repo/
+Allow: /w/skins/
+Allow: /w/resources/
+Allow: /w/extensions/
+Allow: /w/thumb.php
+Disallow: /w/
 Disallow: /wiki/Special:
-Disallow: /w/api.php
-Disallow: /w/rest.php
-Disallow: /w/load.php
-Disallow: /w/index.php?go=Go&search
+Disallow: /wiki/Special%3A
 
-Disallow: /*?action=edit
-Disallow: /*?action=history
+Disallow: /*?action=
+Disallow: /*&action=
 Disallow: /*?diff=
 Disallow: /*?oldid=
 Disallow: /*?printable=
-Disallow: /*&action=edit
-Disallow: /*&action=history
 Disallow: /*&diff=
 Disallow: /*&oldid=
-
-Disallow: /wiki/Special:EntityData/
-Disallow: /w/index.php?title=Special:EntityData
 
 User-agent: AhrefsBot
 Disallow: /
