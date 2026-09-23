@@ -6,3 +6,6 @@ request_terminate_timeout = ${PHP_FPM_REQUEST_TIMEOUT}
 pm.start_servers = ${PHP_FPM_START_SERVERS}
 pm.min_spare_servers = ${PHP_FPM_MIN_SPARE_SERVERS}
 pm.max_spare_servers = ${PHP_FPM_MAX_SPARE_SERVERS}
+request_slowlog_timeout = ${PHP_FPM_SLOWLOG_TIMEOUT}
+request_slowlog_trace_depth = ${PHP_FPM_SLOWLOG_TRACE_DEPTH}
+slowlog = /proc/self/fd/2
