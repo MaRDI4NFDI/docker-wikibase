@@ -114,13 +114,19 @@ jobs:
           SOURCE_TAG="${{ steps.image-tags.outputs.staging }}"
           RELEASE_TAG="${{ steps.image-tags.outputs.release }}"
 
-          docker buildx imagetools create \
-            --tag ghcr.io/mardi4nfdi/wikibase:${RELEASE_TAG} \
-            ghcr.io/mardi4nfdi/wikibase:${SOURCE_TAG}
+          # Like metadata-action: also move major.minor and major, but not for pre-releases.
+          TAGS=("${RELEASE_TAG}")
+          if [[ "${RELEASE_TAG}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            TAGS+=("${RELEASE_TAG%.*}" "${RELEASE_TAG%%.*}")
+          fi
 
-          docker buildx imagetools create \
-            --tag ghcr.io/mardi4nfdi/apache-assets:${RELEASE_TAG} \
-            ghcr.io/mardi4nfdi/apache-assets:${SOURCE_TAG}
+          for image in wikibase apache-assets; do
+            args=()
+            for tag in "${TAGS[@]}"; do
+              args+=(--tag "ghcr.io/mardi4nfdi/${image}:${tag}")
+            done
+            docker buildx imagetools create "${args[@]}" "ghcr.io/mardi4nfdi/${image}:${SOURCE_TAG}"
+          done
 
       - name: Checkout portal-k8s
         if: env.PUSH_IMAGE == 'true'
