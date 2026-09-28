@@ -148,6 +148,8 @@ $wgActionLockdown['history'] = [ 'user' ];
 $fs_host = getenv( 'MW_FORMULASEARCH_HOST' ) ?: 'formulasearch';
 $fs_port = getenv( 'MW_FORMULASEARCH_PORT' ) ?: '1985';
 $wgMathSearchBaseXBackendUrl = "http://{$fs_host}:{$fs_port}/basex/";
+// Profile pages move on label changes, see https://github.com/MaRDI4NFDI/MaRDIRoadmap/issues/239
+$wgFixDoubleRedirects = true;
 
 # Settings for Math-Extension
 $wgMathFullRestbaseURL = 'https://wikimedia.org/api/rest_';
