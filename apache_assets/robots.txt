@@ -10,7 +10,6 @@ Disallow: /w/
 Disallow: /wiki/Special:
 Disallow: /wiki/Special%3A
 
-# Page source, read by harvesters of SPARQL examples (KGI4NFDI/kgi-sparql-queries#1).
 Allow: /*?action=raw
 Disallow: /*?action=
 Disallow: /*&action=
