@@ -19,6 +19,12 @@ COPY clone_all.sh ./
 
 RUN bash clone_all.sh
 
+# Bound how long page renders wait on SPARQL queries, and keep renders with a
+# failed query out of the caches. The build fails here if upstream changes
+# make the patch stop applying.
+COPY patches/SPARQL-limit-query-time.patch /patches/
+RUN patch -d mediawiki/extensions/SPARQL -p1 < /patches/SPARQL-limit-query-time.patch
+
 ################
 # Composer
 ################
