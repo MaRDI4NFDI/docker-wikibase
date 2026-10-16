@@ -107,10 +107,33 @@ add_submodule() {
   echo "Cloning ${EXTENSION} (${BRANCH}) from ${REPO_URL}"
 
   # Clone the repository using the provided URL
-  git clone --depth=1 --recurse-submodules "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
+  git clone --depth=1 "$REPO_URL" --single-branch -b "$BRANCH" mediawiki/extensions/"$EXTENSION"
+  clone_submodules mediawiki/extensions/"$EXTENSION"
 }
 
-export -f add_submodule
+# Gerrit answers GitHub runners with 403 (T441387), so fetch
+# Gerrit-hosted submodules from their GitHub mirrors instead.
+# Gerrit replicates <name> to github.com/wikimedia/<name> with
+# remoteNameStyle dash, i.e. "/" in <name> becomes "-", see
+# swh:1:cnt:c2bbd4a40acbc6ec502402e19062c6b9e54f614d;origin=https://github.com/wikimedia/operations-puppet;anchor=swh:1:rev:bdfe9a727319d25103b4c09c33b296989070dc30;path=/hieradata/common/profile/gerrit.yaml;lines=64-89
+clone_submodules() {
+  local DIR=$1 KEY URL NAME SUBPATH
+
+  git -C "$DIR" submodule init
+  { git -C "$DIR" config --get-regexp '^submodule\..*\.url$' || true; } | while read -r KEY URL; do
+    if [[ $URL =~ ^https://gerrit\.wikimedia\.org/r/(.+)$ ]]; then
+      NAME=${BASH_REMATCH[1]%.git}
+      git -C "$DIR" config "$KEY" "https://github.com/wikimedia/${NAME//\//-}.git"
+    fi
+  done
+  git -C "$DIR" submodule update
+
+  git -C "$DIR" submodule foreach --quiet 'echo "$sm_path"' | while read -r SUBPATH; do
+    clone_submodules "$DIR/$SUBPATH"
+  done
+}
+
+export -f add_submodule clone_submodules
 
 # Run the submodule addition in parallel (degree 10)
 # would require installation of additional package parallel
@@ -140,12 +163,8 @@ done
 wait
 
 ## Clone Wikibase
-git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} mediawiki/extensions/Wikibase &&
-  git -C mediawiki/extensions/Wikibase submodule update --init --recursive
-# Workaround for https://phabricator.wikimedia.org/T388624
-cd mediawiki/extensions/DisplayTitle
-git fetch https://gerrit.wikimedia.org/r/mediawiki/extensions/DisplayTitle refs/changes/48/1126048/1 && git checkout -b change-1126048 FETCH_HEAD
-cd ../../..
+git clone --depth=1 https://github.com/wikimedia/mediawiki-extensions-Wikibase.git --single-branch -b ${WMF_BRANCH} mediawiki/extensions/Wikibase
+clone_submodules mediawiki/extensions/Wikibase
 
 # Clone core and other skins
 git clone --depth=1 https://github.com/wikimedia/mediawiki-skins-Vector -b ${WMF_BRANCH} mediawiki/skins/Vector
