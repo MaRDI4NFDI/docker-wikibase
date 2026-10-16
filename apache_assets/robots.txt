@@ -10,6 +10,7 @@ Disallow: /w/
 Disallow: /wiki/Special:
 Disallow: /wiki/Special%3A
 
+Allow: /*?action=raw$
 Disallow: /*?action=
 Disallow: /*&action=
 Disallow: /*?diff=
