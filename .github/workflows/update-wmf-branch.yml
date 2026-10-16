@@ -129,7 +129,7 @@ jobs:
           - New version: `${{ steps.check_version.outputs.latest_version }}`
           
           This update was automatically generated based on the latest Group 2 configuration from Wikimedia.
-        branch: update-wmf-branch-${{ steps.check_version.outputs.latest_version }}
+        branch: update-wmf-branch
         delete-branch: true
         base: main
 
