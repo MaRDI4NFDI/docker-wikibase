@@ -3,6 +3,12 @@
 use MediaWiki\Extension\EventBus\Adapters\JobQueue\JobQueueEventBus;
 
 /*******************************/
+/* Enable site content license */
+/*******************************/
+$wgRightsUrl = 'https://creativecommons.org/licenses/by-sa/4.0/';
+$wgRightsText = 'Creative Commons Attribution-ShareAlike 4.0 International';
+
+/*******************************/
 /* Enable Federated properties */
 /*******************************/
 # $wgWBRepoSettings['federatedPropertiesEnabled'] = true;
