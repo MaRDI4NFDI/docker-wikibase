@@ -1,4 +1,4 @@
 <?php
 
-$wgSPARQLEndpoint = 'http://staging-qlever:7001';
+$wgSPARQLEndpoint = getenv( 'SPARQL_ENDPOINT' ) ?: 'http://staging-qlever:7001';
 wfLoadExtension( 'SPARQL' );
