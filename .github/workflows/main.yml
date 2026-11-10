@@ -42,8 +42,12 @@ jobs:
           owner: MaRDI4NFDI
           repositories: portal-k8s
 
+      # PRs from this repository log in too, so they can write the shared
+      # build cache. Fork PRs only get a read-only token.
       - name: Log in to the Container registry
-        if: env.PUSH_IMAGE == 'true'
+        if: |
+          env.PUSH_IMAGE == 'true' ||
+          github.event.pull_request.head.repo.full_name == github.repository
         uses: docker/login-action@v4.8.0
         with:
           registry: ${{ env.REGISTRY }}
@@ -100,10 +104,9 @@ jobs:
           push: ${{ env.PUSH_IMAGE }}
           load: ${{ env.PUSH_IMAGE == 'false' }}
           no-cache: ${{ github.event.inputs.no_cache || false }}
-          set: |
-            *.cache-from=type=gha,scope=wikibase-shared
-            *.cache-to=type=gha,mode=max,scope=wikibase-shared
         env:
+          # Shared registry cache per image, see docker-bake.hcl.
+          BUILD_CACHE: "true"
           B_TAGS: ${{ steps.meta.outputs.json }}
           WIKIBASE_COMMIT: ${{ github.sha }}
           WIKIBASE_BUILT_AT: ${{ github.event.head_commit.timestamp || github.run_started_at }}
