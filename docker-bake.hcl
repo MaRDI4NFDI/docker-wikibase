@@ -13,6 +13,13 @@ variable "WIKIBASE_COMMIT" {
 variable "WIKIBASE_BUILT_AT" {
   default = "unknown"
 }
+# Set to "true" (CI does) to use the shared registry cache.
+# It is one :buildcache tag per image, used by PRs, main and tags.
+# GitHub's Actions cache can't be shared that way: a run only
+# reads caches of its own ref and the default branch.
+variable "BUILD_CACHE" {
+  default = ""
+}
 
 target "image-stack" {
   matrix = {
@@ -33,6 +40,9 @@ target "image-stack" {
   contexts    = item.ctx
 
   tags = [for t in TAGS : "ghcr.io/mardi4nfdi/${item.name}:${t}"]
+
+  cache-from = BUILD_CACHE == "" ? [] : ["type=registry,ref=ghcr.io/mardi4nfdi/${item.name}:buildcache"]
+  cache-to   = BUILD_CACHE == "" ? [] : ["type=registry,ref=ghcr.io/mardi4nfdi/${item.name}:buildcache,mode=max,image-manifest=true,oci-mediatypes=true,ignore-error=true"]
 
   args = item.name == "wikibase" ? {
     WIKIBASE_VERSION  = TAGS[0]
