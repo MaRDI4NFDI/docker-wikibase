@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 WMF_BRANCH=wmf/1.48.0-wmf.4
-REL_BRANCH=REL1_45
+REL_BRANCH=REL1_47
 
 GITHUB_WIKIMEDIA_EXTENSIONS=https://github.com/wikimedia/mediawiki-extensions
 GITHUB_PROFESSIONALWIKI=https://github.com/ProfessionalWiki
@@ -45,7 +45,7 @@ EXTENSIONS=(
   "MultimediaViewer"
   "Nuke"
   "OAuth"
-  "OpenIDConnect|${REL_BRANCH}"
+  "OpenIDConnect|T445026|https://github.com/MaRDI4NFDI/mediawiki-extensions-OpenIDConnect.git"
   "PageForms|${REL_BRANCH}"
   "PageImages"
   "ParserFunctions"
