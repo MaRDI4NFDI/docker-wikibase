@@ -49,6 +49,8 @@ The `LocalSettings.d` directory isolates runtime configuration rules. Files are 
 
 Loading order: `LocalSettings.php` includes the root `LocalSettings.d/*.php` files in alphabetical order (the glob is *not* recursive). The subdirectory matching `$DEPLOYMENT_ENV` is then included by `zzz_deployment_env.php`, which is named so that it sorts last — the tier-specific files are therefore loaded after every baseline file and genuinely override it. Keep that name sorting last when adding new files to the root of `LocalSettings.d`.
 
+`000_logging.php` sorts first for the opposite reason: MediaWiki fixes its logger on the first log call, so the logging setup must run before any other file can log. It writes every log record to stderr as one JSON line (Logstash format). When `MW_LOGSTASH_HOST` is set, it also sends each record by UDP to Logstash, which stores it in OpenSearch (see `charts/logstash` in portal-k8s). Channels in `$wmgDebugChannels` log from debug on, all others from warning on.
+
 # Create tag and new release
 
 ## Option 1
