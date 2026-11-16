@@ -97,6 +97,10 @@ Entries use the format:
 Rules:
 
 * If `branch` is omitted, `WMF_BRANCH` is used.
+* `${REL_BRANCH}` is the newest MediaWiki release branch below `WMF_BRANCH`.
+  The weekly *Update WMF Branch* workflow
+  (`.github/scripts/update_branches.sh`) updates both. It only picks a
+  release branch that core and every extension on `${REL_BRANCH}` have.
 * If `repo-override` is omitted, the standard Wikimedia extension URL is used:
   `https://github.com/wikimedia/mediawiki-extensions-${name}.git`
 * For ProfessionalWiki repositories, the shorthand
