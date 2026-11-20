@@ -45,7 +45,7 @@ EXTENSIONS=(
   "MultimediaViewer"
   "Nuke"
   "OAuth"
-  "OpenIDConnect|T445026|https://github.com/MaRDI4NFDI/mediawiki-extensions-OpenIDConnect.git"
+  "OpenIDConnect|mardi|https://github.com/MaRDI4NFDI/mediawiki-extensions-OpenIDConnect.git"
   "PageForms|${REL_BRANCH}"
   "PageImages"
   "ParserFunctions"
