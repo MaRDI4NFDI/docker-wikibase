@@ -40,6 +40,16 @@ $wgGroupPermissions['user']['createaccount'] = true;
 $wgGroupPermissions['*']['autocreateaccount'] = true;
 # Allow users to rename themselves https://www.mediawiki.org/wiki/Manual:Renameuser
 $wgGroupPermissions['user']['renameuser'] = true;
+# renameuser alone allows renaming anyone; only admins may rename other accounts.
+$wgHooks['RenameUserAbort'][] = static function ( int $uid, string $old, string $new ) {
+	$context = \MediaWiki\Context\RequestContext::getMain();
+	$user = $context->getUser();
+	if ( $user->getName() === $old || in_array( 'sysop', $user->getEffectiveGroups() ) ) {
+		return true;
+	}
+	$context->getOutput()->addHTML( \MediaWiki\Html\Html::errorBox( $context->msg( 'badaccess-group0' )->parse() ) );
+	return false;
+};
 
 # Restrict anonymous editing
 $wgGroupPermissions['*']['edit'] = false;
