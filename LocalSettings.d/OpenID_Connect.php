@@ -25,7 +25,8 @@ if (getenv('NFDI_CLIENT_ID') && getenv('NFDI_AAI_SECRET')) {
             ],
         ],
     ];
-    $wgGroupPermissions['institution-member'] ??= [];
+    // Keys of members are trusted for pinning files on D-LOCKSS (MathSearch).
+    $wgGroupPermissions['institution-member']['mathtrustedkeys'] = true;
     $wgHooks['MessagesPreLoad'][] = static function ( $title, &$message, $code ) {
         $messages = [
             'en' => [
