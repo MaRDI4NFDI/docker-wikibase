@@ -29,6 +29,7 @@ if ( $wgDBname === 'my_wiki' ) {
 }
 
 $wgMathSearchImporterUrl = "http://staging-importer";
+$wgExternalDataSources['*']['allowed urls'] = [ 'http://staging-importer/' ];
 
 
 if ( $wgDBname === 'my_wiki' ) {
